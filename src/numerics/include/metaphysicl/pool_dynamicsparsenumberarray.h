@@ -105,6 +105,14 @@ PoolDynamicSparseNumberArray<T, I>::PoolDynamicSparseNumberArray(
 #endif
 
 template <typename T, typename I>
+PoolDynamicSparseNumberArray<T, I> &
+PoolDynamicSparseNumberArray<T, I>::operator=(const PoolDynamicSparseNumberArray<T, I> & src)
+{
+  *dsna_ptr = *src.dsna_ptr;
+  return *this;
+}
+
+template <typename T, typename I>
 template <typename T2, typename I2>
 inline PoolDynamicSparseNumberArray<typename DotType<T, T2>::supertype,
                                     typename CompareTypes<I, I2>::supertype>

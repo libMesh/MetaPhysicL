@@ -283,6 +283,8 @@ int main(int argc, char * argv[])
     float_pdsna.raw_index(2) = 2;
     float_pdsna.raw_index(3) = 3;
   returnval = returnval || vectester(float_pdsna);
+  PoolDynamicSparseNumberArray<DualNumber<float>, unsigned int> float_pdsna_dup;
+  float_pdsna_dup = float_pdsna;
 
   returnval = returnval || vectester(SparseNumberArrayOf
     <N, 0, DualNumber<double>, 1, DualNumber<double>,

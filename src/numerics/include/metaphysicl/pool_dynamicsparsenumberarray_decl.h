@@ -95,16 +95,14 @@ public:
   // Move assignment avoids heap operations too
   PoolDynamicSparseNumberArray & operator=(PoolDynamicSparseNumberArray<T, I> && src) = default;
 
-  // Standard copy operations get implicitly deleted upon move
-  // constructor definition, so we manually enable them.
-  PoolDynamicSparseNumberArray(const PoolDynamicSparseNumberArray<T, I> & src);
-
-  PoolDynamicSparseNumberArray &
-  operator=(const PoolDynamicSparseNumberArray<T, I> & src) = default;
-
   template <typename T2, typename I2>
   PoolDynamicSparseNumberArray(PoolDynamicSparseNumberArray<T2, I2> && src);
 #endif
+
+  PoolDynamicSparseNumberArray(const PoolDynamicSparseNumberArray<T, I> & src);
+
+  PoolDynamicSparseNumberArray &
+  operator=(const PoolDynamicSparseNumberArray<T, I> & src);
 
   template <typename T2, typename I2>
   PoolDynamicSparseNumberArray(const PoolDynamicSparseNumberArray<T2, I2> & src);
