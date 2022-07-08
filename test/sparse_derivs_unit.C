@@ -10,12 +10,46 @@
 #include "metaphysicl/dualsparsenumberstruct.h"
 #include "metaphysicl/dualsparsenumberarray.h"
 #include "metaphysicl/dualsparsenumbervector.h"
+#include "metaphysicl/dual_pool_dynamicsparsenumberarray.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
 
 // Change the instantiations below iff changing this
 static const unsigned int N = 4; // test pts.
 
 using namespace MetaPhysicL;
+
+static SharedPool<DynamicSparseNumberArray<DualNumber<float>, unsigned int>> test_dnf_pool;
+static SharedPool<DynamicSparseNumberArray<DualNumber<long double>, unsigned int>> test_dnld_pool;
+static SharedPool<DynamicSparseNumberArray<float, unsigned int>> test_f_pool;
+static SharedPool<DynamicSparseNumberArray<long double, unsigned int>> test_ld_pool;
+
+namespace MetaPhysicL
+{
+template <>
+inline
+SharedPool<DynamicSparseNumberArray<DualNumber<float>, unsigned int>> & getPool()
+{
+  return test_dnf_pool;
+}
+template <>
+inline
+SharedPool<DynamicSparseNumberArray<DualNumber<long double>, unsigned int>> & getPool()
+{
+  return test_dnld_pool;
+}
+template <>
+inline
+SharedPool<DynamicSparseNumberArray<float, unsigned int>> & getPool()
+{
+  return test_f_pool;
+}
+template <>
+inline
+SharedPool<DynamicSparseNumberArray<long double, unsigned int>> & getPool()
+{
+  return test_ld_pool;
+}
+}
 
 #define one_test(test_func) \
   error_vec = raw_value(test_func); \
@@ -243,6 +277,12 @@ int main(int argc, char * argv[])
     float_dsna.raw_index(3) = 3;
   returnval = returnval || vectester(float_sdsna);
 
+  PoolDynamicSparseNumberArray<DualNumber<float>, unsigned int> float_pdsna;
+    float_pdsna.resize(4);
+    float_pdsna.raw_index(1) = 1;
+    float_pdsna.raw_index(2) = 2;
+    float_pdsna.raw_index(3) = 3;
+  returnval = returnval || vectester(float_pdsna);
 
   returnval = returnval || vectester(SparseNumberArrayOf
     <N, 0, DualNumber<double>, 1, DualNumber<double>,

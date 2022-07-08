@@ -19,7 +19,7 @@ for prog in compare_types complex_derivs derivs divgrad \
     shadow_vector_pde sparse_derivs sparse_identities sparse_struct_navier \
     sparse_struct_pde sparse_vector_navier sparse_vector_pde testheaders testopt \
     vector_navier vector_pde dynamic_std_array_wrapper dynamic_sparse_number_base \
-    ct_types; do
+    ct_types pool_no_new_malloc; do
     run_program $prog
 done
 

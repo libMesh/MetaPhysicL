@@ -252,7 +252,6 @@ using MetaPhysicL::DynamicSparseNumberArray;
 template <typename T, typename I>
 class numeric_limits<DynamicSparseNumberArray<T, I> > :
   public MetaPhysicL::raw_numeric_limits<DynamicSparseNumberArray<T, I>, T> {};
-
 } // namespace std
 
 
