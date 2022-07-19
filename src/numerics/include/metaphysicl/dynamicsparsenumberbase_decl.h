@@ -42,6 +42,7 @@
 #include <functional>
 #include <ostream>
 #include <stdexcept>
+#include <stack>
 
 namespace MetaPhysicL {
 
@@ -67,23 +68,23 @@ public:
 
   DynamicSparseNumberBase();
 
-#if METAPHYSICL_USE_STD_MOVE
   // Move constructors are useful when all your data is on the heap
-  DynamicSparseNumberBase(DynamicSparseNumberBase && src) = default;
+  DynamicSparseNumberBase(DynamicSparseNumberBase && src);
 
   // Move assignment avoids heap operations too
   DynamicSparseNumberBase& operator= (DynamicSparseNumberBase && src) = default;
 
   // Standard copy operations get implicitly deleted upon move
   // constructor definition, so we manually enable them.
-  DynamicSparseNumberBase(const DynamicSparseNumberBase & src) = default;
+  DynamicSparseNumberBase(const DynamicSparseNumberBase & src);
 
   DynamicSparseNumberBase& operator= (const DynamicSparseNumberBase & src) = default;
 
   template <typename Data2, typename Indices2, class... SubTypeArgs2>
   DynamicSparseNumberBase(
       DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> && src);
-#endif
+
+  ~DynamicSparseNumberBase();
 
   template <typename Data2, typename Indices2, class... SubTypeArgs2>
   DynamicSparseNumberBase(
@@ -178,6 +179,12 @@ protected:
 
   Data _data;
   Indices _indices;
+
+  void acquire();
+  void release();
+
+  static std::stack<Data> _data_stack;
+  static std::stack<Indices> _indices_stack;
 };
 
 

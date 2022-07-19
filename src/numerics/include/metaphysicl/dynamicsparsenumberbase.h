@@ -36,6 +36,12 @@
 namespace MetaPhysicL {
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+std::stack<Data> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_data_stack;
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+std::stack<Indices> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_indices_stack;
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 inline
 std::size_t
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::size() const
@@ -52,27 +58,85 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::resize(std::siz
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 inline
-DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::DynamicSparseNumberBase() {}
+void
+DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::acquire()
+{
+  if (!_data_stack.empty())
+  {
+    _data.swap(_data_stack.top());
+    _data_stack.pop();
+  }
+  if (!_indices_stack.empty())
+  {
+    _indices.swap(_indices_stack.top());
+    _indices_stack.pop();
+  }
+}
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+inline
+void
+DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::release()
+{
+  _data_stack.push(std::move(_data));
+  _indices_stack.push(std::move(_indices));
+}
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+inline
+DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::DynamicSparseNumberBase()
+{
+  this->acquire();
+  this->resize(0);
+}
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+inline
+DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::DynamicSparseNumberBase(
+  const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & src)
+{
+  this->acquire();
+  this->resize(src.size());
+  std::copy(src.nude_data().begin(), src.nude_data().end(), _data.begin());
+  std::copy(src.nude_indices().begin(), src.nude_indices().end(), _indices.begin());
+}
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 template <typename Data2, typename Indices2, class... SubTypeArgs2>
 inline
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::
 DynamicSparseNumberBase(const DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> & src)
-{ this->resize(src.size());
+{
+  this->acquire();
+  this->resize(src.size());
   std::copy(src.nude_data().begin(), src.nude_data().end(), _data.begin());
-  std::copy(src.nude_indices().begin(), src.nude_indices().end(), _indices.begin()); }
+  std::copy(src.nude_indices().begin(), src.nude_indices().end(), _indices.begin());
+}
 
-#ifdef METAPHYSICL_USE_STD_MOVE
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+inline DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::DynamicSparseNumberBase(
+    DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> && src)
+{
+  this->acquire();
+  _data.swap(src.nude_data());
+  _indices.swap(src.nude_indices());
+}
+
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 template <typename Data2, typename Indices2, class... SubTypeArgs2>
 inline DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::DynamicSparseNumberBase(
     DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> && src)
 {
-  _data = std::move(src.nude_data());
-  _indices = std::move(src.nude_indices());
+  this->acquire();
+  _data.swap(src.nude_data());
+  _indices.swap(src.nude_indices());
 }
-#endif // METAPHYSICL_USE_STD_MOVE
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+inline DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::~DynamicSparseNumberBase()
+{
+  this->release();
+}
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 inline

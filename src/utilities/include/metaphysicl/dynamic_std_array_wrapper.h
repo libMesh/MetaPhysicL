@@ -142,6 +142,14 @@ public:
 
   const_reverse_iterator rend() const { return _data.rend(); }
 
+  void swap(DynamicStdArrayWrapper & other)
+  {
+    const auto temp = _dynamic_n;
+    _dynamic_n = other._dynamic_n;
+    other._dynamic_n = temp;
+    _data.swap(other._data);
+  }
+
 protected:
 #ifdef METAPHYSICL_HAVE_TIMPI
   friend class TIMPI::StandardType<DynamicStdArrayWrapper<T, NType>>;
