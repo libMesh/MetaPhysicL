@@ -36,10 +36,10 @@
 namespace MetaPhysicL {
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
-std::stack<Data> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_data_stack;
+std::stack<Data, std::vector<Data>> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_data_stack;
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
-std::stack<Indices> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_indices_stack;
+std::stack<Indices, std::vector<Indices>> DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::_indices_stack;
 
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 inline

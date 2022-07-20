@@ -183,8 +183,8 @@ protected:
   void acquire();
   void release();
 
-  static std::stack<Data> _data_stack;
-  static std::stack<Indices> _indices_stack;
+  static std::stack<Data, std::vector<Data>> _data_stack;
+  static std::stack<Indices, std::vector<Indices>> _indices_stack;
 };
 
 
