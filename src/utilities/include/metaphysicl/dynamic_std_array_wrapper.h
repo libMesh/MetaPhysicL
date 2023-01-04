@@ -51,41 +51,15 @@ public:
   typedef typename std::array<T, N>::reference reference;
   typedef typename std::array<T, N>::const_reference const_reference;
 
-  DynamicStdArrayWrapper(const DynamicStdArrayWrapper & src)
-  {
-    _dynamic_n = src._dynamic_n;
-    metaphysicl_assert(_dynamic_n <= N);
-    std::copy(src.begin(), src.end(), _data.begin());
-  }
+  DynamicStdArrayWrapper(const DynamicStdArrayWrapper & src) = default;
 
   // A std::array isn't movable but it's contents might be
-  DynamicStdArrayWrapper(DynamicStdArrayWrapper && src)
-  {
-    _dynamic_n = src._dynamic_n;
-    metaphysicl_assert(_dynamic_n <= N);
-    auto src_it = src.begin(), src_end = src.end(), this_it = _data.begin();
-    for (; src_it != src_end; ++src_it, ++this_it)
-      *this_it = std::move(*src_it);
-  }
+  DynamicStdArrayWrapper(DynamicStdArrayWrapper && src) = default;
 
-  DynamicStdArrayWrapper & operator=(const DynamicStdArrayWrapper & src)
-  {
-    _dynamic_n = src._dynamic_n;
-    metaphysicl_assert(_dynamic_n <= N);
-    std::copy(src.begin(), src.end(), _data.begin());
-    return *this;
-  }
+  DynamicStdArrayWrapper & operator=(const DynamicStdArrayWrapper & src) = default;
 
   // A std::array isn't movable but it's contents might be
-  DynamicStdArrayWrapper & operator=(DynamicStdArrayWrapper && src)
-  {
-    _dynamic_n = src._dynamic_n;
-    metaphysicl_assert(_dynamic_n <= N);
-    auto src_it = src.begin(), src_end = src.end(), this_it = _data.begin();
-    for (; src_it != src_end; ++src_it, ++this_it)
-      *this_it = std::move(*src_it);
-    return *this;
-  }
+  DynamicStdArrayWrapper & operator=(DynamicStdArrayWrapper && src) = default;
 
   DynamicStdArrayWrapper() = default;
 
