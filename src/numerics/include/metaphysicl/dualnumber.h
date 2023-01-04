@@ -94,34 +94,6 @@ DualNumber<T,D,asd>::operator=(const DualNumber<T2,D2,asd> & dn)
 }
 
 template <typename T, typename D, bool asd>
-inline
-DualNumber<T,D,asd> &
-DualNumber<T,D,asd>::operator=(const DualNumber<T,D,asd> & dn)
-{
-  _val = dn.value();
-
-  if (!allow_skipping_derivatives || do_derivatives)
-    _deriv = dn.derivatives();
-
-  return *this;
-}
-
-#ifdef METAPHYSICL_USE_STD_MOVE
-template <typename T, typename D, bool asd>
-inline
-DualNumber<T,D,asd> &
-DualNumber<T,D,asd>::operator=(DualNumber<T,D,asd> && dn)
-{
-  _val = std::move(dn.value());
-
-  if (!allow_skipping_derivatives || do_derivatives)
-    _deriv = std::move(dn.derivatives());
-
-  return *this;
-}
-#endif // METAPHYSICL_USE_STD_MOVE
-
-template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
 inline
 DualNumber<T,D,asd> &
@@ -134,26 +106,6 @@ DualNumber<T,D,asd>::operator=(const NotADuckDualNumber<T2,D2> & nd_dn)
 
   return *this;
 }
-
-template <typename T, typename D, bool asd>
-inline
-DualNumber<T,D,asd>::DualNumber(const DualNumber<T,D,asd> & dn) :
-    _val(dn.value())
-{
-  if (!allow_skipping_derivatives || do_derivatives)
-    _deriv = dn.derivatives();
-}
-
-#ifdef METAPHYSICL_USE_STD_MOVE
-template <typename T, typename D, bool asd>
-inline
-DualNumber<T,D,asd>::DualNumber(DualNumber<T,D,asd> && dn) :
-    _val(std::move(dn.value()))
-{
-  if (!allow_skipping_derivatives || do_derivatives)
-    _deriv = std::move(dn.derivatives());
-}
-#endif // METAPHYSICL_USE_STD_MOVE
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>

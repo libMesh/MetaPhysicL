@@ -79,19 +79,19 @@ public:
 
 #if METAPHYSICL_USE_STD_MOVE
   // Move constructors are useful when all your data is on the heap
-  DualNumber(DualNumber<T, D, asd> && /*src*/);
+  DualNumber(DualNumber<T, D, asd> && /*src*/) = default;
 
   // Move assignment avoids heap operations too
-  DualNumber& operator= (DualNumber<T, D, asd> && /*src*/);
+  DualNumber& operator= (DualNumber<T, D, asd> && /*src*/) = default;
 #endif
 
   // Standard copy operations get implicitly deleted upon move
   // constructor definition, so we'd need to redefine them.  We'll
   // redefine them in non-move builds too, so we can skip derivative
   // assignment in the !asd case.
-  DualNumber(const DualNumber<T, D, asd> & /*src*/);
+  DualNumber(const DualNumber<T, D, asd> & /*src*/) = default;
 
-  DualNumber& operator= (const DualNumber<T, D, asd> & /*src*/);
+  DualNumber& operator= (const DualNumber<T, D, asd> & /*src*/) = default;
 
   template <typename T2, typename D2>
   DualNumber & operator=(const DualNumber<T2,D2,asd> & dn);
