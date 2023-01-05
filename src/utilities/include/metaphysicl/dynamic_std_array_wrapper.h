@@ -53,13 +53,15 @@ public:
 
   DynamicStdArrayWrapper(const DynamicStdArrayWrapper & src) = default;
 
+  DynamicStdArrayWrapper & operator=(const DynamicStdArrayWrapper & src) = default;
+
+#if METAPHYSICL_USE_STD_MOVE
   // A std::array isn't movable but it's contents might be
   DynamicStdArrayWrapper(DynamicStdArrayWrapper && src) = default;
 
-  DynamicStdArrayWrapper & operator=(const DynamicStdArrayWrapper & src) = default;
-
   // A std::array isn't movable but it's contents might be
   DynamicStdArrayWrapper & operator=(DynamicStdArrayWrapper && src) = default;
+#endif
 
   DynamicStdArrayWrapper() = default;
 
