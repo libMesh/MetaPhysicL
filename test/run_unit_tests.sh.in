@@ -13,7 +13,7 @@ run_program() {
 
 for prog in compare_types complex_derivs derivs divgrad \
     dynamic_sparse_vector_pde identities instantiations main \
-    nd_derivs parallel pde shadow_dynamic_sparse_vector_pde \
+    nested_derivs nd_derivs parallel pde shadow_dynamic_sparse_vector_pde \
     shadow_sparse_struct_pde \
     shadow_sparse_vector_navier shadow_sparse_vector_pde shadow_vector_navier \
     shadow_vector_pde sparse_derivs sparse_identities \

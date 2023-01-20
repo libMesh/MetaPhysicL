@@ -1,6 +1,7 @@
 check_PROGRAMS  =
 check_PROGRAMS += compare_types_unit
 check_PROGRAMS += derivs_unit
+check_PROGRAMS += nested_derivs_unit
 check_PROGRAMS += nd_derivs_unit
 check_PROGRAMS += complex_derivs_unit
 check_PROGRAMS += divgrad_unit
@@ -57,6 +58,7 @@ AM_LDFLAGS = $(top_builddir)/src/libmetaphysicl.la
 # Sources for these tests
 compare_types_unit_SOURCES = compare_types_unit.C
 derivs_unit_SOURCES = derivs_unit.C
+nested_derivs_unit_SOURCES = nested_derivs_unit.C
 nd_derivs_unit_SOURCES = nd_derivs_unit.C
 nd_derivs_unit_SOURCES += math_structs.h
 complex_derivs_unit_SOURCES = complex_derivs_unit.C
