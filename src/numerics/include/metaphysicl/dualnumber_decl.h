@@ -180,16 +180,36 @@ struct DualNumberConstructor
   template <typename T2, typename D2>
   static T value(const T2& v, const D2&) { return v; }
 
-  template <typename T2, typename D2>
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<!std::is_convertible<DualNumber<T2,D2,asd>,T>::value,
+                                    int>::type = 0>
   static T value(const DualNumber<T2,D2,asd>& v) {
     return DualNumberConstructor<T,D,asd>::value(v.value());
+  }
+
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<std::is_convertible<DualNumber<T2,D2,asd>,T>::value,
+                                    int>::type = 0>
+  static T value(const DualNumber<T2,D2,asd>& v) {
+    return v;
   }
 
   template <typename T2>
   static D deriv(const T2&) { return 0.; }
 
-  template <typename T2, typename D2>
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<!std::is_convertible<DualNumber<T2,D2,asd>,T>::value,
+                                    int>::type = 0>
   static D deriv(const DualNumber<T2,D2,asd>& v) { return v.derivatives(); }
+
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<std::is_convertible<DualNumber<T2,D2,asd>,T>::value,
+                                    int>::type = 0>
+  static D deriv(const DualNumber<T2,D2,asd>&)  { return {}; }
 
   template <typename T2, typename D2>
   static D deriv(const T2&, const D2& d) { return d; }
@@ -213,8 +233,19 @@ struct DualNumberConstructor<DualNumber<T,D,asd>, DD, asd>
   template <typename T2>
   static DD deriv(const T2&) { return 0; }
 
-  template <typename T2, typename D2>
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<!std::is_convertible<DualNumber<T2,D2,asd>,
+                                                         DualNumber<T,D,asd>>::value,
+                                    int>::type = 0>
   static DD deriv(const DualNumber<T2,D2,asd>& v) { return v.derivatives(); }
+
+  template <typename T2,
+            typename D2,
+            typename std::enable_if<std::is_convertible<DualNumber<T2,D2,asd>,
+                                                        DualNumber<T,D,asd>>::value,
+                                    int>::type = 0>
+  static DD deriv(const DualNumber<T2,D2,asd>&) { return {}; }
 
   template <typename T2, typename D2>
   static DD deriv(const T2&, const D2& d) { return d; }
@@ -520,35 +551,36 @@ struct CompareTypes<DualNumber<T, D, asd>, DualNumber<T2, D2, asd> > {
                     asd> supertype;
 };
 
-template<typename T, typename D, bool asd>
-struct CompareTypes<DualNumber<T, D, asd>, DualNumber<T, D, asd> > {
+template <typename T, typename D, bool asd>
+struct CompareTypes<DualNumber<T, D, asd>, DualNumber<T, D, asd>>
+{
   typedef DualNumber<T, typename SymmetricCompareTypes<T, D>::supertype, asd> supertype;
 };
 
-#define MetaPhysicLNestedDualNumberType(TemplateName)                                              \
-  template <typename T, typename D, bool asd, bool reverseorder>                                   \
-  struct TemplateName<DualNumber<DualNumber<T, D, asd>, DualNumber<T, D, asd>, asd>,               \
+#define NestedDualNumberType(TemplateName)                                                         \
+  template <typename T, typename D, bool asd, typename NestedDerivatives, bool reverseorder>       \
+  struct TemplateName<DualNumber<DualNumber<T, D, asd>, NestedDerivatives, asd>,                   \
                       DualNumber<T, D, asd>,                                                       \
                       reverseorder>                                                                \
   {                                                                                                \
-    typedef DualNumber<DualNumber<T, D, asd>, DualNumber<T, D, asd>, asd> supertype;               \
+    typedef DualNumber<DualNumber<T, D, asd>, NestedDerivatives, asd> supertype;                   \
   };                                                                                               \
                                                                                                    \
-  template <typename T, typename D, bool asd, bool reverseorder>                                   \
+  template <typename T, typename D, bool asd, typename NestedDerivatives, bool reverseorder>       \
   struct TemplateName<DualNumber<T, D, asd>,                                                       \
-                      DualNumber<DualNumber<T, D, asd>, DualNumber<T, D, asd>, asd>,               \
+                      DualNumber<DualNumber<T, D, asd>, NestedDerivatives, asd>,                   \
                       reverseorder>                                                                \
   {                                                                                                \
-    typedef DualNumber<DualNumber<T, D, asd>, DualNumber<T, D, asd>, asd> supertype;               \
+    typedef DualNumber<DualNumber<T, D, asd>, NestedDerivatives, asd> supertype;                   \
   }
 
-MetaPhysicLNestedDualNumberType(CompareTypes);
-MetaPhysicLNestedDualNumberType(PlusType);
-MetaPhysicLNestedDualNumberType(MinusType);
-MetaPhysicLNestedDualNumberType(MultipliesType);
-MetaPhysicLNestedDualNumberType(DividesType);
-MetaPhysicLNestedDualNumberType(AndType);
-MetaPhysicLNestedDualNumberType(OrType);
+NestedDualNumberType(CompareTypes);
+NestedDualNumberType(PlusType);
+NestedDualNumberType(MinusType);
+NestedDualNumberType(MultipliesType);
+NestedDualNumberType(DividesType);
+NestedDualNumberType(AndType);
+NestedDualNumberType(OrType);
 
 template <typename T, typename D, bool asd>
 inline

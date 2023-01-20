@@ -367,8 +367,9 @@ template <typename T, typename D, bool asd> \
 template <typename T2, typename D2> \
 inline \
 DualNumber<T,D,asd>& \
-DualNumber<T,D,asd>::operator opname##= (const DualNumber<T2,D2,asd>& in) \
+DualNumber<T,D,asd>::operator opname##= (const DualNumber<T2,D2,asd>& original_in) \
 { \
+  DualNumber<T,D,asd> in(original_in); \
   if (!allow_skipping_derivatives || do_derivatives) \
   { \
     dualcalc; \
