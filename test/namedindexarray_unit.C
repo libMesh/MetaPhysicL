@@ -9,7 +9,9 @@
 
 // VexCL
 #ifdef METAPHYSICL_HAVE_VEXCL
+#include "metaphysicl/ignore_warnings.h"
 #include "vexcl/vexcl.hpp"
+#include "metaphysicl/restore_warnings.h"
 #endif
 
 // C++
