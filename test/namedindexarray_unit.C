@@ -2,8 +2,8 @@
 // MetaPhysicL
 #include "metaphysicl/metaphysicl_asserts.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
-#include "metaphysicl/namedindexarray.h"
 #include "metaphysicl/sparsenumbervector.h"
+#include "metaphysicl/namedindexarray.h"
 
 #include "metaphysicl_config.h"
 
