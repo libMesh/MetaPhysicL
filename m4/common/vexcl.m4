@@ -107,8 +107,8 @@ if test "${with_vexcl}" != no ; then
       found_boost=no
     fi
 
-    BOOST_THREADS
-    if test "x$boost_cv_lib_threads" != xyes; then
+    BOOST_THREAD
+    if test "x$boost_cv_lib_thread" != xyes; then
       found_boost=no
     fi
 

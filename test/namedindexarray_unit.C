@@ -2,14 +2,16 @@
 // MetaPhysicL
 #include "metaphysicl/metaphysicl_asserts.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
-#include "metaphysicl/namedindexarray.h"
 #include "metaphysicl/sparsenumbervector.h"
+#include "metaphysicl/namedindexarray.h"
 
 #include "metaphysicl_config.h"
 
 // VexCL
 #ifdef METAPHYSICL_HAVE_VEXCL
+#include "metaphysicl/ignore_warnings.h"
 #include "vexcl/vexcl.hpp"
+#include "metaphysicl/restore_warnings.h"
 #endif
 
 // C++
