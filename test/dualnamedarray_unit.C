@@ -4,7 +4,9 @@
 
 // VexCL
 #ifdef METAPHYSICL_HAVE_VEXCL
+#include "metaphysicl/ignore_warnings.h"
 #include "vexcl/vexcl.hpp"
+#include "metaphysicl/restore_warnings.h"
 #endif
 
 // MetaPhysicL
@@ -45,10 +47,10 @@ namespace MetaPhysicL {
 } // namespace MetaPhysicL
 #endif
 
+#include "metaphysicl/sparsenumbervector.h"
 #include "metaphysicl/dualnamedarray.h"
 #include "metaphysicl/metaphysicl_asserts.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
-#include "metaphysicl/sparsenumbervector.h"
 
 // C++
 #include <iostream>
