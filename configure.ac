@@ -85,7 +85,14 @@ AM_CONDITIONAL(CXX14_ENABLED,test x$HAVE_CXX14 = x1)
 
 AM_CONDITIONAL(CXX11_ENABLED,test x$HAVE_CXX11 = x1)
 
+dnl Get CXXFLAGS and optional flags for this compiler
 ACSM_SET_CXX_FLAGS
+
+dnl Make sure it's safe to turn on FP exceptions
+ACSM_SET_FPE_SAFETY_FLAGS
+
+dnl provide the resulting flags to our Makefiles
+AC_SUBST(ACSM_CXXFLAGS_OPT)
 
 dnl Workaround for ACSM bug
 WERROR_FLAGS="$ACSM_WERROR_FLAGS"
@@ -99,7 +106,7 @@ ACSM_ENABLE_PARANOID
 dnl And those tests should fail, not just whine
 ACSM_ENABLE_WERROR
 
-dnl See if we can turn on FP exceptions
+dnl See if we *can* turn on FP exceptions
 AC_HAVE_FEEXCEPT
 
 LT_INIT
