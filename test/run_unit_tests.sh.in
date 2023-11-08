@@ -11,7 +11,7 @@ run_program() {
     }
 
 
-for prog in compare_types complex_derivs derivs divgrad \
+for prog in avoid_spurious_fpe compare_types complex_derivs derivs divgrad \
     dynamic_sparse_vector_pde identities instantiations main \
     nd_derivs parallel pde shadow_dynamic_sparse_vector_pde \
     shadow_sparse_struct_pde \
