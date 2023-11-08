@@ -22,7 +22,7 @@ echo
 echo Package version............... : $PACKAGE-$VERSION
 echo
 echo C++ compiler.................. : $CXX
-echo C++ compiler flags............ : $CXXFLAGS
+echo C++ compiler flags............ : $ACSM_CXXFLAGS_OPT
 AS_ECHO(["Any warnings-to-errors flags....... : $ACSM_ANY_WERROR_FLAG"])
 AS_ECHO(["Any extra paranoid warning flags... : $ACSM_ANY_PARANOID_FLAGS"])
 echo Install dir................... : $prefix

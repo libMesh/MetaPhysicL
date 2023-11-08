@@ -1,4 +1,5 @@
 check_PROGRAMS  =
+check_PROGRAMS += avoid_spurious_fpe_unit # first, to avoid confusion later
 check_PROGRAMS += compare_types_unit
 check_PROGRAMS += derivs_unit
 check_PROGRAMS += nd_derivs_unit
@@ -52,11 +53,12 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/numerics/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #metaphysicl_version.h, metaphysicl_config.h
 
-AM_CXXFLAGS = $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
+AM_CXXFLAGS = $(ACSM_CXXFLAGS_OPT) $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
 
 AM_LDFLAGS = $(top_builddir)/src/libmetaphysicl.la
 
 # Sources for these tests
+avoid_spurious_fpe_unit_SOURCES = avoid_spurious_fpe_unit.C
 compare_types_unit_SOURCES = compare_types_unit.C
 derivs_unit_SOURCES = derivs_unit.C
 nd_derivs_unit_SOURCES = nd_derivs_unit.C
