@@ -805,6 +805,7 @@ GREP
 LIBTOOL
 ACSM_ANY_WERROR_FLAG
 ACSM_ANY_PARANOID_FLAGS
+ACSM_CXXFLAGS_OPT
 CXX11_ENABLED_FALSE
 CXX11_ENABLED_TRUE
 CXX14_ENABLED_FALSE
@@ -953,6 +954,7 @@ with_cxx_std_max
 with_cxx_std_min
 with_cxx_std
 enable_sanitize
+enable_fpe_safety
 enable_paranoid_warnings
 enable_werror
 enable_shared
@@ -1645,6 +1647,7 @@ Optional Features:
                           speeds up one-time build
   --enable-sanitize="opt dbg devel prof oprof"
                           turn on sanitizer flags for the given methods
+  --disable-fpe-safety    remove FPE-trapping compiler flags
   --enable-paranoid-warnings
                           Turn on paranoid compiler warnings
   --enable-werror         Turn compilation warnings into errors
@@ -17107,6 +17110,24 @@ fi
   # interferes with OProfile callgraphs
   ACSM_OPROFILE_FLAGS="-g -fno-omit-frame-pointer"
 
+  # Turning on floating-point exceptions is technically undefined
+  # behavior, and optimizers are starting to take advantage of that.
+  # See e.g. LLVM github issue #71492: "Whether your source code
+  # contains operations that produce a division by zero is irrelevant,
+  # as they may be legally introduced by the compiler." So if we might
+  # want to be able to trigger SIGFPE without false positives, we need
+  # to use compiler flags that enable that.
+  #
+  # Those are likely to vary from compiler to compiler, because "just
+  # never let the optimizer cause a floating-point exception" used to
+  # be a popular enough strategy that you didn't need a compiler
+  # flag.  The gcc manual for -fno-trapping-math still says "This
+  # option should never be turned on by any -O option since it can
+  # result in incorrect output for programs which depend on an exact
+  # implementation of IEEE or ISO rules/specifications for math
+  # functions"...
+  ACSM_FPE_SAFETY_FLAGS=""
+
   # For compilers that support it (clang >= 3.5.0 and GCC >= 4.8) the
   # user can selectively enable "sanitize" flags for different METHODs
   # with e.g.
@@ -17259,6 +17280,8 @@ then :
           ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL -Wpointer-arith -Wformat -Wparentheses -Wuninitialized -fstrict-aliasing -Woverloaded-virtual -Wdisabled-optimization"
           ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -O0 -felide-constructors -g -pedantic -W -Wall -Wextra -Wno-long-long -Wunused -Wpointer-arith -Wformat -Wparentheses -Woverloaded-virtual"
           ACSM_NODEPRECATEDFLAG="-Wno-deprecated"
+
+                    ACSM_FPE_SAFETY_FLAGS="-ftrapping-math"
 
           ACSM_CFLAGS_OPT="-O2 -fstrict-aliasing"
           ACSM_CFLAGS_DEVEL="$ACSM_CFLAGS_OPT -g -Wimplicit -fstrict-aliasing"
@@ -17415,6 +17438,8 @@ fi
                        ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -Wunused-parameter -Wunused -Wpointer-arith -Wformat -Wparentheses -Qunused-arguments -Woverloaded-virtual -fno-limit-debug-info"
                        ACSM_NODEPRECATEDFLAG="-Wno-deprecated"
 
+                                                                                                                                                                                                               ACSM_FPE_SAFETY_FLAGS="-ftrapping-math"
+
                                               ACSM_PARANOID_FLAGS="-Wall -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2"
                        ACSM_PARANOID_FLAGS="$ACSM_PARANOID_FLAGS -Wformat-nonliteral -Wformat-security -Wformat-y2k"
                        ACSM_PARANOID_FLAGS="$ACSM_PARANOID_FLAGS -Winvalid-pch -Wmissing-field-initializers"
@@ -17444,6 +17469,135 @@ printf "%s\n" "No specific options for this C++ compiler known" >&6; }
 esac
 
 fi
+
+
+
+
+
+
+  # Check whether --enable-fpe-safety was given.
+if test ${enable_fpe_safety+y}
+then :
+  enableval=$enable_fpe_safety; case "${enableval}" in #(
+  yes) :
+    acsm_enablefpesafety=yes ;; #(
+  no) :
+    acsm_enablefpesafety=no ;; #(
+  *) :
+    as_fn_error $? "bad value ${enableval} for --enable-fpe-safety" "$LINENO" 5 ;;
+esac
+else $as_nop
+  acsm_enablefpesafety=yes
+fi
+
+
+  if test "$acsm_enablefpesafety" = "yes"
+then :
+
+          ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+          ac_fpe_safety_save_CFLAGS="$CFLAGS"
+          CFLAGS="${CFLAGS} ${ACSM_FPE_SAFETY_FLAGS}"
+          cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+else $as_nop
+
+              { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: unable to compile C with FPE safety flag ($CC $ACSM_FPE_SAFETY_FLAGS)" >&5
+printf "%s\n" "$as_me: WARNING: unable to compile C with FPE safety flag ($CC $ACSM_FPE_SAFETY_FLAGS)" >&2;}
+              ACSM_FPE_SAFETY_FLAGS=""
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+          CFLAGS="$ac_fpe_safety_save_CFLAGS"
+          ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+          ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+          ac_fpe_safety_save_CXXFLAGS="$CXXFLAGS"
+          CXXFLAGS="${CXXFLAGS} ${ACSM_FPE_SAFETY_FLAGS}"
+          cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+
+else $as_nop
+
+              { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: unable to compile C++ with FPE safety flag ($CXX $ACSM_FPE_SAFETY_FLAGS)" >&5
+printf "%s\n" "$as_me: WARNING: unable to compile C++ with FPE safety flag ($CXX $ACSM_FPE_SAFETY_FLAGS)" >&2;}
+              ACSM_FPE_SAFETY_FLAGS=""
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+          CXXFLAGS="$ac_fpe_safety_save_CXXFLAGS"
+          ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+          if test "x$ACSM_FPE_SAFETY_FLAGS" != "x"
+then :
+
+                  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< Adding $ACSM_FPE_SAFETY_FLAGS for FPE safety >>>" >&5
+printf "%s\n" "<<< Adding $ACSM_FPE_SAFETY_FLAGS for FPE safety >>>" >&6; }
+
+else $as_nop
+
+                  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< No flags found to use for FPE safety >>>" >&5
+printf "%s\n" "<<< No flags found to use for FPE safety >>>" >&6; }
+
+fi
+          ACSM_CXXFLAGS_OPT="$ACSM_CXXFLAGS_OPT $ACSM_FPE_SAFETY_FLAGS"
+          ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG $ACSM_FPE_SAFETY_FLAGS"
+          ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL $ACSM_FPE_SAFETY_FLAGS"
+
+          ACSM_CFLAGS_OPT="$ACSM_CFLAGS_OPT $ACSM_FPE_SAFETY_FLAGS"
+          ACSM_CFLAGS_DBG="$ACSM_CFLAGS_DBG $ACSM_FPE_SAFETY_FLAGS"
+          ACSM_CFLAGS_DEVEL="$ACSM_CFLAGS_DEVEL $ACSM_FPE_SAFETY_FLAGS"
+
+else $as_nop
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< Not enabling flags for FPE safety >>>" >&5
+printf "%s\n" "<<< Not enabling flags for FPE safety >>>" >&6; }
+
+fi
+
+
 
 
 WERROR_FLAGS="$ACSM_WERROR_FLAGS"
@@ -17543,7 +17697,6 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 
 
 
@@ -44684,7 +44837,7 @@ echo
 echo Package version............... : $PACKAGE-$VERSION
 echo
 echo C++ compiler.................. : $CXX
-echo C++ compiler flags............ : $CXXFLAGS
+echo C++ compiler flags............ : $ACSM_CXXFLAGS_OPT
 printf "%s\n" "Any warnings-to-errors flags....... : $ACSM_ANY_WERROR_FLAG"
 printf "%s\n" "Any extra paranoid warning flags... : $ACSM_ANY_PARANOID_FLAGS"
 echo Install dir................... : $prefix

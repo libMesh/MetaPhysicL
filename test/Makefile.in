@@ -88,7 +88,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-check_PROGRAMS = compare_types_unit$(EXEEXT) derivs_unit$(EXEEXT) \
+check_PROGRAMS = avoid_spurious_fpe_unit$(EXEEXT) \
+	compare_types_unit$(EXEEXT) derivs_unit$(EXEEXT) \
 	nd_derivs_unit$(EXEEXT) complex_derivs_unit$(EXEEXT) \
 	divgrad_unit$(EXEEXT) \
 	dynamic_sparse_vector_navier_unit$(EXEEXT) \
@@ -177,13 +178,18 @@ CONFIG_CLEAN_VPATH_FILES =
 @CXX14_ENABLED_TRUE@am__EXEEXT_1 = dualnamedarray_unit$(EXEEXT) \
 @CXX14_ENABLED_TRUE@	namedindexarray_unit$(EXEEXT)
 @CXX11_ENABLED_TRUE@am__EXEEXT_2 = physics_unit$(EXEEXT)
-am_compare_types_unit_OBJECTS = compare_types_unit.$(OBJEXT)
-compare_types_unit_OBJECTS = $(am_compare_types_unit_OBJECTS)
-compare_types_unit_LDADD = $(LDADD)
+am_avoid_spurious_fpe_unit_OBJECTS =  \
+	avoid_spurious_fpe_unit.$(OBJEXT)
+avoid_spurious_fpe_unit_OBJECTS =  \
+	$(am_avoid_spurious_fpe_unit_OBJECTS)
+avoid_spurious_fpe_unit_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am_compare_types_unit_OBJECTS = compare_types_unit.$(OBJEXT)
+compare_types_unit_OBJECTS = $(am_compare_types_unit_OBJECTS)
+compare_types_unit_LDADD = $(LDADD)
 am_complex_derivs_unit_OBJECTS = complex_derivs_unit.$(OBJEXT)
 complex_derivs_unit_OBJECTS = $(am_complex_derivs_unit_OBJECTS)
 complex_derivs_unit_LDADD = $(LDADD)
@@ -330,7 +336,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/utilities/include/metaphysicl
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/compare_types_unit.Po \
+am__depfiles_remade = ./$(DEPDIR)/avoid_spurious_fpe_unit.Po \
+	./$(DEPDIR)/compare_types_unit.Po \
 	./$(DEPDIR)/complex_derivs_unit.Po \
 	./$(DEPDIR)/ct_types_unit.Po ./$(DEPDIR)/derivs_unit.Po \
 	./$(DEPDIR)/divgrad_unit.Po ./$(DEPDIR)/dualnamedarray_unit.Po \
@@ -397,7 +404,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
+SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
+	$(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
 	$(ct_types_unit_SOURCES) $(derivs_unit_SOURCES) \
 	$(divgrad_unit_SOURCES) $(dualnamedarray_unit_SOURCES) \
 	$(dynamic_sparse_number_base_unit_SOURCES) \
@@ -424,10 +432,10 @@ SOURCES = $(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
 	$(sparse_vector_pde_unit_SOURCES) $(testheaders_unit_SOURCES) \
 	$(testopt_unit_SOURCES) $(vector_navier_unit_SOURCES) \
 	$(vector_pde_unit_SOURCES)
-DIST_SOURCES = $(compare_types_unit_SOURCES) \
-	$(complex_derivs_unit_SOURCES) $(ct_types_unit_SOURCES) \
-	$(derivs_unit_SOURCES) $(divgrad_unit_SOURCES) \
-	$(dualnamedarray_unit_SOURCES) \
+DIST_SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
+	$(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
+	$(ct_types_unit_SOURCES) $(derivs_unit_SOURCES) \
+	$(divgrad_unit_SOURCES) $(dualnamedarray_unit_SOURCES) \
 	$(dynamic_sparse_number_base_unit_SOURCES) \
 	$(dynamic_sparse_vector_navier_unit_SOURCES) \
 	$(dynamic_sparse_vector_pde_unit_SOURCES) \
@@ -686,6 +694,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ACSM_ANY_PARANOID_FLAGS = @ACSM_ANY_PARANOID_FLAGS@
 ACSM_ANY_WERROR_FLAG = @ACSM_ANY_WERROR_FLAG@
+ACSM_CXXFLAGS_OPT = @ACSM_CXXFLAGS_OPT@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
@@ -919,11 +928,12 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/core/include \
 	-I$(top_srcdir)/src/utilities/include \
 	-I$(top_builddir)/src/utilities/include $(am__append_5) \
 	$(am__append_7) $(am__append_10)
-AM_CXXFLAGS = $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
+AM_CXXFLAGS = $(ACSM_CXXFLAGS_OPT) $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
 AM_LDFLAGS = $(top_builddir)/src/libmetaphysicl.la $(am__append_6) \
 	$(am__append_8)
 
 # Sources for these tests
+avoid_spurious_fpe_unit_SOURCES = avoid_spurious_fpe_unit.C
 compare_types_unit_SOURCES = compare_types_unit.C
 derivs_unit_SOURCES = derivs_unit.C
 nd_derivs_unit_SOURCES = nd_derivs_unit.C math_structs.h
@@ -1026,6 +1036,10 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+avoid_spurious_fpe_unit$(EXEEXT): $(avoid_spurious_fpe_unit_OBJECTS) $(avoid_spurious_fpe_unit_DEPENDENCIES) $(EXTRA_avoid_spurious_fpe_unit_DEPENDENCIES) 
+	@rm -f avoid_spurious_fpe_unit$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(avoid_spurious_fpe_unit_OBJECTS) $(avoid_spurious_fpe_unit_LDADD) $(LIBS)
 
 compare_types_unit$(EXEEXT): $(compare_types_unit_OBJECTS) $(compare_types_unit_DEPENDENCIES) $(EXTRA_compare_types_unit_DEPENDENCIES) 
 	@rm -f compare_types_unit$(EXEEXT)
@@ -1177,6 +1191,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avoid_spurious_fpe_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compare_types_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/complex_derivs_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ct_types_unit.Po@am__quote@ # am--include-marker
@@ -1547,7 +1562,8 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/compare_types_unit.Po
+		-rm -f ./$(DEPDIR)/avoid_spurious_fpe_unit.Po
+	-rm -f ./$(DEPDIR)/compare_types_unit.Po
 	-rm -f ./$(DEPDIR)/complex_derivs_unit.Po
 	-rm -f ./$(DEPDIR)/ct_types_unit.Po
 	-rm -f ./$(DEPDIR)/derivs_unit.Po
@@ -1628,7 +1644,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/compare_types_unit.Po
+		-rm -f ./$(DEPDIR)/avoid_spurious_fpe_unit.Po
+	-rm -f ./$(DEPDIR)/compare_types_unit.Po
 	-rm -f ./$(DEPDIR)/complex_derivs_unit.Po
 	-rm -f ./$(DEPDIR)/ct_types_unit.Po
 	-rm -f ./$(DEPDIR)/derivs_unit.Po

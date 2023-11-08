@@ -262,6 +262,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ACSM_ANY_PARANOID_FLAGS = @ACSM_ANY_PARANOID_FLAGS@
 ACSM_ANY_WERROR_FLAG = @ACSM_ANY_WERROR_FLAG@
+ACSM_CXXFLAGS_OPT = @ACSM_CXXFLAGS_OPT@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
@@ -588,7 +589,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/core/include \
 	-I$(top_srcdir)/src/numerics/include \
 	-I$(top_srcdir)/src/utilities/include \
 	-I$(top_builddir)/src/utilities/include #metaphysicl_version.h
-AM_CXXFLAGS = $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
+AM_CXXFLAGS = $(ACSM_CXXFLAGS_OPT) $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
 CLEANFILES = $(am__append_1) $(am__append_2)
 
 #---------------------------------
