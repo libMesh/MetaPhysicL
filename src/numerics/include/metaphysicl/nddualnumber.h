@@ -307,7 +307,7 @@ dns_t_divide(const DualNumberSurrogate<T, D> & dns, const T2 & t) ->
                      typename D::template rebind<decltype(a.value() opname b.value())>::other>     \
   {                                                                                                \
     auto value = a.value() opname b.value();                                                       \
-    auto derivatives = std::move(nd_dns_##optype(a, b));                                           \
+    auto derivatives = nd_dns_##optype(a, b);                                                      \
     return {value, derivatives};                                                                   \
   }                                                                                                \
                                                                                                    \
@@ -317,7 +317,7 @@ dns_t_divide(const DualNumberSurrogate<T, D> & dns, const T2 & t) ->
                      typename D::template rebind<decltype(a.value() opname b.value())>::other>     \
   {                                                                                                \
     auto value = a.value() opname b.value();                                                       \
-    auto derivatives = std::move(nd_dns_##optype(a, b));                                           \
+    auto derivatives = nd_dns_##optype(a, b);                                                      \
     return {value, derivatives};                                                                   \
   }                                                                                                \
   template <typename T, typename D, typename T2>                                                   \
@@ -326,7 +326,7 @@ dns_t_divide(const DualNumberSurrogate<T, D> & dns, const T2 & t) ->
                      typename D::template rebind<decltype(a opname b.value())>::other>             \
   {                                                                                                \
     auto value = a opname b.value();                                                               \
-    auto derivatives = std::move(dns_t_##optype(a, b));                                            \
+    auto derivatives = dns_t_##optype(a, b);                                                       \
     return {value, derivatives};                                                                   \
   }                                                                                                \
                                                                                                    \
@@ -336,7 +336,7 @@ dns_t_divide(const DualNumberSurrogate<T, D> & dns, const T2 & t) ->
                      typename D::template rebind<decltype(a.value() opname b)>::other>             \
   {                                                                                                \
     auto value = a.value() opname b;                                                               \
-    auto derivatives = std::move(dns_t_##optype(a, b));                                            \
+    auto derivatives = dns_t_##optype(a, b);                                                       \
     return {value, derivatives};                                                                   \
   }
 
