@@ -35782,7 +35782,7 @@ else $as_nop
 int
 main (void)
 {
-boost::chrono::thread_clock d;
+boost::chrono::thread_clock d; (void)d;
   ;
   return 0;
 }
