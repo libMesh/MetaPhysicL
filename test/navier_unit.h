@@ -26,10 +26,10 @@ int main(void)
   MetaPhysicL::enableFPE(true);
 
   int N   = 2; // mesh pts. in x and y
-  double s2u,s2v,s2e,s2p;
 
 #ifdef METAPHYSICL_HAVE_MASA
   int err = 0;
+  double s2u,s2v,s2e,s2p;
   double su,sv,sp,se;
   double pnorm, unorm, vnorm, enorm;
   double pnorm_max = 0., unorm_max = 0., vnorm_max = 0., enorm_max = 0.;
@@ -116,13 +116,13 @@ int main(void)
 	{
           xy.get<1>() = YADType(j*h, yvec);
 
+#ifdef METAPHYSICL_HAVE_MASA
 	  // AD source terms
 	  s2u = evaluate_q(xy,1);
 	  s2v = evaluate_q(xy,2);
 	  s2p = evaluate_q(xy,3);
 	  s2e = evaluate_q(xy,4);
 
-#ifdef METAPHYSICL_HAVE_MASA
 	  // evaluate masa source terms
 	  su  = masa_eval_source_rho_u<double>(i*h,j*h);
 	  sv  = masa_eval_source_rho_v<double>(i*h,j*h);
@@ -150,10 +150,10 @@ int main(void)
           ernorm_max = std::max(ernorm, ernorm_max);
 #else
           // Avoid "set but not used" variable warnings;
-          (void) s2u;
-          (void) s2v;
-          (void) s2p;
-          (void) s2e;
+	  evaluate_q(xy,1);
+	  evaluate_q(xy,2);
+	  evaluate_q(xy,3);
+	  evaluate_q(xy,4);
 #endif // METAPHYSICL_HAVE_MASA
 
 	}
