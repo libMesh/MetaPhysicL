@@ -622,8 +622,6 @@ using MetaPhysicL::DualExpression;
 using MetaPhysicL::CompareTypes;
 using MetaPhysicL::enable_if_c;
 using MetaPhysicL::DefinesSupertype;
-using std::isnan;
-using std::isinf;
 
 template <typename T, typename D>
 inline
