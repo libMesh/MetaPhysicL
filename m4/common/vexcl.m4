@@ -87,27 +87,32 @@ if test "${with_vexcl}" != no ; then
     found_boost=yes
     BOOST_REQUIRE([1.47],[found_boost=no]) # Chrono introduced in 1.47
 
-    BOOST_CHRONO
+    AS_IF([test x$found_boost = xyes],
+          [BOOST_CHRONO([], [no])])
     if test "x$boost_cv_lib_chrono" != xyes; then
       found_boost=no
     fi
 
-    BOOST_DATE_TIME
+    AS_IF([test x$found_boost = xyes],
+          [BOOST_DATE_TIME([], [no])])
     if test "x$boost_cv_lib_date_time" != xyes; then
       found_boost=no
     fi
 
-    BOOST_FILESYSTEM
+    AS_IF([test x$found_boost = xyes],
+          [BOOST_FILESYSTEM([], [no])])
     if test "x$boost_cv_lib_filesystem" != xyes; then
       found_boost=no
     fi
 
-    BOOST_SYSTEM
+    AS_IF([test x$found_boost = xyes],
+          [BOOST_SYSTEM([], [no])])
     if test "x$boost_cv_lib_system" != xyes; then
       found_boost=no
     fi
 
-    BOOST_THREAD
+    AS_IF([test x$found_boost = xyes],
+          [BOOST_THREAD([], [no])])
     if test "x$boost_cv_lib_thread" != xyes; then
       found_boost=no
     fi
