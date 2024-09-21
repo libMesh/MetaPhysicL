@@ -35388,7 +35388,9 @@ fi
     found_boost=yes
      # Chrono introduced in 1.47
 
-    # Do we have to check for Boost.System?  This link-time dependency was
+    if test x$found_boost = xyes
+then :
+  # Do we have to check for Boost.System?  This link-time dependency was
 # added as of 1.35.0.  If we have a version <1.35, we must not attempt to
 # find Boost.System as it didn't exist by then.
 if test $boost_major_version -ge 135; then
@@ -35401,7 +35403,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -35483,7 +35485,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost system" "$LINENO" 5
@@ -35691,7 +35693,7 @@ printf "%s\n" "#define HAVE_BOOST_SYSTEM 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost system library (libboost-system)" "$LINENO" 5
@@ -35723,7 +35725,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -35805,7 +35807,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost chrono" "$LINENO" 5
@@ -36013,7 +36015,7 @@ printf "%s\n" "#define HAVE_BOOST_CHRONO 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost chrono library (libboost-chrono)" "$LINENO" 5
@@ -36036,11 +36038,14 @@ LIBS=$boost_filesystem_save_LIBS
 LDFLAGS=$boost_filesystem_save_LDFLAGS
 
 
+fi
     if test "x$boost_cv_lib_chrono" != xyes; then
       found_boost=no
     fi
 
-    if test x"$boost_cv_inc_path" = xno; then
+    if test x$found_boost = xyes
+then :
+  if test x"$boost_cv_inc_path" = xno; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Boost not available, not searching for the Boost date_time library" >&5
 printf "%s\n" "$as_me: Boost not available, not searching for the Boost date_time library" >&6;}
 else
@@ -36049,7 +36054,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -36131,7 +36136,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost date_time" "$LINENO" 5
@@ -36339,7 +36344,7 @@ printf "%s\n" "#define HAVE_BOOST_DATE_TIME 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost date_time library (libboost-date_time)" "$LINENO" 5
@@ -36357,11 +36362,14 @@ fi
 
 
 
+fi
     if test "x$boost_cv_lib_date_time" != xyes; then
       found_boost=no
     fi
 
-    # Do we have to check for Boost.System?  This link-time dependency was
+    if test x$found_boost = xyes
+then :
+  # Do we have to check for Boost.System?  This link-time dependency was
 # added as of 1.35.0.  If we have a version <1.35, we must not attempt to
 # find Boost.System as it didn't exist by then.
 if test $boost_major_version -ge 135; then
@@ -36374,7 +36382,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -36456,7 +36464,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost system" "$LINENO" 5
@@ -36664,7 +36672,7 @@ printf "%s\n" "#define HAVE_BOOST_SYSTEM 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost system library (libboost-system)" "$LINENO" 5
@@ -36696,7 +36704,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -36778,7 +36786,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost filesystem" "$LINENO" 5
@@ -36986,7 +36994,7 @@ printf "%s\n" "#define HAVE_BOOST_FILESYSTEM 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost filesystem library (libboost-filesystem)" "$LINENO" 5
@@ -37009,11 +37017,14 @@ LIBS=$boost_filesystem_save_LIBS
 LDFLAGS=$boost_filesystem_save_LDFLAGS
 
 
+fi
     if test "x$boost_cv_lib_filesystem" != xyes; then
       found_boost=no
     fi
 
-    if test x"$boost_cv_inc_path" = xno; then
+    if test x$found_boost = xyes
+then :
+  if test x"$boost_cv_inc_path" = xno; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Boost not available, not searching for the Boost system library" >&5
 printf "%s\n" "$as_me: Boost not available, not searching for the Boost system library" >&6;}
 else
@@ -37022,7 +37033,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -37104,7 +37115,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost system" "$LINENO" 5
@@ -37312,7 +37323,7 @@ printf "%s\n" "#define HAVE_BOOST_SYSTEM 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost system library (libboost-system)" "$LINENO" 5
@@ -37330,11 +37341,14 @@ fi
 
 
 
+fi
     if test "x$boost_cv_lib_system" != xyes; then
       found_boost=no
     fi
 
-    boost_thread_save_LIBS=$LIBS
+    if test x$found_boost = xyes
+then :
+  boost_thread_save_LIBS=$LIBS
 boost_thread_save_LDFLAGS=$LDFLAGS
 boost_thread_save_CPPFLAGS=$CPPFLAGS
 # Link-time dependency from thread to system was added as of 1.49.0.
@@ -37348,7 +37362,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -37430,7 +37444,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost system" "$LINENO" 5
@@ -37638,7 +37652,7 @@ printf "%s\n" "#define HAVE_BOOST_SYSTEM 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost system library (libboost-system)" "$LINENO" 5
@@ -37680,7 +37694,7 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test x"" = "xno"
+if test x"no" = "xno"
 then :
   not_found_header='true'
 fi
@@ -37762,7 +37776,7 @@ _ACEOF
 then :
   ac_objext=do_not_rm_me_plz
 else $as_nop
-  if test x"" != x"no"
+  if test x"no" != x"no"
 then :
 
        as_fn_error $? "cannot compile a test that uses Boost thread" "$LINENO" 5
@@ -37970,7 +37984,7 @@ printf "%s\n" "#define HAVE_BOOST_THREAD 1" >>confdefs.h
   (no) printf "%s\n" "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-    if test x"" != "xno"
+    if test x"no" != "xno"
 then :
 
       as_fn_error $? "cannot find flags to link with the Boost thread library (libboost-thread)" "$LINENO" 5
@@ -37999,6 +38013,7 @@ LDFLAGS=$boost_thread_save_LDFLAGS
 CPPFLAGS=$boost_thread_save_CPPFLAGS
 
 
+fi
     if test "x$boost_cv_lib_thread" != xyes; then
       found_boost=no
     fi
