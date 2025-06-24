@@ -113,7 +113,7 @@ public:
 
   const T & operator[](size_type i) const
   {
-    metaphysicl_assert(i < N);
+    metaphysicl_assert(i < _dynamic_n);
     return _data[i];
   }
 
