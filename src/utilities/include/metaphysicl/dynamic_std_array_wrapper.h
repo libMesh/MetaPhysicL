@@ -55,7 +55,14 @@ public:
   {
     _dynamic_n = src._dynamic_n;
     metaphysicl_assert(_dynamic_n <= N);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
     std::copy(src.begin(), src.end(), _data.begin());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   }
 
   // A std::array isn't movable but it's contents might be
@@ -72,7 +79,14 @@ public:
   {
     _dynamic_n = src._dynamic_n;
     metaphysicl_assert(_dynamic_n <= N);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
     std::copy(src.begin(), src.end(), _data.begin());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return *this;
   }
 
