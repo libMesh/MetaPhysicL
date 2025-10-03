@@ -29,6 +29,8 @@
 #define METAPHYSICL_RAW_TYPE_H
 
 #include "metaphysicl/compare_types.h"
+#include "metaphysicl/metaphysicl_numeric_limits.h"
+#include "metaphysicl/metaphysicl_device.h"
 
 #include <limits>
 #include <utility>
@@ -70,7 +72,7 @@ struct RawType
 {
   typedef T value_type;
 
-  static value_type value(const T& a) { return a; }
+  METAPHYSICL_INLINE static value_type value(const T& a) { return a; }
 };
 
 template <typename T>
@@ -78,12 +80,12 @@ struct RawType<const T>
 {
   typedef const typename RawType<T>::value_type value_type;
 
-  static value_type value(const T& a) { return RawType<T>::value(a); }
+  METAPHYSICL_INLINE static value_type value(const T& a) { return RawType<T>::value(a); }
 };
 
 // Make the user syntax slightly nicer
 template <typename T>
-inline
+METAPHYSICL_INLINE
 typename RawType<T>::value_type
 raw_value(const T& a) { return RawType<T>::value(a); }
 
@@ -100,7 +102,7 @@ struct RawType<std::vector<T>,
 {
   typedef std::vector<typename RawType<T>::value_type> value_type;
 
-  static value_type value(const std::vector<T> & in)
+  METAPHYSICL_INLINE static value_type value(const std::vector<T> & in)
   {
     value_type ret_val(in.size());
     for (std::size_t i = 0; i < in.size(); ++i)
@@ -117,7 +119,7 @@ struct RawType<std::vector<T>,
 {
   typedef const std::vector<T> & value_type;
 
-  static value_type value(const std::vector<T> & in)
+  METAPHYSICL_INLINE static value_type value(const std::vector<T> & in)
   {
     return in;
   }
@@ -128,39 +130,39 @@ class raw_numeric_limits
 {
 public:
   static const bool is_specialized = true;
-  static NewType min() throw() { return NewType(std::numeric_limits<OldType>::min()); }
-  static NewType max() throw() { return NewType(std::numeric_limits<OldType>::max()); }
-  static const int  digits = std::numeric_limits<OldType>::digits;
-  static const int  digits10 = std::numeric_limits<OldType>::digits10;
-  static const bool is_signed = std::numeric_limits<OldType>::is_signed;
-  static const bool is_integer = std::numeric_limits<OldType>::is_integer;
-  static const bool is_exact = std::numeric_limits<OldType>::is_exact;
-  static const int radix = std::numeric_limits<OldType>::radix;
-  static NewType epsilon() throw() {return NewType(std::numeric_limits<OldType>::epsilon()); }
-  static NewType round_error() throw() {return NewType(std::numeric_limits<OldType>::round_error()); }
+  static NewType min() throw() { return NewType(numeric_limits<OldType>::min()); }
+  static NewType max() throw() { return NewType(numeric_limits<OldType>::max()); }
+  static const int  digits = numeric_limits<OldType>::digits;
+  static const int  digits10 = numeric_limits<OldType>::digits10;
+  static const bool is_signed = numeric_limits<OldType>::is_signed;
+  static const bool is_integer = numeric_limits<OldType>::is_integer;
+  static const bool is_exact = numeric_limits<OldType>::is_exact;
+  static const int radix = numeric_limits<OldType>::radix;
+  static NewType epsilon() throw() {return NewType(numeric_limits<OldType>::epsilon()); }
+  static NewType round_error() throw() {return NewType(numeric_limits<OldType>::round_error()); }
 
-  static const int  min_exponent = std::numeric_limits<OldType>::min_exponent;
-  static const int  min_exponent10 = std::numeric_limits<OldType>::min_exponent10;
-  static const int  max_exponent = std::numeric_limits<OldType>::max_exponent;
-  static const int  max_exponent10 = std::numeric_limits<OldType>::max_exponent10;
+  static const int  min_exponent = numeric_limits<OldType>::min_exponent;
+  static const int  min_exponent10 = numeric_limits<OldType>::min_exponent10;
+  static const int  max_exponent = numeric_limits<OldType>::max_exponent;
+  static const int  max_exponent10 = numeric_limits<OldType>::max_exponent10;
 
-  static const bool has_infinity = std::numeric_limits<OldType>::has_infinity;
-  static const bool has_quiet_NaN = std::numeric_limits<OldType>::has_quiet_NaN;
-  static const bool has_signaling_NaN = std::numeric_limits<OldType>::has_signaling_NaN;
-  static const std::float_denorm_style has_denorm = std::numeric_limits<OldType>::has_denorm;
-  static const bool has_denorm_loss = std::numeric_limits<OldType>::has_denorm_loss;
-  static NewType infinity() throw() {return NewType(std::numeric_limits<OldType>::infinity()); }
-  static NewType quiet_NaN() throw() {return NewType(std::numeric_limits<OldType>::quiet_NaN()); }
-  static NewType signaling_NaN() throw() {return NewType(std::numeric_limits<OldType>::signaling_NaN()); }
-  static NewType denorm_min() throw() {return NewType(std::numeric_limits<OldType>::denorm_min()); }
+  static const bool has_infinity = numeric_limits<OldType>::has_infinity;
+  static const bool has_quiet_NaN = numeric_limits<OldType>::has_quiet_NaN;
+  static const bool has_signaling_NaN = numeric_limits<OldType>::has_signaling_NaN;
+  static const std::float_denorm_style has_denorm = numeric_limits<OldType>::has_denorm;
+  static const bool has_denorm_loss = numeric_limits<OldType>::has_denorm_loss;
+  static NewType infinity() throw() {return NewType(numeric_limits<OldType>::infinity()); }
+  static NewType quiet_NaN() throw() {return NewType(numeric_limits<OldType>::quiet_NaN()); }
+  static NewType signaling_NaN() throw() {return NewType(numeric_limits<OldType>::signaling_NaN()); }
+  static NewType denorm_min() throw() {return NewType(numeric_limits<OldType>::denorm_min()); }
 
-  static const bool is_iec559 = std::numeric_limits<OldType>::is_iec559;
-  static const bool is_bounded = std::numeric_limits<OldType>::is_bounded;
-  static const bool is_modulo = std::numeric_limits<OldType>::is_modulo;
+  static const bool is_iec559 = numeric_limits<OldType>::is_iec559;
+  static const bool is_bounded = numeric_limits<OldType>::is_bounded;
+  static const bool is_modulo = numeric_limits<OldType>::is_modulo;
 
-  static const bool traps = std::numeric_limits<OldType>::traps;
-  static const bool tinyness_before = std::numeric_limits<OldType>::tinyness_before;
-  static const std::float_round_style round_style = std::numeric_limits<OldType>::round_style;
+  static const bool traps = numeric_limits<OldType>::traps;
+  static const bool tinyness_before = numeric_limits<OldType>::tinyness_before;
+  static const std::float_round_style round_style = numeric_limits<OldType>::round_style;
 };
 
 

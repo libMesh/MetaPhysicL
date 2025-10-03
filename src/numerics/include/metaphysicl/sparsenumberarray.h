@@ -41,6 +41,7 @@
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/sparsenumberutils.h"
 #include "metaphysicl/testable.h"
+#include "metaphysicl/metaphysicl_math.h"
 
 // We now depend on std::function and kin
 #if __cplusplus >= 201103L
@@ -802,17 +803,6 @@ struct ValueType<SparseNumberArray<T, IndexSet> >
   typedef typename ValueType<T>::type type;
 };
 
-} // namespace MetaPhysicL
-
-
-namespace std {
-
-using MetaPhysicL::SparseNumberArray;
-using MetaPhysicL::SymmetricCompareTypes;
-using MetaPhysicL::UnaryVectorFunctor;
-using MetaPhysicL::BinaryVectorFunctor;
-using MetaPhysicL::call_traits;
-
 #define SparseNumberArray_std_unary(funcname) \
 template <typename T, typename IndexSet> \
 inline \
@@ -820,20 +810,10 @@ SparseNumberArray<T, IndexSet> \
 funcname (SparseNumberArray<T, IndexSet> a) \
 { \
   for (unsigned int i=0; i != IndexSet::size; ++i) \
-    a.raw_at(i) = std::funcname(a.raw_at(i)); \
+    a.raw_at(i) = math::funcname(a.raw_at(i)); \
  \
   return a; \
 }
-
-
-#define SparseNumberArray_fl_unary(funcname) \
-SparseNumberArray_std_unary(funcname##f) \
-SparseNumberArray_std_unary(funcname##l)
-
-
-#define SparseNumberArray_stdfl_unary(funcname) \
-SparseNumberArray_std_unary(funcname) \
-SparseNumberArray_fl_unary(funcname)
 
 
 #define SparseNumberArray_std_binary(funcname) \
@@ -848,7 +828,7 @@ funcname (const SparseNumberArray<T, IndexSet>& a, const SparseNumberArray<T2, I
   typename IndexSet::ForEach() \
     (BinaryVectorFunctor<std::function<TS(TS,TS)>, \
      IndexSet,IndexSet2,IndexSet,T,T2,TS> \
-      (std::funcname<TS>, \
+      (math::funcname<TS>, \
        a.raw_data(), b.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -864,7 +844,7 @@ funcname (const SparseNumberArray<T, IndexSet>& a, const T2& b) \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<TS(TS)>,IndexSet,IndexSet,T,TS> \
-      (std::bind(std::funcname<TS>,std::placeholders::_1,b), \
+      (std::bind(math::funcname<TS>,std::placeholders::_1,b), \
        a.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -880,21 +860,11 @@ funcname (const T& a, const SparseNumberArray<T2, IndexSet>& b) \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<TS(TS)>,IndexSet,IndexSet,T2,TS> \
-      (std::bind(std::funcname<TS>(),a,std::placeholders::_1), \
+      (std::bind(math::funcname<TS>(),a,std::placeholders::_1), \
        b.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
 }
-
-
-#define SparseNumberArray_fl_binary(funcname) \
-SparseNumberArray_std_binary(funcname##f) \
-SparseNumberArray_std_binary(funcname##l)
-
-
-#define SparseNumberArray_stdfl_binary(funcname) \
-SparseNumberArray_std_binary(funcname) \
-SparseNumberArray_fl_binary(funcname)
 
 
 #define SparseNumberArray_std_binary_union(funcname) \
@@ -909,7 +879,7 @@ funcname (const SparseNumberArray<T, IndexSet>& a, const SparseNumberArray<T2, I
   SparseNumberArray<TS, IndexSetS> returnval; \
  \
   const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  unambiguous = math::funcname<TS>; \
  \
   typename IndexSet::template Intersection<IndexSet2>::type::ForEach() \
     (BinaryVectorFunctor<std::function<const TS&(const TS&,const TS&)>,IndexSet,IndexSet2,IndexSetS,T,T2,TS> \
@@ -936,7 +906,7 @@ funcname (const SparseNumberArray<T, IndexSet>& a, const SparseNumberArray<T, In
  \
   typename IndexSet::ForEach() \
     (BinaryVectorFunctor<std::function<const T&(const T&,const T&)>,IndexSet,IndexSet,IndexSet,T,T,T> \
-      (std::funcname<T>, \
+      (math::funcname<T>, \
        a.raw_data(), b.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -951,7 +921,7 @@ funcname (const SparseNumberArray<T, IndexSet>& a, const T2& b) \
   SparseNumberArray<TS, IndexSet> returnval; \
  \
   const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  unambiguous = math::funcname<TS>; \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet,IndexSet,T,TS> \
@@ -970,7 +940,7 @@ funcname (const T& a, const SparseNumberArray<T2, IndexSet>& b) \
   SparseNumberArray<TS, IndexSet> returnval; \
  \
   const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  unambiguous = math::funcname<TS>; \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet,IndexSet,T2,TS> \
@@ -979,16 +949,6 @@ funcname (const T& a, const SparseNumberArray<T2, IndexSet>& b) \
  \
   return returnval; \
 }
-
-
-#define SparseNumberArray_fl_binary_union(funcname) \
-SparseNumberArray_std_binary_union(funcname##f) \
-SparseNumberArray_std_binary_union(funcname##l)
-
-
-#define SparseNumberArray_stdfl_binary_union(funcname) \
-SparseNumberArray_std_binary_union(funcname) \
-SparseNumberArray_fl_binary_union(funcname)
 
 
 // We can't use decltype without requiring C++11, we can't infer
@@ -1001,7 +961,7 @@ inline
 typename SymmetricCompareTypes<TP,TP2>::supertype
 sna_pow(TP tp, TP2 tp2)
 {
-  return std::pow(tp, tp2);
+  return math::pow(tp, tp2);
 }
 
 // Pow needs its own specialization, both to avoid being confused by
@@ -1054,35 +1014,21 @@ SparseNumberArray_std_unary(ceil)
 SparseNumberArray_std_unary(floor)
 SparseNumberArray_std_binary(fmod) // dangerous unless y is dense
 
-SparseNumberArray_std_unary(llabs)
-SparseNumberArray_std_unary(imaxabs)
-SparseNumberArray_fl_unary(fabs)
-SparseNumberArray_stdfl_unary(expm1)
-SparseNumberArray_fl_unary(sqrt)
-SparseNumberArray_stdfl_unary(cbrt)
-SparseNumberArray_fl_unary(sin)
-SparseNumberArray_fl_unary(tan)
-SparseNumberArray_fl_unary(asin)
-SparseNumberArray_fl_unary(atan)
-SparseNumberArray_stdfl_unary(asinh)
-SparseNumberArray_stdfl_unary(atanh)
-SparseNumberArray_stdfl_unary(erf)
-SparseNumberArray_fl_unary(ceil)
-SparseNumberArray_fl_unary(floor)
-SparseNumberArray_stdfl_unary(trunc)
-SparseNumberArray_stdfl_unary(round)
-SparseNumberArray_stdfl_unary(nearbyint)
-SparseNumberArray_stdfl_unary(rint)
+SparseNumberArray_std_unary(expm1)
+SparseNumberArray_std_unary(cbrt)
+SparseNumberArray_std_unary(asinh)
+SparseNumberArray_std_unary(atanh)
+SparseNumberArray_std_unary(erf)
+SparseNumberArray_std_unary(trunc)
+SparseNumberArray_std_unary(round)
+SparseNumberArray_std_unary(nearbyint)
+SparseNumberArray_std_unary(rint)
 
-SparseNumberArray_fl_binary(fmod)
-SparseNumberArray_stdfl_binary(remainder) // dangerous unless y is dense
-SparseNumberArray_stdfl_binary_union(fmax)
-SparseNumberArray_stdfl_binary_union(fmin)
-SparseNumberArray_stdfl_binary_union(fdim)
-SparseNumberArray_stdfl_binary_union(hypot)
-SparseNumberArray_fl_binary_union(atan2)
-
-
+SparseNumberArray_std_binary(remainder) // dangerous unless y is dense
+SparseNumberArray_std_binary_union(fmax)
+SparseNumberArray_std_binary_union(fmin)
+SparseNumberArray_std_binary_union(fdim)
+SparseNumberArray_std_binary_union(hypot)
 
 template <typename T, typename IndexSet>
 class numeric_limits<SparseNumberArray<T, IndexSet> > : 

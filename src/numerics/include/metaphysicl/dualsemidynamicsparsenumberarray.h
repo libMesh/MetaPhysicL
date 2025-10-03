@@ -36,13 +36,13 @@
 namespace MetaPhysicL
 {
 
-template <typename T, typename I, typename N>
-inline typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type
-derivative(const SemiDynamicSparseNumberArray<T, I, N> & a, unsigned int derivativeindex)
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a, unsigned int derivativeindex)
 {
   std::size_t index_size = a.size();
 
-  typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type returnval;
+  typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type returnval;
   returnval.nude_indices() = a.nude_indices();
   returnval.nude_data().resize(index_size);
 
@@ -51,13 +51,13 @@ derivative(const SemiDynamicSparseNumberArray<T, I, N> & a, unsigned int derivat
   return returnval;
 }
 
-template <typename T, typename I, typename N>
-inline typename DerivativesType<SemiDynamicSparseNumberArray<T, I, N>>::type
-derivatives(const SemiDynamicSparseNumberArray<T, I, N> & a)
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+derivatives(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   std::size_t index_size = a.size();
 
-  typename DerivativesType<SemiDynamicSparseNumberArray<T, I, N>>::type returnval;
+  typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type returnval;
 
   returnval.nude_indices() = a.nude_indices();
   returnval.nude_data().resize(index_size);
@@ -67,14 +67,14 @@ derivatives(const SemiDynamicSparseNumberArray<T, I, N> & a)
   return returnval;
 }
 
-template <typename T, typename I, typename N, unsigned int derivativeindex>
-typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type
-DerivativeOf<SemiDynamicSparseNumberArray<T, I, N>, derivativeindex>::derivative(
-    const SemiDynamicSparseNumberArray<T, I, N> & a)
+template <typename T, typename I, typename N, typename ArrayWrapper, unsigned int derivativeindex>
+typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+DerivativeOf<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, derivativeindex>::derivative(
+    const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   std::size_t index_size = a.size();
 
-  typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type returnval;
+  typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type returnval;
 
   returnval.nude_indices() = a.nude_indices();
   returnval.nude_data().resize(index_size);
@@ -89,9 +89,9 @@ DerivativeOf<SemiDynamicSparseNumberArray<T, I, N>, derivativeindex>::derivative
 
 // For a tensor of values, we take the divergence with respect to the
 // first index.
-template <typename T, typename I, typename N>
+template <typename T, typename I, typename N, typename ArrayWrapper>
 inline typename DerivativeType<T>::type
-divergence(const SemiDynamicSparseNumberArray<T, I, N> & /*a*/)
+divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & /*a*/)
 {
   typename DerivativeType<T>::type returnval = 0;
 
@@ -102,13 +102,13 @@ divergence(const SemiDynamicSparseNumberArray<T, I, N> & /*a*/)
 }
 
 // For a vector of values, the gradient is going to be a tensor
-template <typename T, typename I, typename N>
-inline SemiDynamicSparseNumberArray<typename T::derivatives_type, I, N>
-gradient(const SemiDynamicSparseNumberArray<T, I, N> & a)
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
+gradient(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   static const unsigned int index_size = a.size();
 
-  SemiDynamicSparseNumberArray<typename T::derivatives_type, I, N> returnval;
+  SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper> returnval;
 
   returnval.nude_indices() = a.nude_indices();
   returnval.nude_data().resize(index_size);

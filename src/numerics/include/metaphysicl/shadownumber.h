@@ -36,6 +36,7 @@
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/testable.h"
+#include "metaphysicl/metaphysicl_math.h"
 
 namespace MetaPhysicL {
 
@@ -243,23 +244,15 @@ struct RawType<ShadowNumber<T, S> >
   typedef typename RawType<T>::value_type value_type;
 
   static value_type value(const ShadowNumber<T, S>& a) {
-    const S max_value = std::max(S(a.value()), a.shadow());
+    const S max_value = math::max(S(a.value()), a.shadow());
     if (max_value) {
       const S relative_error = (a.value() - a.shadow()) / max_value;
-      if (relative_error > 10*std::numeric_limits<T>::epsilon())
+      if (relative_error > 10*numeric_limits<T>::epsilon())
         std::cerr << "Shadow relative error = " << relative_error << std::endl;
     }
     return a.value();
   }
 };
-
-} // namespace MetaPhysicL
-
-
-namespace std {
-
-using MetaPhysicL::CompareTypes;
-using MetaPhysicL::ShadowNumber;
 
 // Now just combined declaration/definitions
 
@@ -269,20 +262,10 @@ inline \
 ShadowNumber<T, S> \
 funcname (ShadowNumber<T, S> a) \
 { \
-  a.value() = std::funcname(a.value()); \
-  a.shadow() = std::funcname(a.shadow()); \
+  a.value() = math::funcname(a.value()); \
+  a.shadow() = math::funcname(a.shadow()); \
   return a; \
 }
-
-
-#define ShadowNumber_fl_unary(funcname) \
-ShadowNumber_std_unary(funcname##f) \
-ShadowNumber_std_unary(funcname##l)
-
-
-#define ShadowNumber_stdfl_unary(funcname) \
-ShadowNumber_std_unary(funcname) \
-ShadowNumber_fl_unary(funcname)
 
 
 #define ShadowNumber_std_binary(funcname) \
@@ -292,8 +275,8 @@ typename CompareTypes<ShadowNumber<T,S>,ShadowNumber<T2,S2> >::supertype \
 funcname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T,S>,ShadowNumber<T2,S2> >::supertype TS; \
-  return TS (std::funcname(a.value(), b.value()), \
-             std::funcname(a.shadow(), b.shadow())); \
+  return TS (math::funcname(a.value(), b.value()), \
+             math::funcname(a.shadow(), b.shadow())); \
 } \
  \
 template <typename T, typename S> \
@@ -302,8 +285,8 @@ ShadowNumber<T,S> \
 funcname (const ShadowNumber<T,S>& a, const ShadowNumber<T,S>& b) \
 { \
   return ShadowNumber<T,S> \
-    (std::funcname(a.value(), b.value()), \
-     std::funcname(a.shadow(), b.shadow())); \
+    (math::funcname(a.value(), b.value()), \
+     math::funcname(a.shadow(), b.shadow())); \
 } \
  \
 template <typename T, typename S, typename T2> \
@@ -312,8 +295,8 @@ typename CompareTypes<ShadowNumber<T,S>,T2>::supertype \
 funcname (const ShadowNumber<T,S>& a, const T2& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T,S>,T2>::supertype TS; \
-  return TS (std::funcname(a.value(), b), \
-             std::funcname(a.shadow(), b)); \
+  return TS (math::funcname(a.value(), b), \
+             math::funcname(a.shadow(), b)); \
 } \
  \
 template <typename T, typename T2, typename S> \
@@ -322,19 +305,9 @@ typename CompareTypes<ShadowNumber<T2,S>,T>::supertype \
 funcname (const T& a, const ShadowNumber<T2,S>& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T2,S>,T>::supertype TS; \
-  return TS (std::funcname(a, b.value()), \
-             std::funcname(a, b.shadow())); \
+  return TS (math::funcname(a, b.value()), \
+             math::funcname(a, b.shadow())); \
 }
-
-
-#define ShadowNumber_fl_binary(funcname) \
-ShadowNumber_std_binary(funcname##f) \
-ShadowNumber_std_binary(funcname##l)
-
-
-#define ShadowNumber_stdfl_binary(funcname) \
-ShadowNumber_std_binary(funcname) \
-ShadowNumber_fl_binary(funcname)
 
 
 ShadowNumber_std_binary(pow)
@@ -361,49 +334,28 @@ ShadowNumber_std_unary(floor)
 ShadowNumber_std_binary(fmod)
 
 #if __cplusplus >= 201103L
-ShadowNumber_std_unary(llabs)
-ShadowNumber_std_unary(imaxabs)
-ShadowNumber_fl_unary(fabs)
-ShadowNumber_fl_unary(exp)
-ShadowNumber_stdfl_unary(exp2)
-ShadowNumber_stdfl_unary(expm1)
-ShadowNumber_fl_unary(log)
-ShadowNumber_fl_unary(log10)
-ShadowNumber_stdfl_unary(log2)
-ShadowNumber_stdfl_unary(log1p)
-ShadowNumber_fl_unary(sqrt)
-ShadowNumber_stdfl_unary(cbrt)
-ShadowNumber_fl_unary(sin)
-ShadowNumber_fl_unary(cos)
-ShadowNumber_fl_unary(tan)
-ShadowNumber_fl_unary(asin)
-ShadowNumber_fl_unary(acos)
-ShadowNumber_fl_unary(atan)
-ShadowNumber_fl_unary(sinh)
-ShadowNumber_fl_unary(cosh)
-ShadowNumber_fl_unary(tanh)
-ShadowNumber_stdfl_unary(asinh)
-ShadowNumber_stdfl_unary(acosh)
-ShadowNumber_stdfl_unary(atanh)
-ShadowNumber_stdfl_unary(erf)
-ShadowNumber_stdfl_unary(erfc)
-ShadowNumber_stdfl_unary(tgamma)
-ShadowNumber_stdfl_unary(lgamma)
-ShadowNumber_fl_unary(ceil)
-ShadowNumber_fl_unary(floor)
-ShadowNumber_stdfl_unary(trunc)
-ShadowNumber_stdfl_unary(round)
-ShadowNumber_stdfl_unary(nearbyint)
-ShadowNumber_stdfl_unary(rint)
+ShadowNumber_std_unary(exp2)
+ShadowNumber_std_unary(expm1)
+ShadowNumber_std_unary(log2)
+ShadowNumber_std_unary(log1p)
+ShadowNumber_std_unary(cbrt)
+ShadowNumber_std_unary(asinh)
+ShadowNumber_std_unary(acosh)
+ShadowNumber_std_unary(atanh)
+ShadowNumber_std_unary(erf)
+ShadowNumber_std_unary(erfc)
+ShadowNumber_std_unary(tgamma)
+ShadowNumber_std_unary(lgamma)
+ShadowNumber_std_unary(trunc)
+ShadowNumber_std_unary(round)
+ShadowNumber_std_unary(nearbyint)
+ShadowNumber_std_unary(rint)
 
-ShadowNumber_fl_binary(pow)
-ShadowNumber_fl_binary(fmod)
-ShadowNumber_stdfl_binary(remainder)
-ShadowNumber_stdfl_binary(fmax)
-ShadowNumber_stdfl_binary(fmin)
-ShadowNumber_stdfl_binary(fdim)
-ShadowNumber_stdfl_binary(hypot)
-ShadowNumber_fl_binary(atan2)
+ShadowNumber_std_binary(remainder)
+ShadowNumber_std_binary(fmax)
+ShadowNumber_std_binary(fmin)
+ShadowNumber_std_binary(fdim)
+ShadowNumber_std_binary(hypot)
 #endif // __cplusplus >= 201103L
 
 
@@ -411,7 +363,7 @@ template <typename T, typename S>
 class numeric_limits<ShadowNumber<T, S> > :
   public MetaPhysicL::raw_numeric_limits<ShadowNumber<T, S>, T> {};
 
-} // namespace std
+} // namespace MetaPhyiscL
 
 
 

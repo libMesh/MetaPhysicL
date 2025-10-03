@@ -30,31 +30,31 @@
 namespace MetaPhysicL
 {
 
-template <typename T, typename I, typename N>
-struct DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>
+template <typename T, typename I, typename N, typename ArrayWrapper>
+struct DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
-  typedef SemiDynamicSparseNumberArray<typename DerivativeType<T>::type, I, N> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativeType<T>::type, I, N, typename ArrayWrapper::rebind<typename DerivativeType<T>::type>::type> type;
 };
 
-template <typename T, typename I, typename N>
-struct DerivativesType<SemiDynamicSparseNumberArray<T, I, N>>
+template <typename T, typename I, typename N, typename ArrayWrapper>
+struct DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
-  typedef SemiDynamicSparseNumberArray<typename DerivativesType<T>::type, I, N> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativesType<T>::type, I, N, typename ArrayWrapper::rebind<typename DerivativesType<T>::type>::type> type;
 };
 
-template <typename T, typename I, typename N>
-inline typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type
-derivative(const SemiDynamicSparseNumberArray<T, I, N> & a, unsigned int derivativeindex);
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a, unsigned int derivativeindex);
 
-template <typename T, typename I, typename N>
-inline typename DerivativesType<SemiDynamicSparseNumberArray<T, I, N>>::type
-derivatives(const SemiDynamicSparseNumberArray<T, I, N> & a);
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+derivatives(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
-template <typename T, typename I, typename N, unsigned int derivativeindex>
-struct DerivativeOf<SemiDynamicSparseNumberArray<T, I, N>, derivativeindex>
+template <typename T, typename I, typename N, typename ArrayWrapper, unsigned int derivativeindex>
+struct DerivativeOf<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, derivativeindex>
 {
-  static typename DerivativeType<SemiDynamicSparseNumberArray<T, I, N>>::type
-  derivative(const SemiDynamicSparseNumberArray<T, I, N> & a);
+  static typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+  derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 };
 
 // For a vector of values a[i] each of which has a defined gradient,
@@ -62,40 +62,42 @@ struct DerivativeOf<SemiDynamicSparseNumberArray<T, I, N>, derivativeindex>
 
 // For a tensor of values, we take the divergence with respect to the
 // first index.
-template <typename T, typename I, typename N>
-inline typename DerivativeType<T>::type divergence(const SemiDynamicSparseNumberArray<T, I, N> & a);
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline typename DerivativeType<T>::type divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
 // For a vector of values, the gradient is going to be a tensor
-template <typename T, typename I, typename N>
-inline SemiDynamicSparseNumberArray<typename T::derivatives_type, I, N>
-gradient(const SemiDynamicSparseNumberArray<T, I, N> & a);
+template <typename T, typename I, typename N, typename ArrayWrapper>
+inline SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
+gradient(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
-// DualNumber is subordinate to SemiDynamicSparseNumberArray
+// DualNumber is subordinate to SemiDynamicSparseNumberArrayGeneric
 
-#define DualSemiDynamicSparseNumberArray_comparisons(templatename)                                 \
+#define DualSemiDynamicSparseNumberArrayGeneric_comparisons(templatename)                                 \
   template <typename T,                                                                            \
             typename T2,                                                                           \
             typename D,                                                                            \
             typename I,                                                                            \
             typename N,                                                                            \
+            typename ArrayWrapper,                                                                 \
             bool asd,                                                                              \
             bool reverseorder>                                                                     \
-  struct templatename<SemiDynamicSparseNumberArray<T2, I, N>, DualNumber<T, D, asd>, reverseorder> \
+  struct templatename<SemiDynamicSparseNumberArrayGeneric<T2, I, N, ArrayWrapper>, DualNumber<T, D, asd>, reverseorder> \
   {                                                                                                \
-    typedef SemiDynamicSparseNumberArray<                                                          \
+    typedef SemiDynamicSparseNumberArrayGeneric<                                                   \
         typename Symmetric##templatename<T2, DualNumber<T, D, asd>, reverseorder>::supertype,      \
         I,                                                                                         \
-        N>                                                                                         \
+        N,                                                                                         \
+        typename ArrayWrapper::rebind<typename Symmetric##templatename<T2, DualNumber<T, D, asd>, reverseorder>::supertype>::type> \
         supertype;                                                                                 \
   }
 
-DualSemiDynamicSparseNumberArray_comparisons(CompareTypes);
-DualSemiDynamicSparseNumberArray_comparisons(PlusType);
-DualSemiDynamicSparseNumberArray_comparisons(MinusType);
-DualSemiDynamicSparseNumberArray_comparisons(MultipliesType);
-DualSemiDynamicSparseNumberArray_comparisons(DividesType);
-DualSemiDynamicSparseNumberArray_comparisons(AndType);
-DualSemiDynamicSparseNumberArray_comparisons(OrType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(CompareTypes);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(PlusType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(MinusType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(MultipliesType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(DividesType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(AndType);
+DualSemiDynamicSparseNumberArrayGeneric_comparisons(OrType);
 
 } // namespace MetaPhysicL
 

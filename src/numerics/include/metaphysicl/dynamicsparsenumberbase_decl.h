@@ -37,6 +37,7 @@
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/sparsenumberutils.h"
 #include "metaphysicl/testable.h"
+#include "metaphysicl/metaphysicl_math.h"
 
 #include <algorithm>
 #include <functional>
@@ -61,11 +62,11 @@ public:
 
   typedef I index_value_type;
 
-  std::size_t size() const;
+  METAPHYSICL_INLINE std::size_t size() const;
 
-  void resize(std::size_t s);
+  METAPHYSICL_INLINE void resize(std::size_t s);
 
-  DynamicSparseNumberBase();
+  METAPHYSICL_INLINE DynamicSparseNumberBase();
 
 #if METAPHYSICL_USE_STD_MOVE
   // Move constructors are useful when all your data is on the heap
@@ -81,98 +82,98 @@ public:
   DynamicSparseNumberBase& operator= (const DynamicSparseNumberBase & src) = default;
 
   template <typename Data2, typename Indices2, class... SubTypeArgs2>
-  DynamicSparseNumberBase(
+  METAPHYSICL_INLINE DynamicSparseNumberBase(
       DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> && src);
 #endif
 
   template <typename Data2, typename Indices2, class... SubTypeArgs2>
-  DynamicSparseNumberBase(
+  METAPHYSICL_INLINE DynamicSparseNumberBase(
       const DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> & src);
 
-  T* raw_data();
+  METAPHYSICL_INLINE T* raw_data();
 
-  const T* raw_data() const;
+  METAPHYSICL_INLINE const T* raw_data() const;
 
-  typename Data::reference raw_at(unsigned int i);
+  METAPHYSICL_INLINE typename Data::reference raw_at(unsigned int i);
 
-  typename Data::const_reference raw_at(unsigned int i) const;
+  METAPHYSICL_INLINE typename Data::const_reference raw_at(unsigned int i) const;
 
-  I& raw_index(unsigned int i);
+  METAPHYSICL_INLINE I& raw_index(unsigned int i);
 
-  const I& raw_index(unsigned int i) const;
+  METAPHYSICL_INLINE const I& raw_index(unsigned int i) const;
 
   // FIXME: these encapsulation violations are necessary for std::pow
   // until I can figure out the right friend declaration.
-  const Data& nude_data() const;
+  METAPHYSICL_INLINE const Data& nude_data() const;
 
-  Data& nude_data();
+  METAPHYSICL_INLINE Data& nude_data();
 
-  const Indices& nude_indices() const;
+  METAPHYSICL_INLINE const Indices& nude_indices() const;
 
-  Indices& nude_indices();
+  METAPHYSICL_INLINE Indices& nude_indices();
 
-  std::size_t runtime_index_query(index_value_type i) const;
+  METAPHYSICL_INLINE std::size_t runtime_index_query(index_value_type i) const;
 
-  std::size_t runtime_index_of(index_value_type i) const;
+  METAPHYSICL_INLINE std::size_t runtime_index_of(index_value_type i) const;
 
-  T& operator[](index_value_type i);
+  METAPHYSICL_INLINE T& operator[](index_value_type i);
 
-  const T& operator[](index_value_type i) const;
-
-  template <unsigned int i>
-  typename entry_type<i>::type& get();
+  METAPHYSICL_INLINE const T& operator[](index_value_type i) const;
 
   template <unsigned int i>
-  const typename entry_type<i>::type& get() const;
-
-  value_type& insert(unsigned int i);
+  METAPHYSICL_INLINE typename entry_type<i>::type& get();
 
   template <unsigned int i>
-  typename entry_type<i>::type& insert();
+  METAPHYSICL_INLINE const typename entry_type<i>::type& get() const;
+
+  METAPHYSICL_INLINE value_type& insert(unsigned int i);
+
+  template <unsigned int i>
+  METAPHYSICL_INLINE typename entry_type<i>::type& insert();
 
   template <unsigned int i, typename T2>
-  void set(const T2& val);
+  METAPHYSICL_INLINE void set(const T2& val);
 
-  bool boolean_test() const;
+  METAPHYSICL_INLINE bool boolean_test() const;
 
-  SubType<SubTypeArgs...> operator- () const;
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> operator- () const;
 
   // Since this is a dynamically allocated sparsity pattern, we can
   // increase it as needed to support e.g. operator+=
   template <typename Indices2>
-  void sparsity_union (const Indices2& new_indices);
+  METAPHYSICL_INLINE void sparsity_union (const Indices2& new_indices);
 
   // Since this is a dynamically allocated sparsity pattern, we can
   // decrease it when possible for efficiency
   template <typename Indices2>
-  void sparsity_intersection (const Indices2& new_indices);
+  METAPHYSICL_INLINE void sparsity_intersection (const Indices2& new_indices);
 
   // Since this is a dynamically allocated sparsity pattern, we can
   // decrease it when possible for efficiency. This method will remove
   // any index-data pairs for whom the data entry is less than or equal
   // to the prescribed tolerance
-  void sparsity_trim (value_type tolerance = 0);
+  METAPHYSICL_INLINE void sparsity_trim (value_type tolerance = 0);
 
   // Not defineable since !0 != 0
   // SubType<SubTypeArgs...> operator! () const;
 
   template <class... SubTypeArgs2>
-  SubType<SubTypeArgs...> & operator+=(const SubType<SubTypeArgs2...> & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator+=(const SubType<SubTypeArgs2...> & a);
 
   template <class... SubTypeArgs2>
-  SubType<SubTypeArgs...> & operator-=(const SubType<SubTypeArgs2...> & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator-=(const SubType<SubTypeArgs2...> & a);
 
   template <class... SubTypeArgs2>
-  SubType<SubTypeArgs...> & operator*=(const SubType<SubTypeArgs2...> & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator*=(const SubType<SubTypeArgs2...> & a);
 
   template <class... SubTypeArgs2>
-  SubType<SubTypeArgs...> & operator/=(const SubType<SubTypeArgs2...> & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator/=(const SubType<SubTypeArgs2...> & a);
 
   template <typename T2>
-  SubType<SubTypeArgs...> & operator*=(const T2 & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator*=(const T2 & a);
 
   template <typename T2>
-  SubType<SubTypeArgs...> & operator/=(const T2 & a);
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator/=(const T2 & a);
 
 protected:
 
@@ -195,7 +196,7 @@ template <template <class...> class SubType,
           typename Data2,
           typename Indices2,
           class... SubTypeArgs2>
-inline typename SubType<SubTypeArgs...>::template rebind<
+METAPHYSICL_INLINE typename SubType<SubTypeArgs...>::template rebind<
     typename CompareTypes<typename Data::value_type, typename Data2::value_type>::supertype,
     typename CompareTypes<typename Indices::value_type,
                           typename Indices2::value_type>::supertype>::other
@@ -208,7 +209,7 @@ if_else(const DynamicSparseNumberBase<BoolData, BoolIndices, SubType, BoolSubTyp
 
 #define DynamicSparseNumberBase_decl_op_ab(opname, subtypename, functorname) \
 template <class... AArgs, class... BArgs> \
-inline typename Symmetric##functorname##Type<subtypename<AArgs...>, \
+METAPHYSICL_INLINE typename Symmetric##functorname##Type<subtypename<AArgs...>, \
                                              subtypename<BArgs...>>::supertype \
 operator opname(const subtypename<AArgs...> & a, const subtypename<BArgs...> & b);
 
@@ -219,7 +220,7 @@ operator opname(const subtypename<AArgs...> & a, const subtypename<BArgs...> & b
 DynamicSparseNumberBase_decl_op_ab(opname, subtypename, functorname) \
  \
 template <class... AArgs, class... BArgs> \
-inline typename Symmetric##functorname##Type<subtypename<AArgs...>, \
+METAPHYSICL_INLINE typename Symmetric##functorname##Type<subtypename<AArgs...>, \
                                              subtypename<BArgs...>>::supertype \
 operator opname(subtypename<AArgs...> && a, const subtypename<BArgs...> & b);
 
@@ -238,7 +239,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T>
-inline typename MultipliesType<SubType<SubTypeArgs...>, T, true>::supertype
+METAPHYSICL_INLINE typename MultipliesType<SubType<SubTypeArgs...>, T, true>::supertype
 operator*(const T & a,
           const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & b);
 
@@ -247,7 +248,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T>
-inline typename MultipliesType<SubType<SubTypeArgs...>, T>::supertype
+METAPHYSICL_INLINE typename MultipliesType<SubType<SubTypeArgs...>, T>::supertype
 operator*(const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & a,
           const T & b);
 
@@ -256,7 +257,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T>
-inline typename DividesType<SubType<SubTypeArgs...>, T>::supertype
+METAPHYSICL_INLINE typename DividesType<SubType<SubTypeArgs...>, T>::supertype
 operator/(const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & a,
           const T & b);
 
@@ -267,7 +268,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T>
-inline typename MultipliesType<SubType<SubTypeArgs...>, T>::supertype
+METAPHYSICL_INLINE typename MultipliesType<SubType<SubTypeArgs...>, T>::supertype
 operator*(DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> && a, const T & b);
 
 template <template <class...> class SubType,
@@ -275,7 +276,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T>
-inline typename DividesType<SubType<SubTypeArgs...>, T>::supertype
+METAPHYSICL_INLINE typename DividesType<SubType<SubTypeArgs...>, T>::supertype
 operator/(DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> && a, const T & b);
 
 #endif
@@ -288,7 +289,7 @@ template <template <class...> class SubType, \
           typename Data2, \
           typename Indices2, \
           class... SubTypeArgs2> \
-inline typename SubType<SubTypeArgs...>::template rebind< \
+METAPHYSICL_INLINE typename SubType<SubTypeArgs...>::template rebind< \
     bool, \
     typename CompareTypes<typename Indices::value_type, \
                           typename Indices2::value_type>::supertype>::other \
@@ -301,7 +302,7 @@ template <template <class...> class SubType, \
           typename Indices, \
           class... SubTypeArgs, \
           typename T> \
-inline typename SubType<SubTypeArgs...>::template rebind<bool>::other operator opname( \
+METAPHYSICL_INLINE typename SubType<SubTypeArgs...>::template rebind<bool>::other operator opname( \
     const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & a, const T & b); \
  \
 template <template <class...> class SubType, \
@@ -309,7 +310,7 @@ template <template <class...> class SubType, \
           typename Indices, \
           class... SubTypeArgs, \
           typename T> \
-inline typename SubType<SubTypeArgs...>::template rebind<bool>::other operator opname( \
+METAPHYSICL_INLINE typename SubType<SubTypeArgs...>::template rebind<bool>::other operator opname( \
     const T & a, const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & b);
 
 // NOTE: unary functions for which 0-op-0 is true are undefined compile-time
@@ -369,18 +370,10 @@ struct templatename<subtypename<SubTypeArgs...>, \
       typename subtypename<SubTypeArgs...>::I>::other supertype; \
 }
 
-} // namespace MetaPhysicL
-
-namespace std {
-
-using MetaPhysicL::CompareTypes;
-using MetaPhysicL::DynamicSparseNumberBase;
-using MetaPhysicL::SymmetricCompareTypes;
-
 #define DynamicSparseNumberBase_decl_std_unary(funcname) \
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs>  \
-inline \
+METAPHYSICL_INLINE \
 SubType<SubTypeArgs...> \
 funcname (const DynamicSparseNumberBase<Data,Indices,SubType,SubTypeArgs...> & a);
 
@@ -389,7 +382,7 @@ funcname (const DynamicSparseNumberBase<Data,Indices,SubType,SubTypeArgs...> & a
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs, \
           typename Data2, typename Indices2, class... SubTypeArgs2> \
-inline \
+METAPHYSICL_INLINE \
 typename SubType<SubTypeArgs...>::template rebind< \
       typename SymmetricCompareTypes<typename SubType<SubTypeArgs...>::T, \
                                      typename SubType<SubTypeArgs2...>::T>::supertype, \
@@ -401,7 +394,7 @@ funcname (const DynamicSparseNumberBase<Data,Indices,SubType,SubTypeArgs...>& a,
  \
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs, typename T> \
-inline \
+METAPHYSICL_INLINE \
 typename SubType<SubTypeArgs...>::template rebind< \
       typename SymmetricCompareTypes<typename SubType<SubTypeArgs...>::T, T>::supertype, \
       typename SubType<SubTypeArgs...>::I>::other \
@@ -410,30 +403,11 @@ funcname (const DynamicSparseNumberBase<Data,Indices,SubType,SubTypeArgs...>& a,
  \
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs, typename T> \
-inline \
+METAPHYSICL_INLINE \
 typename SubType<SubTypeArgs...>::template rebind< \
       typename SymmetricCompareTypes<T, typename SubType<SubTypeArgs...>::T>::supertype, \
       typename SubType<SubTypeArgs...>::I>::other \
 funcname (const T& a, const DynamicSparseNumberBase<Data,Indices,SubType,SubTypeArgs...>& b);
-
-
-#define DynamicSparseNumberBase_decl_fl_unary(funcname) \
-DynamicSparseNumberBase_decl_std_unary(funcname##f) \
-DynamicSparseNumberBase_decl_std_unary(funcname##l)
-
-
-#define DynamicSparseNumberBase_decl_stdfl_unary(funcname) \
-DynamicSparseNumberBase_decl_std_unary(funcname) \
-DynamicSparseNumberBase_decl_fl_unary(funcname)
-
-
-#define DynamicSparseNumberBase_decl_fl_binary_union(funcname) \
-DynamicSparseNumberBase_decl_std_binary_union(funcname##f) \
-DynamicSparseNumberBase_decl_std_binary_union(funcname##l)
-
-#define DynamicSparseNumberBase_decl_stdfl_binary_union(funcname) \
-DynamicSparseNumberBase_decl_std_binary_union(funcname) \
-DynamicSparseNumberBase_decl_fl_binary_union(funcname)
 
 
 // Pow needs its own specialization, both to avoid being confused by
@@ -443,7 +417,7 @@ template <template <class...> class SubType,
           typename Indices,
           class... SubTypeArgs,
           typename T2>
-inline typename SubType<SubTypeArgs...>::template rebind<
+METAPHYSICL_INLINE typename SubType<SubTypeArgs...>::template rebind<
     typename SymmetricCompareTypes<typename Data::value_type, T2>::supertype,
     typename Indices::value_type>::other
 pow(const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & a, const T2 & b);
@@ -476,46 +450,26 @@ DynamicSparseNumberBase_decl_std_unary(floor)
 DynamicSparseNumberBase_decl_std_binary_union(fmod) // TODO: optimize this
 
 #if __cplusplus >= 201103L
-DynamicSparseNumberBase_decl_std_unary(llabs)
-DynamicSparseNumberBase_decl_std_unary(imaxabs)
-DynamicSparseNumberBase_decl_fl_unary(fabs)
-// DynamicSparseNumberBase_decl_fl_unary(exp)
-// DynamicSparseNumberBase_decl_stdfl_unary(exp2)
-DynamicSparseNumberBase_decl_stdfl_unary(expm1)
-// DynamicSparseNumberBase_decl_fl_unary(log)
-// DynamicSparseNumberBase_decl_fl_unary(log10)
-// DynamicSparseNumberBase_decl_stdfl_unary(log2)
-// DynamicSparseNumberBase_decl_stdfl_unary(log1p)
-DynamicSparseNumberBase_decl_fl_unary(sqrt)
-DynamicSparseNumberBase_decl_stdfl_unary(cbrt)
-DynamicSparseNumberBase_decl_fl_unary(sin)
-// DynamicSparseNumberBase_decl_fl_unary(cos)
-DynamicSparseNumberBase_decl_fl_unary(tan)
-DynamicSparseNumberBase_decl_fl_unary(asin)
-// DynamicSparseNumberBase_decl_fl_unary(acos)
-DynamicSparseNumberBase_decl_fl_unary(atan)
-DynamicSparseNumberBase_decl_fl_unary(sinh)
-// DynamicSparseNumberBase_decl_fl_unary(cosh)
-DynamicSparseNumberBase_decl_fl_unary(tanh)
-DynamicSparseNumberBase_decl_stdfl_unary(asinh)
-// DynamicSparseNumberBase_decl_stdfl_unary(acosh)
-DynamicSparseNumberBase_decl_stdfl_unary(atanh)
-DynamicSparseNumberBase_decl_stdfl_unary(erf)
-// DynamicSparseNumberBase_decl_stdfl_unary(erfc)
-DynamicSparseNumberBase_decl_fl_unary(ceil)
-DynamicSparseNumberBase_decl_fl_unary(floor)
-DynamicSparseNumberBase_decl_stdfl_unary(trunc)
-DynamicSparseNumberBase_decl_stdfl_unary(round)
-DynamicSparseNumberBase_decl_stdfl_unary(nearbyint)
-DynamicSparseNumberBase_decl_stdfl_unary(rint)
+// DynamicSparseNumberBase_decl_std_unary(exp2)
+DynamicSparseNumberBase_decl_std_unary(expm1)
+// DynamicSparseNumberBase_decl_std_unary(log2)
+// DynamicSparseNumberBase_decl_std_unary(log1p)
+DynamicSparseNumberBase_decl_std_unary(cbrt)
+DynamicSparseNumberBase_decl_std_unary(asinh)
+// DynamicSparseNumberBase_decl_std_unary(acosh)
+DynamicSparseNumberBase_decl_std_unary(atanh)
+DynamicSparseNumberBase_decl_std_unary(erf)
+// DynamicSparseNumberBase_decl_std_unary(erfc)
+DynamicSparseNumberBase_decl_std_unary(trunc)
+DynamicSparseNumberBase_decl_std_unary(round)
+DynamicSparseNumberBase_decl_std_unary(nearbyint)
+DynamicSparseNumberBase_decl_std_unary(rint)
 
-DynamicSparseNumberBase_decl_fl_binary_union(fmod)
 DynamicSparseNumberBase_decl_std_binary_union(remainder) // TODO: optimize this
-DynamicSparseNumberBase_decl_stdfl_binary_union(fmax)
-DynamicSparseNumberBase_decl_stdfl_binary_union(fmin)
-DynamicSparseNumberBase_decl_stdfl_binary_union(fdim)
-DynamicSparseNumberBase_decl_stdfl_binary_union(hypot)
-DynamicSparseNumberBase_decl_fl_binary_union(atan2)
+DynamicSparseNumberBase_decl_std_binary_union(fmax)
+DynamicSparseNumberBase_decl_std_binary_union(fmin)
+DynamicSparseNumberBase_decl_std_binary_union(fdim)
+DynamicSparseNumberBase_decl_std_binary_union(hypot)
 #endif // __cplusplus >= 201103L
 
 #define DynamicSparseNumberBase_decl_std_unary_complex(funcname) \
@@ -523,16 +477,16 @@ template <template <class...> class SubType, \
           typename Data, \
           typename Indices, \
           class... SubTypeArgs> \
-inline auto funcname( \
+METAPHYSICL_INLINE auto funcname( \
     const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> & in) \
-    ->typename SubType<SubTypeArgs...>::template rebind<decltype(std::funcname( \
+    ->typename SubType<SubTypeArgs...>::template rebind<decltype(math::funcname( \
                                                             typename Data::value_type())), \
                                                         typename Indices::value_type>::other
 
 DynamicSparseNumberBase_decl_std_unary_complex(real);
 DynamicSparseNumberBase_decl_std_unary_complex(imag);
 DynamicSparseNumberBase_decl_std_unary_complex(norm);
-} // namespace std
+} // namespace MetaPhysicL
 
 
 #endif // METAPHYSICL_DYNAMICSPARSENUMBERARRAY_DECL_H

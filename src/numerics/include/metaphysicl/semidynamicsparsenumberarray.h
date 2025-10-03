@@ -30,66 +30,68 @@
 namespace MetaPhysicL
 {
 
-template <typename T, typename I, typename N>
-inline SemiDynamicSparseNumberArray<T, I, N>::SemiDynamicSparseNumberArray(const T & val)
+template <typename T, typename I, typename N, typename ArrayWrapper>
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(const T & val)
 {
   // Avoid unused variable warnings in opt mode.
   (void)val;
   // This makes no sense unless val is 0!
 #ifndef NDEBUG
-  if (val)
-    throw std::domain_error("Cannot initialize DynamicSparseNumberArray with non-zero scalar");
+  METAPHYSICL_IF_ON_HOST((if (val)
+    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");))
 #endif
 }
 
-template <typename T, typename I, typename N>
+template <typename T, typename I, typename N, typename ArrayWrapper>
 template <typename T2>
-inline SemiDynamicSparseNumberArray<T, I, N>::SemiDynamicSparseNumberArray(const T2 & val)
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(const T2 & val)
 {
   // Avoid unused variable warnings in opt mode.
   (void)val;
   // This makes no sense unless val is 0!
 #ifndef NDEBUG
-  if (val)
-    throw std::domain_error("Cannot initialize DynamicSparseNumberArray with non-zero scalar");
+  METAPHYSICL_IF_ON_HOST((if (val)
+    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");))
 #endif
 }
 
-template <typename T, typename I, typename N>
-template <typename T2, typename I2>
-inline SemiDynamicSparseNumberArray<T, I, N>::SemiDynamicSparseNumberArray(
-    const SemiDynamicSparseNumberArray<T2, I2, N> & src)
-  : DynamicSparseNumberBase<DynamicStdArrayWrapper<T, N>,
-                            DynamicStdArrayWrapper<I, N>,
-                            MetaPhysicL::SemiDynamicSparseNumberArray,
+template <typename T, typename I, typename N, typename ArrayWrapper>
+template <typename T2, typename I2, typename ArrayWrapper2>
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(
+    const SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> & src)
+  : DynamicSparseNumberBase<ArrayWrapper,
+                            typename ArrayWrapper::rebind<I>::type,
+                            SemiDynamicSparseNumberArrayGeneric,
                             T,
                             I,
-                            N>(src)
+                            N,
+                            ArrayWrapper>(src)
 {
 }
 
-template <typename T, typename I, typename N>
-template <typename T2, typename I2>
-inline SemiDynamicSparseNumberArray<T, I, N>::SemiDynamicSparseNumberArray(
-    SemiDynamicSparseNumberArray<T2, I2, N> && src)
-  : DynamicSparseNumberBase<DynamicStdArrayWrapper<T, N>,
-                            DynamicStdArrayWrapper<I, N>,
-                            MetaPhysicL::SemiDynamicSparseNumberArray,
+template <typename T, typename I, typename N, typename ArrayWrapper>
+template <typename T2, typename I2, typename ArrayWrapper2>
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(
+    SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> && src)
+  : DynamicSparseNumberBase<ArrayWrapper,
+                            typename ArrayWrapper::rebind<I>::type,
+                            SemiDynamicSparseNumberArrayGeneric,
                             T,
                             I,
-                            N>(src)
+                            N,
+                            ArrayWrapper>(src)
 {
 }
 
-DynamicSparseNumberBase_op(SemiDynamicSparseNumberArray, +, Plus)       // Union)
-DynamicSparseNumberBase_op(SemiDynamicSparseNumberArray, -, Minus)      // Union)
-DynamicSparseNumberBase_op(SemiDynamicSparseNumberArray, *, Multiplies) // Intersection)
-DynamicSparseNumberBase_op(SemiDynamicSparseNumberArray, /, Divides)    // First)
+DynamicSparseNumberBase_op(SemiDynamicSparseNumberArrayGeneric, +, Plus)       // Union)
+DynamicSparseNumberBase_op(SemiDynamicSparseNumberArrayGeneric, -, Minus)      // Union)
+DynamicSparseNumberBase_op(SemiDynamicSparseNumberArrayGeneric, *, Multiplies) // Intersection)
+DynamicSparseNumberBase_op(SemiDynamicSparseNumberArrayGeneric, /, Divides)    // First)
 
-template <typename T, typename I, typename N>
-inline typename RawType<SemiDynamicSparseNumberArray<T, I, N>>::value_type
-RawType<SemiDynamicSparseNumberArray<T, I, N>>::value(
-    const SemiDynamicSparseNumberArray<T, I, N> & a)
+template <typename T, typename I, typename N, typename ArrayWrapper>
+METAPHYSICL_INLINE typename RawType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::value_type
+RawType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::value(
+    const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   value_type returnval;
   returnval.nude_indices() = a.nude_indices();

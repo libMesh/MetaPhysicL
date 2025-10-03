@@ -22,7 +22,7 @@ int main(int, char * [])
 
   int returnval = 0;
 
-  DynamicStdArrayWrapper<int, NWrapper<7>> test;
+  DynamicStdArrayWrapper<int, 7> test;
   test.resize(5);
   for (unsigned int i = 0; i < 5; ++i)
     test[i] = i + 1;

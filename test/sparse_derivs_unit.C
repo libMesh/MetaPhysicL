@@ -104,6 +104,15 @@ int vectester (Vector zerovec)
   // Running non-derivatives tests with DualNumbers sometimes catches
   // problems too
 
+  const auto test_val = raw_value(2 * random_vec - random_vec - random_vec);
+  error_vec = test_val;
+  {
+    int new_returnval = test_error_vec(random_vec, error_vec);
+    if (new_returnval)
+      std::cerr << "Failed test" << std::endl;
+    returnval = returnval || new_returnval;
+  }
+
   one_test(2*random_vec - random_vec - random_vec);
 
   one_test(3*random_vec - random_vec*3);
@@ -237,10 +246,10 @@ int main(int argc, char * argv[])
   returnval = returnval || vectester(float_dsna);
 
   SemiDynamicSparseNumberArray<DualNumber<float>, unsigned int, NWrapper<4>> float_sdsna;
-    float_dsna.resize(4);
-    float_dsna.raw_index(1) = 1;
-    float_dsna.raw_index(2) = 2;
-    float_dsna.raw_index(3) = 3;
+    float_sdsna.resize(4);
+    float_sdsna.raw_index(1) = 1;
+    float_sdsna.raw_index(2) = 2;
+    float_sdsna.raw_index(3) = 3;
   returnval = returnval || vectester(float_sdsna);
 
 
@@ -256,10 +265,10 @@ int main(int argc, char * argv[])
   returnval = returnval || vectester(double_dsna);
 
   SemiDynamicSparseNumberArray<DualNumber<double>, unsigned int, NWrapper<4>> double_sdsna;
-    double_dsna.resize(4);
-    double_dsna.raw_index(1) = 1;
-    double_dsna.raw_index(2) = 2;
-    double_dsna.raw_index(3) = 3;
+    double_sdsna.resize(4);
+    double_sdsna.raw_index(1) = 1;
+    double_sdsna.raw_index(2) = 2;
+    double_sdsna.raw_index(3) = 3;
   returnval = returnval || vectester(double_sdsna);
 
 
@@ -283,10 +292,10 @@ int main(int argc, char * argv[])
       returnval = returnval || vectester(long_double_dsna);
 
       SemiDynamicSparseNumberArray<DualNumber<long double>, unsigned int, NWrapper<4>> long_double_sdsna;
-        long_double_dsna.resize(4);
-        long_double_dsna.raw_index(1) = 1;
-        long_double_dsna.raw_index(2) = 2;
-        long_double_dsna.raw_index(3) = 3;
+        long_double_sdsna.resize(4);
+        long_double_sdsna.raw_index(1) = 1;
+        long_double_sdsna.raw_index(2) = 2;
+        long_double_sdsna.raw_index(3) = 3;
       returnval = returnval || vectester(long_double_sdsna);
     }
 

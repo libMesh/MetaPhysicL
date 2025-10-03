@@ -116,39 +116,7 @@ int test_error_quant (const DualScalar& random_scalar,
 template <typename T, typename T2>
 int test_func_values(const T & random_quant, T2 & error_quant)
 {
-  using std::abs;
-  using std::acos;
-  using std::asin;
-  using std::atan;
-  using std::ceil;
-  using std::cos;
-  using std::cosh;
-  using std::exp;
-  using std::fabs;
-  using std::floor;
-  using std::log;
-  using std::log10;
-  using std::pow;
-  using std::sin;
-  using std::sinh;
-  using std::sqrt;
-  using std::tan;
-  using std::tanh;
-
-#if __cplusplus >= 201103L
-  using std::exp2;
-  using std::log2;
-  using std::expm1;
-  using std::log1p;
-  using std::cbrt;
-  using std::asinh;
-  using std::acosh;
-  using std::atanh;
-  using std::erf;
-  using std::erfc;
-  using std::trunc;
-  using std::round;
-#endif // __cplusplus >= 201103L
+  using namespace std;
 
   int returnval = 0;
 
@@ -393,14 +361,14 @@ int main(int argc, char * argv[])
 
   // This used to throw an FP exception!
   DualNumber<double, double> x {-2, 1};
-  auto y = std::pow(x, 2);
+  auto y = pow(x, 2);
   if (y.value() != 4)
     returnval = 1;
   if (y.derivatives() != -4)
     returnval = 1;
 
   // And this was giving us NaN derivatives!
-  y = std::pow(x, 0u);
+  y = pow(x, 0u);
   if (y.value() != 1)
     returnval = 1;
   if (y.derivatives() != 0)

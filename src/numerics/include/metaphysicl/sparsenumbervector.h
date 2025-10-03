@@ -795,17 +795,6 @@ struct ValueType<SparseNumberVector<T, IndexSet> >
   typedef typename ValueType<T>::type type;
 };
 
-} // namespace MetaPhysicL
-
-
-namespace std {
-
-using MetaPhysicL::SparseNumberVector;
-using MetaPhysicL::SymmetricCompareTypes;
-using MetaPhysicL::UnaryVectorFunctor;
-using MetaPhysicL::BinaryVectorFunctor;
-using MetaPhysicL::call_traits;
-
 #define SparseNumberVector_std_unary(funcname) \
 template <typename T, typename IndexSet> \
 inline \
@@ -1027,7 +1016,7 @@ template <typename T, typename IndexSet>
 class numeric_limits<SparseNumberVector<T, IndexSet> > : 
   public MetaPhysicL::raw_numeric_limits<SparseNumberVector<T, IndexSet>, T> {};
 
-} // namespace std
+} // namespace MetaPhysicL
 
 #endif // __cplusplus >= 201103L
 
