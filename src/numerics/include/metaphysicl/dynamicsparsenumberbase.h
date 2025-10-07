@@ -282,6 +282,7 @@ METAPHYSICL_INLINE
 void
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union (const Indices2 & new_indices)
 {
+  // assert no duplicates
   metaphysicl_assert
     (std::adjacent_find(_indices.begin(), _indices.end()) ==
      _indices.end());
@@ -289,15 +290,21 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
     (std::adjacent_find(new_indices.begin(), new_indices.end()) ==
      new_indices.end());
 #ifdef METAPHYSICL_HAVE_CXX11
+  // assert sorted ascending
   metaphysicl_assert(std::is_sorted(_indices.begin(), _indices.end()));
   metaphysicl_assert(std::is_sorted(new_indices.begin(), new_indices.end()));
 #endif
+
+  //
+  // First phase: count how many new indices will be inserted
+  //
 
   auto index_it = _indices.begin();
   auto index2_it = new_indices.begin();
 
   typedef typename Indices2::value_type I2;
   typedef typename CompareTypes<I,I2>::supertype max_index_type;
+  // number of indices in new_indices which aren't in _indices
   max_index_type unseen_indices = 0;
 
   const I maxI = std::numeric_limits<I>::max();
@@ -306,11 +313,14 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
     I idx1 = (index_it == _indices.end()) ? maxI : *index_it;
     I2 idx2 = *index2_it;
 
+    // Advance our index while we are behind new_indices index
     while (idx1 < idx2) {
       ++index_it;
       idx1 = (index_it == _indices.end()) ? maxI : *index_it;
     }
 
+    // advance the two indexes in lock-step while they are equal and we aren't at the end
+    // of _indices
     while ((idx1 == idx2) &&
            (idx1 != maxI)) {
       ++index_it;
@@ -319,10 +329,12 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
       idx2 = (index2_it == new_indices.end()) ? maxI : *index2_it;
     }
 
+    // Advance the new_indices index while we it's behind our index, all the while adding to unseen_indices
     while (idx2 < idx1) {
       ++unseen_indices;
-        ++index2_it;
+      ++index2_it;
       if (index2_it == new_indices.end())
+        // If we've hit the end of new_indices we break from the outer loop
         break;
       idx2 = *index2_it;
     }
@@ -332,53 +344,79 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
   if (!unseen_indices)
     return;
 
-  std::size_t old_size = this->size();
+  //
+  // Phase 2: reverse in-place merge
+  //
 
+  const std::size_t old_size = this->size();
+
+  // Calls resize on both _data and _indices
   this->resize(old_size + unseen_indices);
 
-  auto md_it = _data.rbegin();
-  auto mi_it = _indices.rbegin();
+  // Write iterators starting at the tail of our resized containers
+  auto data_write_it = _data.rbegin();
+  auto indices_write_it = _indices.rbegin();
 
-  auto d_it =
+  // Read iterators starting at our old tail
+  auto data_read_it =
     _data.rbegin() + unseen_indices;
-  auto i_it =
+  auto indices_read_it =
     _indices.rbegin() + unseen_indices;
-  auto i2_it = new_indices.rbegin();
+  // Read iterator for new_indices starting at its tail
+  auto new_indices_read_it = new_indices.rbegin();
 
   // Duplicate copies of rend() to work around
-  // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#179
-  auto      mirend  = _indices.rend();
-  auto  rend  = mirend;
-  auto rend2 = new_indices.rend();
+  // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#179, e.g.
+  // you cannot compare const_iterator and iterator
+  const auto indices_write_end = _indices.rend();
+  const auto indices_read_end = std::as_const(_indices).rend();
+  const auto new_indices_read_end  = new_indices.rend();
 #ifndef NDEBUG
-  auto      mdrend = _data.rend();
-  auto drend = mdrend;
+  const auto data_write_end = _data.rend();
+  const auto data_read_end = std::as_const(_data).rend();
 #endif
 
-  for (; mi_it != mirend; ++md_it, ++mi_it) {
-    if ((i_it == rend) ||
-        ((i2_it != rend2) &&
-         (*i2_it > *i_it))) {
-      *md_it = 0;
-      *mi_it = *i2_it;
-      ++i2_it;
+  for (; indices_write_it != indices_write_end; ++data_write_it, ++indices_write_it) {
+    // First operand: we've reached the end of our original indices
+    // Second operand: we haven't reached the end of our original indices *but* the new_indices
+    //   read iterator is pointing to an index that is greater than our read iterator
+    //   is pointing to
+    // Either way, we should write the new_indices index. Since we are writing from the
+    // new_indices container, for which we have not yet imported the corresponding data,
+    // we write 0 to the corresponding _data location
+    if ((indices_read_it == indices_read_end) ||
+        ((new_indices_read_it != new_indices_read_end) &&
+         (*new_indices_read_it > *indices_read_it))) {
+      *data_write_it = 0;
+      *indices_write_it = *new_indices_read_it;
+      // Finished reading from the new indices, thus increment its iterator
+      ++new_indices_read_it;
     } else {
-      if ((i2_it != rend2) &&
-          (*i2_it == *i_it))
-        ++i2_it;
-      metaphysicl_assert(d_it < drend);
-      metaphysicl_assert(md_it < mdrend);
-      *md_it = *d_it;
-      *mi_it = *i_it;
-      ++d_it;
-      ++i_it;
+      //
+      // If we didn't satisfy the if branch, that means we will be writing from our _indices/_data
+      // instead of from new_indices
+      //
+
+      // Handle the case where our _indices iterator and the new_indices iterator point to the same
+      // index value. E.g. we must make sure that we increment both _indices and new_indices
+      // iterators
+      if ((new_indices_read_it != new_indices_read_end) &&
+          (*new_indices_read_it == *indices_read_it))
+        ++new_indices_read_it;
+      metaphysicl_assert(data_read_it < data_read_end);
+      metaphysicl_assert(data_write_it < data_write_end);
+      *data_write_it = *data_read_it;
+      *indices_write_it = *indices_read_it;
+      // Finished reading from our _indices/_data, thus increment their iterators
+      ++data_read_it;
+      ++indices_read_it;
     }
   }
 
-  metaphysicl_assert(i_it  == rend);
-  metaphysicl_assert(i2_it == rend2);
-  metaphysicl_assert(d_it  == drend);
-  metaphysicl_assert(md_it == mdrend);
+  metaphysicl_assert(indices_read_it  == indices_read_end);
+  metaphysicl_assert(new_indices_read_it == new_indices_read_end);
+  metaphysicl_assert(data_read_it  == data_read_end);
+  metaphysicl_assert(data_write_it == data_write_end);
 }
 
 
