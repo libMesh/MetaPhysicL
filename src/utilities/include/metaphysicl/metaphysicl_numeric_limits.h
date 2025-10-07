@@ -1,33 +1,75 @@
 #ifndef METAPHYSICL_NUMERIC_LIMITS
 #define METAPHYSICL_NUMERIC_LIMITS
 
+#ifdef METAPHYSICL_HAVE_KOKKOS
+
+#include "metaphysicl/metaphysicl_device.h"
+#include <Kokkos_NumericTraits.hpp>
+
+namespace MetaPhysicL {
+template <typename T> class numeric_limits {
+public:
+  METAPHYSICL_INLINE static auto max() {
+    return Kokkos::Experimental::finite_max_v<T>;
+  }
+  METAPHYSICL_INLINE
+};
+} // namespace MetaPhysicL
+
+#else
+
 #include <limits>
 
 namespace MetaPhysicL {
-template <typename T> class numeric_limits;
+template <typename T> class numeric_limits {
+public:
+  static T min() { return std::numeric_limits<T>::min(); }
+  static T max() { return std::numeric_limits<T>::max(); }
+  static int digits() { return std::numeric_limits<T>::digits; }
+  static int digits10() { return std::numeric_limits<T>::digits10; }
+  static bool is_signed() { return std::numeric_limits<T>::is_signed; }
+  static bool is_integer() { return std::numeric_limits<T>::is_integer; }
+  static bool is_exact() { return std::numeric_limits<T>::is_exact; }
+  static int radix() { return std::numeric_limits<T>::radix; }
+  static T epsilon() { return std::numeric_limits<T>::epsilon(); }
+  static T round_error() { return std::numeric_limits<T>::round_error(); }
 
-#define DEFINE_METAPHYSICL_NUMERIC_LIMITS(TYPE)                                \
-  template <> class numeric_limits<TYPE> : public std::numeric_limits<TYPE> {}
+  static int min_exponent() { return std::numeric_limits<T>::min_exponent; }
+  static int min_exponent10() { return std::numeric_limits<T>::min_exponent10; }
+  static int max_exponent() { return std::numeric_limits<T>::max_exponent; }
+  static int max_exponent10() { return std::numeric_limits<T>::max_exponent10; }
 
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(bool);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(char);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(signed char);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(unsigned char);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(wchar_t);
-// DEFINE_METAPHYSICL_NUMERIC_LIMITS(char8_t); (since C++20)
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(char16_t);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(char32_t);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(short);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(unsigned short);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(int);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(unsigned int);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(long);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(unsigned long);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(long long);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(unsigned long long);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(float);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(double);
-DEFINE_METAPHYSICL_NUMERIC_LIMITS(long double);
+  static bool has_infinity() { return std::numeric_limits<T>::has_infinity; }
+  static bool has_quiet_NaN() { return std::numeric_limits<T>::has_quiet_NaN; }
+  static bool has_signaling_NaN() {
+    return std::numeric_limits<T>::has_signaling_NaN;
+  }
+  static std::float_denorm_style has_denorm() {
+    return std::numeric_limits<T>::has_denorm;
+  }
+  static bool has_denorm_loss() {
+    return std::numeric_limits<T>::has_denorm_loss;
+  }
+  static T infinity() { return std::numeric_limits<T>::infinity(); }
+  static T quiet_NaN() { return std::numeric_limits<T>::quiet_NaN(); }
+  static T signaling_NaN() { return std::numeric_limits<T>::signaling_NaN(); }
+  static T denorm_min() { return std::numeric_limits<T>::denorm_min(); }
+
+  static bool is_iec559() { return std::numeric_limits<T>::is_iec559; }
+  static bool is_bounded() { return std::numeric_limits<T>::is_bounded; }
+  static bool is_modulo() { return std::numeric_limits<T>::is_modulo; }
+
+  static bool traps() { return std::numeric_limits<T>::traps; }
+  static bool tinyness_before() {
+    return std::numeric_limits<T>::tinyness_before;
+  }
+  static std::float_round_style round_style() {
+    return std::numeric_limits<T>::round_style;
+  }
+};
+
 } // namespace MetaPhysicL
+
+#endif // METAPHYSICL_HAVE_KOKKOS
 
 #endif // METAPHYSICL_NUMERIC_LIMITS
