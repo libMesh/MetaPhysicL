@@ -145,22 +145,6 @@ public:
     _dynamic_n = new_size;
   }
 
-  METAPHYSICL_INLINE reverse_iterator rbegin()
-  {
-    metaphysicl_assert(_dynamic_n <= N);
-    return _data.rend() - _dynamic_n;
-  }
-
-  METAPHYSICL_INLINE const_reverse_iterator rbegin() const
-  {
-    metaphysicl_assert(_dynamic_n <= N);
-    return _data.rend() - _dynamic_n;
-  }
-
-  METAPHYSICL_INLINE reverse_iterator rend() { return _data.rend(); }
-
-  METAPHYSICL_INLINE const_reverse_iterator rend() const { return _data.rend(); }
-
 protected:
 #ifdef METAPHYSICL_HAVE_TIMPI
   friend class TIMPI::StandardType<DynamicArrayWrapper<T, NType>>;

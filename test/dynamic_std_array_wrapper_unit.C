@@ -37,15 +37,6 @@ int main(int, char * [])
     EXPECT_EQ(r, 1*1 + 2*2 + 3*3 + 4*4 + 5*5, "forward iterator");
   }
 
-  // test reverse iterator
-  {
-    unsigned int r = 0;
-    unsigned int n = 0;
-    for (auto it = test.rbegin(); it != test.rend(); ++it)
-      r += ++n * *it;
-    EXPECT_EQ(r, 5*1 + 4*2 + 3*3 + 2*4 + 1*5, "reverse iterator");
-  }
-
   // test resize
   test.resize(3);
   EXPECT_EQ(test.size(), 3, "resize");
