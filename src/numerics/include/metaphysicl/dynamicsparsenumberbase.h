@@ -60,9 +60,16 @@ template <typename Data2, typename Indices2, class... SubTypeArgs2>
 METAPHYSICL_INLINE
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::
 DynamicSparseNumberBase(const DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> & src)
-{ this->resize(src.size());
-  std::copy(src.nude_data().begin(), src.nude_data().end(), _data.begin());
-  std::copy(src.nude_indices().begin(), src.nude_indices().end(), _indices.begin()); }
+{ 
+  this->resize(src.size());
+  const auto & src_indices = src.nude_indices();
+  const auto & src_data = src.nude_data();
+  for (std::size_t i = 0; i < src.size(); ++i)
+  {
+    _data[i] = src_data[i];
+    _indices[i] = src_indices[i];
+  }
+}
 
 #ifdef METAPHYSICL_USE_STD_MOVE
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
@@ -135,16 +142,42 @@ Indices&
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::nude_indices()
 { return _indices; }
 
+template <typename C, typename Val>
+METAPHYSICL_INLINE auto lower_bound_pointer(C & container, const Val & value)
+{
+  // Adapting https://en.cppreference.com/w/cpp/algorithm/lower_bound.html implementation to use
+  // pointers for portability
+  typedef decltype(container.data()) Ptr;
+  Ptr lower_bound_ptr = container.data(), work_ptr;
+  std::ptrdiff_t num_remaining_elements = container.size(), step;
+  while (num_remaining_elements > 0)
+  {
+    work_ptr = lower_bound_ptr;
+    step = num_remaining_elements / 2;
+    work_ptr += step;
+    if (*work_ptr < value)
+    {
+      lower_bound_ptr = ++work_ptr;
+      // We can discard both the current element and the other half of the range
+      num_remaining_elements -= step + 1;
+    }
+    else
+      // Discard the other half of the range
+      num_remaining_elements = step;
+  }
+
+  return lower_bound_ptr;
+}
+
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 METAPHYSICL_INLINE
 std::size_t
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::runtime_index_query(index_value_type i) const
 {
-  auto it =
-    std::lower_bound(_indices.begin(), _indices.end(), i);
-  if (it == _indices.end() || *it != i)
-    return std::numeric_limits<std::size_t>::max();
-  std::size_t offset = it - _indices.begin();
+  auto ptr = MetaPhysicL::lower_bound_pointer(_indices, i);
+  if (ptr == (_indices.data() + _indices.size()) || *ptr != i)
+    return MetaPhysicL::numeric_limits<std::size_t>::max();
+  std::size_t offset = ptr - _indices.data();
   metaphysicl_assert_equal_to(_indices[offset], i);
   return offset;
 }
@@ -174,7 +207,7 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::operator[](inde
   metaphysicl_assert(zero == T(0));
 
   std::size_t rq = runtime_index_query(i);
-  if (rq == std::numeric_limits<std::size_t>::max())
+  if (rq == MetaPhysicL::numeric_limits<std::size_t>::max())
     return zero;
   return _data[rq];
 }
@@ -186,7 +219,7 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::operator[](inde
 {
   static const T zero = 0;
   std::size_t rq = runtime_index_query(i);
-  if (rq == std::numeric_limits<std::size_t>::max())
+  if (rq == MetaPhysicL::numeric_limits<std::size_t>::max())
     return zero;
   return _data[rq];
 }
@@ -408,15 +441,12 @@ void
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::
 sparsity_intersection (const Indices2 & new_indices)
 {
-  metaphysicl_assert
-    (std::adjacent_find(_indices.begin(), _indices.end()) ==
-     _indices.end());
-  metaphysicl_assert
-    (std::adjacent_find(new_indices.begin(), new_indices.end()) ==
-     new_indices.end());
-#ifdef METAPHYSICL_HAVE_CXX11
-  metaphysicl_assert(std::is_sorted(_indices.begin(), _indices.end()));
-  metaphysicl_assert(std::is_sorted(new_indices.begin(), new_indices.end()));
+#ifdef DEBUG
+  // Assert sorted and no duplicates
+  for (std::size_t i = 0; i < _indices.size() - 1; ++i)
+    metaphysicl_assert(_indices[i] < _indices[i + 1]);
+  for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
+    metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
 #endif
 
 #ifndef NDEBUG
@@ -427,7 +457,7 @@ sparsity_intersection (const Indices2 & new_indices)
 
   max_index_type shared_indices = 0;
 
-  const I maxI = std::numeric_limits<I>::max();
+  const I maxI = MetaPhysicL::numeric_limits<I>::max();
 
   while (index2_it != new_indices.end()) {
     I idx1 = (index_it == _indices.end()) ? maxI : *index_it;
@@ -1096,7 +1126,7 @@ operator opname(const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArg
   auto data_b_it = b.nude_data().begin(); \
   auto     data_out_it = returnval.nude_data().begin(); \
  \
-  const IS  maxIS  = std::numeric_limits<IS>::max(); \
+  const IS  maxIS  = MetaPhysicL::numeric_limits<IS>::max(); \
  \
   for (; index_out_it != returnval.nude_indices().end(); ++index_out_it, ++data_out_it) { \
     const IS index_a = (index_a_it == a.nude_indices().end()) ? maxIS : *index_a_it; \
@@ -1266,7 +1296,7 @@ funcname(const DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...> &
   auto data_b_it = b.nude_data.begin(); \
   auto     data_out_it = returnval.nude_data.begin(); \
  \
-  const IS  maxIS  = std::numeric_limits<IS>::max(); \
+  const IS  maxIS  = MetaPhysicL::numeric_limits<IS>::max(); \
  \
   for (; index_out_it != returnval.nude_indices.end(); ++index_out_it, ++data_out_it) { \
     const IS index_a = (index_a_it == a.nude_indices.end()) ? maxIS : *index_a_it; \

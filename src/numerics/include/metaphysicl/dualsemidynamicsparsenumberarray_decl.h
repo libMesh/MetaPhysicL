@@ -26,6 +26,7 @@
 
 #include "metaphysicl/dualnumber_decl.h"
 #include "metaphysicl/semidynamicsparsenumberarray_decl.h"
+#include "metaphysicl/metaphysicl_device.h"
 
 namespace MetaPhysicL
 {
@@ -43,11 +44,11 @@ struct DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper
 };
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+METAPHYSICL_INLINE typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
 derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a, unsigned int derivativeindex);
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+METAPHYSICL_INLINE typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
 derivatives(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
 template <typename T, typename I, typename N, typename ArrayWrapper, unsigned int derivativeindex>
@@ -63,11 +64,11 @@ struct DerivativeOf<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, 
 // For a tensor of values, we take the divergence with respect to the
 // first index.
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativeType<T>::type divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
+METAPHYSICL_INLINE typename DerivativeType<T>::type divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
 // For a vector of values, the gradient is going to be a tensor
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
 gradient(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 
 // DualNumber is subordinate to SemiDynamicSparseNumberArrayGeneric

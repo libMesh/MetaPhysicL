@@ -40,19 +40,15 @@ class DynamicArrayWrapper
 public:
   typedef std::size_t size_type;
 
+  typedef typename Array<T, N>::value_type value_type;
+  typedef typename Array<T, N>::reference reference;
+  typedef typename Array<T, N>::const_reference const_reference;
+
   template <typename U>
   struct rebind
   {
     typedef DynamicArrayWrapper<Array, U, N> type;
   };
-
-  typedef typename Array<T, N>::iterator iterator;
-  typedef typename Array<T, N>::const_iterator const_iterator;
-  typedef typename Array<T, N>::reverse_iterator reverse_iterator;
-  typedef typename Array<T, N>::const_reverse_iterator const_reverse_iterator;
-  typedef typename Array<T, N>::value_type value_type;
-  typedef typename Array<T, N>::reference reference;
-  typedef typename Array<T, N>::const_reference const_reference;
 
   METAPHYSICL_INLINE DynamicArrayWrapper(const DynamicArrayWrapper & src)
   {
@@ -69,14 +65,13 @@ public:
 #endif
   }
 
-  // A Array isn't movable but it's contents might be
+  // The Array template we're wrapping typically isn't movable but it's contents might be
   METAPHYSICL_INLINE DynamicArrayWrapper(DynamicArrayWrapper && src)
   {
     _dynamic_n = src._dynamic_n;
     metaphysicl_assert(_dynamic_n <= N);
-    auto src_it = src.begin(), src_end = src.end(), this_it = _data.begin();
-    for (; src_it != src_end; ++src_it, ++this_it)
-      *this_it = std::move(*src_it);
+    for (size_type i = 0; i < _dynamic_n; ++i)
+      _data[i] = std::move(src[i]);
   }
 
   METAPHYSICL_INLINE DynamicArrayWrapper & operator=(const DynamicArrayWrapper & src)
@@ -100,28 +95,27 @@ public:
   {
     _dynamic_n = src._dynamic_n;
     metaphysicl_assert(_dynamic_n <= N);
-    auto src_it = src.begin(), src_end = src.end(), this_it = _data.begin();
-    for (; src_it != src_end; ++src_it, ++this_it)
-      *this_it = std::move(*src_it);
+    for (size_type i = 0; i < _dynamic_n; ++i)
+      _data[i] = std::move(src[i]);
     return *this;
   }
 
   DynamicArrayWrapper() = default;
 
-  METAPHYSICL_INLINE iterator begin() { return _data.begin(); }
+  METAPHYSICL_INLINE auto begin() { return ::MetaPhysicL::begin(_data); }
 
-  METAPHYSICL_INLINE const_iterator begin() const { return _data.begin(); }
+  METAPHYSICL_INLINE auto begin() const { return ::MetaPhysicL::begin(_data); }
 
-  METAPHYSICL_INLINE iterator end()
+  METAPHYSICL_INLINE auto end()
   {
     metaphysicl_assert(_dynamic_n <= N);
-    return _data.begin() + _dynamic_n;
+    return ::MetaPhysicL::begin(_data) + _dynamic_n;
   }
 
-  METAPHYSICL_INLINE const_iterator end() const
+  METAPHYSICL_INLINE auto end() const
   {
     metaphysicl_assert(_dynamic_n <= N);
-    return _data.begin() + _dynamic_n;
+    return ::MetaPhysicL::begin(_data) + _dynamic_n;
   }
 
   METAPHYSICL_INLINE T & operator[](size_type i)
@@ -144,6 +138,10 @@ public:
       metaphysicl_error();
     _dynamic_n = new_size;
   }
+
+  METAPHYSICL_INLINE T * data() { return _data.data(); }
+
+  METAPHYSICL_INLINE const T * data() const { return _data.data(); }
 
 protected:
 #ifdef METAPHYSICL_HAVE_TIMPI

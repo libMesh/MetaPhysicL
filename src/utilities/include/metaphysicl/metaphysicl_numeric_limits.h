@@ -9,10 +9,13 @@
 namespace MetaPhysicL {
 template <typename T> class numeric_limits {
 public:
-  METAPHYSICL_INLINE static auto max() {
+  METAPHYSICL_INLINE static constexpr auto max() {
     return Kokkos::Experimental::finite_max_v<T>;
   }
-  METAPHYSICL_INLINE
+
+  METAPHYSICL_INLINE static constexpr auto epsilon() {
+    return Kokkos::Experimental::epsilon_v<T>;
+  }
 };
 } // namespace MetaPhysicL
 

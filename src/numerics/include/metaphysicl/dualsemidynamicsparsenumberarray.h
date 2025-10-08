@@ -37,7 +37,7 @@ namespace MetaPhysicL
 {
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+METAPHYSICL_INLINE typename DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
 derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a, unsigned int derivativeindex)
 {
   std::size_t index_size = a.size();
@@ -52,7 +52,7 @@ derivative(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a,
 }
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
+METAPHYSICL_INLINE typename DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>::type
 derivatives(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   std::size_t index_size = a.size();
@@ -90,7 +90,7 @@ DerivativeOf<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, derivat
 // For a tensor of values, we take the divergence with respect to the
 // first index.
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline typename DerivativeType<T>::type
+METAPHYSICL_INLINE typename DerivativeType<T>::type
 divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & /*a*/)
 {
   typename DerivativeType<T>::type returnval = 0;
@@ -103,7 +103,7 @@ divergence(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & /*
 
 // For a vector of values, the gradient is going to be a tensor
 template <typename T, typename I, typename N, typename ArrayWrapper>
-inline SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
+METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<typename T::derivatives_type, I, N, ArrayWrapper>
 gradient(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a)
 {
   static const unsigned int index_size = a.size();
