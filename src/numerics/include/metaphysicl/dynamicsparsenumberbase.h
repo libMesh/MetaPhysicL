@@ -317,22 +317,18 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
 {
 #ifdef DEBUG
   // Assert sorted and no duplicates
-  if (_indices.size() > 1)
-    for (std::size_t i = 0; i < _indices.size() - 1; ++i)
-      metaphysicl_assert(_indices[i] < _indices[i + 1]);
-  if (new_indices.size() > 1)
-    for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
-      metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
+  for (std::size_t i = 0; i < _indices.size() - 1; ++i)
+    metaphysicl_assert(_indices[i] < _indices[i + 1]);
+  for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
+    metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
 #endif
 
   //
   // First phase: count how many new indices will be inserted
   //
 
-  const auto * index_it = _indices.data();
-  const auto * index2_it = new_indices.data();
-  const auto * const indices_end = _indices.data() + _indices.size();
-  const auto * const new_indices_end = new_indices.data() + new_indices.size();
+  std::size_t index_it = 0;
+  std::size_t index2_it = 0;
 
   typedef typename Indices2::value_type I2;
   typedef typename CompareTypes<I,I2>::supertype max_index_type;
@@ -341,14 +337,14 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
 
   const I maxI = numeric_limits<I>::max();
 
-  while (index2_it != new_indices_end) {
-    I idx1 = (index_it == indices_end) ? maxI : *index_it;
-    I2 idx2 = *index2_it;
+  while (index2_it != new_indices.size()) {
+    I idx1 = (index_it == _indices.size()) ? maxI : _indices[index_it];
+    I2 idx2 = new_indices[index2_it];
 
     // Advance our index while we are behind new_indices index
     while (idx1 < idx2) {
       ++index_it;
-      idx1 = (index_it == indices_end) ? maxI : *index_it;
+      idx1 = (index_it == _indices.size()) ? maxI : _indices[index_it];
     }
 
     // advance the two indexes in lock-step while they are equal and we aren't at the end
@@ -356,19 +352,19 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
     while ((idx1 == idx2) &&
            (idx1 != maxI)) {
       ++index_it;
-      idx1 = (index_it == indices_end) ? maxI : *index_it;
+      idx1 = (index_it == _indices.size()) ? maxI : _indices[index_it];
       ++index2_it;
-      idx2 = (index2_it == new_indices_end) ? maxI : *index2_it;
+      idx2 = (index2_it == new_indices.size()) ? maxI : new_indices[index2_it];
     }
 
     // Advance the new_indices index while we it's behind our index, all the while adding to unseen_indices
     while (idx2 < idx1) {
       ++unseen_indices;
       ++index2_it;
-      if (index2_it == new_indices_end)
+      if (index2_it == new_indices.size())
         // If we've hit the end of new_indices we break from the outer loop
         break;
-      idx2 = *index2_it;
+      idx2 = new_indices[index2_it];
     }
   }
 
@@ -386,19 +382,15 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
   // Calls resize on both _data and _indices
   this->resize(new_size);
 
-  // Write iterators starting at the tails of our resized containers
-  auto * indices_write_it = _indices.data() + new_size - 1;
-  auto * data_write_it = _data.data() + new_size - 1;
+  // Write iterator starting at the tail of our resized containers
+  std::ptrdiff_t write_it = new_size - 1;
 
-  // Read iterators starting at our old tails
-  const auto * indices_read_it = _indices.data() + old_size - 1;
-  const auto * data_read_it = _data.data() + old_size - 1;
+  // Read iterator starting at our old tail
+  std::ptrdiff_t read_it = old_size - 1;
   // Read iterator for new_indices starting at its tail
-  const auto * new_indices_read_it = new_indices.data() + new_indices.size() - 1;
+  std::ptrdiff_t new_indices_read_it = new_indices.size() - 1;
 
-  bool write_exhausted = false, indices_read_exhausted = !old_size, new_indices_read_exhausted = !new_indices.size();
-
-  for (; !write_exhausted; --indices_write_it, --data_write_it) {
+  for (; write_it != -1; --write_it) {
     // First operand: we've reached the end of our original indices
     // Second operand: we haven't reached the end of our original indices *but* the new_indices
     //   read iterator is pointing to an index that is greater than our read iterator
@@ -406,16 +398,13 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
     // Either way, we should write the new_indices index. Since we are writing from the
     // new_indices container, for which we have not yet imported the corresponding data,
     // we write 0 to the corresponding _data location
-    if (indices_read_exhausted ||
-        (!new_indices_read_exhausted &&
-         (*new_indices_read_it > *indices_read_it))) {
-      *data_write_it = 0;
-      *indices_write_it = *new_indices_read_it;
+    if ((read_it == -1) ||
+        ((new_indices_read_it != -1) &&
+         (new_indices[new_indices_read_it] > _indices[read_it]))) {
+      _data[write_it] = 0;
+      _indices[write_it] = new_indices[new_indices_read_it];
       // Finished reading from the new indices, thus decrement its iterator
-      if (new_indices_read_it == new_indices.data())
-        new_indices_read_exhausted = true;
-      else
-        --new_indices_read_it;
+      --new_indices_read_it;
     } else {
       //
       // If we didn't satisfy the if branch, that means we will be writing from our _indices/_data
@@ -425,34 +414,21 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
       // Handle the case where our _indices iterator and the new_indices iterator point to the same
       // index value. E.g. we must make sure that we decrement both _indices and new_indices
       // iterators
-      if (!new_indices_read_exhausted &&
-          (*new_indices_read_it == *indices_read_it))
-        {
-          if (new_indices_read_it == new_indices.data())
-            new_indices_read_exhausted = true;
-          else
-            --new_indices_read_it;
-        }
-      metaphysicl_assert(!indices_read_exhausted);
-      metaphysicl_assert(!write_exhausted);
-      *data_write_it = *data_read_it;
-      *indices_write_it = *indices_read_it;
-      // Finished reading from our _indices/_data, thus decrement their iterators
-      if (indices_read_it == _indices.data())
-        indices_read_exhausted = true;
-      else
-      {
-        --indices_read_it;
-        --data_read_it;
-      }
+      if ((new_indices_read_it != -1) &&
+          (new_indices[new_indices_read_it] == _indices[read_it]))
+        --new_indices_read_it;
+      metaphysicl_assert(read_it > -1);
+      metaphysicl_assert(write_it > -1);
+      _data[write_it] = _data[read_it];
+      _indices[write_it] = _indices[read_it];
+      // Finished reading from our _indices/_data, thus decrement their iterator
+      --read_it;
     }
-    if (indices_write_it == _indices.data())
-      write_exhausted = true;
   }
 
-  metaphysicl_assert(write_exhausted);
-  metaphysicl_assert(indices_read_exhausted);
-  metaphysicl_assert(new_indices_read_exhausted);
+  metaphysicl_assert(read_it  == -1);
+  metaphysicl_assert(write_it  == -1);
+  metaphysicl_assert(new_indices_read_it == -1);
 }
 
 
