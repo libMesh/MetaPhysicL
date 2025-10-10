@@ -317,10 +317,12 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union 
 {
 #ifdef DEBUG
   // Assert sorted and no duplicates
-  for (std::size_t i = 0; i < _indices.size() - 1; ++i)
-    metaphysicl_assert(_indices[i] < _indices[i + 1]);
-  for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
-    metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
+  if (_indices.size() > 1)
+    for (std::size_t i = 0; i < _indices.size() - 1; ++i)
+      metaphysicl_assert(_indices[i] < _indices[i + 1]);
+  if (new_indices.size() > 1)
+    for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
+      metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
 #endif
 
   //
@@ -443,10 +445,12 @@ sparsity_intersection (const Indices2 & new_indices)
 {
 #ifdef DEBUG
   // Assert sorted and no duplicates
-  for (std::size_t i = 0; i < _indices.size() - 1; ++i)
-    metaphysicl_assert(_indices[i] < _indices[i + 1]);
-  for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
-    metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
+  if (_indices.size() > 1)
+    for (std::size_t i = 0; i < _indices.size() - 1; ++i)
+      metaphysicl_assert(_indices[i] < _indices[i + 1]);
+  if (new_indices.size() > 1)
+    for (std::size_t i = 0; i < new_indices.size() - 1; ++i)
+      metaphysicl_assert(new_indices[i] < new_indices[i + 1]);
 #endif
 
 #ifndef NDEBUG
