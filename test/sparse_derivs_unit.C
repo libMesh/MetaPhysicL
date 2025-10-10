@@ -247,6 +247,7 @@ int main(int argc, char * argv[])
 
   SemiDynamicSparseNumberArray<DualNumber<float>, unsigned int, NWrapper<4>> float_sdsna;
     float_sdsna.resize(4);
+    float_sdsna.raw_index(0) = 0;
     float_sdsna.raw_index(1) = 1;
     float_sdsna.raw_index(2) = 2;
     float_sdsna.raw_index(3) = 3;
@@ -266,6 +267,7 @@ int main(int argc, char * argv[])
 
   SemiDynamicSparseNumberArray<DualNumber<double>, unsigned int, NWrapper<4>> double_sdsna;
     double_sdsna.resize(4);
+    double_sdsna.raw_index(0) = 0;
     double_sdsna.raw_index(1) = 1;
     double_sdsna.raw_index(2) = 2;
     double_sdsna.raw_index(3) = 3;
@@ -293,6 +295,7 @@ int main(int argc, char * argv[])
 
       SemiDynamicSparseNumberArray<DualNumber<long double>, unsigned int, NWrapper<4>> long_double_sdsna;
         long_double_sdsna.resize(4);
+        long_double_sdsna.raw_index(0) = 0;
         long_double_sdsna.raw_index(1) = 1;
         long_double_sdsna.raw_index(2) = 2;
         long_double_sdsna.raw_index(3) = 3;
