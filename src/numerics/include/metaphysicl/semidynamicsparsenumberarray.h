@@ -60,7 +60,7 @@ template <typename T2, typename I2, typename ArrayWrapper2>
 METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(
     const SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> & src)
   : DynamicSparseNumberBase<ArrayWrapper,
-                            typename ArrayWrapper::rebind<I>::type,
+                            typename ArrayWrapper::template rebind<I>::type,
                             SemiDynamicSparseNumberArrayGeneric,
                             T,
                             I,
@@ -74,7 +74,7 @@ template <typename T2, typename I2, typename ArrayWrapper2>
 METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::SemiDynamicSparseNumberArrayGeneric(
     SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> && src)
   : DynamicSparseNumberBase<ArrayWrapper,
-                            typename ArrayWrapper::rebind<I>::type,
+                            typename ArrayWrapper::template rebind<I>::type,
                             SemiDynamicSparseNumberArrayGeneric,
                             T,
                             I,

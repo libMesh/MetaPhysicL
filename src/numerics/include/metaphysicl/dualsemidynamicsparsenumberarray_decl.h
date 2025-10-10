@@ -34,13 +34,13 @@ namespace MetaPhysicL
 template <typename T, typename I, typename N, typename ArrayWrapper>
 struct DerivativeType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
-  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativeType<T>::type, I, N, typename ArrayWrapper::rebind<typename DerivativeType<T>::type>::type> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativeType<T>::type, I, N, typename ArrayWrapper::template rebind<typename DerivativeType<T>::type>::type> type;
 };
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
 struct DerivativesType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
-  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativesType<T>::type, I, N, typename ArrayWrapper::rebind<typename DerivativesType<T>::type>::type> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<typename DerivativesType<T>::type, I, N, typename ArrayWrapper::template rebind<typename DerivativesType<T>::type>::type> type;
 };
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
@@ -88,7 +88,7 @@ gradient(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
         typename Symmetric##templatename<T2, DualNumber<T, D, asd>, reverseorder>::supertype,      \
         I,                                                                                         \
         N,                                                                                         \
-        typename ArrayWrapper::rebind<typename Symmetric##templatename<T2, DualNumber<T, D, asd>, reverseorder>::supertype>::type> \
+        typename ArrayWrapper::template rebind<typename Symmetric##templatename<T2, DualNumber<T, D, asd>, reverseorder>::supertype>::type> \
         supertype;                                                                                 \
   }
 

@@ -40,7 +40,7 @@ struct NWrapper
 template <typename T, typename I, typename N, typename ArrayWrapper>
 class SemiDynamicSparseNumberArrayGeneric
     : public DynamicSparseNumberBase<
-          ArrayWrapper, typename ArrayWrapper::rebind<I>::type,
+          ArrayWrapper, typename ArrayWrapper::template rebind<I>::type,
           SemiDynamicSparseNumberArrayGeneric, T, I, N, ArrayWrapper>,
       public safe_bool<
           SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>> {
@@ -144,7 +144,7 @@ private:
   typedef typename RawType<T>::value_type NewT;
 
 public:  
-  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::rebind<NewT>::type> value_type;
+  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::template rebind<NewT>::type> value_type;
 
   METAPHYSICL_INLINE static value_type value(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 };
@@ -162,7 +162,7 @@ private:
   typedef typename ReplaceAlgebraicType<T,U>::type NewT;
 
 public:
-  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::rebind<NewT>::type> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::template rebind<NewT>::type> type;
 };
 
 template <typename T, typename I, typename N, typename ArrayWrapper>
