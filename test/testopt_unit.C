@@ -38,8 +38,8 @@ int main(void)
   (void)NV;
   // cos(NV);
 
-  SparseNumberVectorUnitVector<3, 2, float>::type SNV;
-  SparseNumberVectorUnitVector<3, 1, float>::type SNV2;
+  SparseNumberVectorUnitVector<3, 2, float>::type SNV{};
+  SparseNumberVectorUnitVector<3, 1, float>::type SNV2{};
   sin(SNV);
   max(SNV, SNV);
   max(SNV, SNV2);

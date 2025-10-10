@@ -40,6 +40,7 @@
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/sparsenumberutils.h"
 #include "metaphysicl/testable.h"
+#include "metaphysicl/metaphysicl_math.h"
 
 // We now depend on std::function and kin
 #if __cplusplus >= 201103L
@@ -98,7 +99,7 @@ public:
   std::size_t size() const
     { return IndexSet::size; }
 
-  SparseNumberVector() {}
+  SparseNumberVector() = default;
 
   SparseNumberVector(const T& val) {
     // This makes no sense unless val is 0!
@@ -802,7 +803,7 @@ SparseNumberVector<T, IndexSet> \
 funcname (SparseNumberVector<T, IndexSet> a) \
 { \
   for (unsigned int i=0; i != IndexSet::size; ++i) \
-    a.raw_at(i) = std::funcname(a.raw_at(i)); \
+    a.raw_at(i) = math::funcname(a.raw_at(i)); \
  \
   return a; \
 }
@@ -820,7 +821,7 @@ funcname (const SparseNumberVector<T, IndexSet>& a, const SparseNumberVector<T2,
   typename IndexSet::ForEach() \
     (BinaryVectorFunctor<std::function<TS(TS,TS)>, \
      IndexSet,IndexSet2,IndexSet,T,T2,TS> \
-      (std::funcname<TS>, \
+      (math::funcname<TS>, \
        a.raw_data(), b.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -836,7 +837,7 @@ funcname (const SparseNumberVector<T, IndexSet>& a, const T2& b) \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<TS(TS)>,IndexSet,IndexSet,T,TS> \
-      (std::bind(std::funcname<TS>,std::placeholders::_1,b), \
+      (std::bind(math::funcname<TS>,std::placeholders::_1,b), \
        a.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -852,7 +853,7 @@ funcname (const T& a, const SparseNumberVector<T2, IndexSet>& b) \
  \
   typename IndexSet::ForEach() \
     (UnaryVectorFunctor<std::function<TS(TS)>,IndexSet,IndexSet,T2,TS> \
-      (std::bind(std::funcname<TS>,a,std::placeholders::_1), \
+      (std::bind(math::funcname<TS>,a,std::placeholders::_1), \
        b.raw_data(), returnval.raw_data())); \
  \
   return returnval; \
@@ -870,19 +871,19 @@ funcname (const SparseNumberVector<T, IndexSet>& a, const SparseNumberVector<T2,
   typedef typename IndexSet::template Union<IndexSet2>::type IndexSetS; \
   SparseNumberVector<TS, IndexSetS> returnval; \
  \
-  const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  TS (*unambiguous) (const TS&, const TS&); \
+  unambiguous = math::funcname<TS, TS>; \
  \
   typename IndexSet::template Intersection<IndexSet2>::type::ForEach() \
-    (BinaryVectorFunctor<std::function<const TS&(const TS&,const TS&)>,IndexSet,IndexSet2,IndexSetS,T,T2,TS> \
+    (BinaryVectorFunctor<std::function<TS(const TS&,const TS&)>,IndexSet,IndexSet2,IndexSetS,T,T2,TS> \
       (unambiguous, \
        a.raw_data(), b.raw_data(), returnval.raw_data())); \
   typename IndexSet::template Difference<IndexSet2>::type::ForEach() \
-    (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet,IndexSetS,T,TS> \
+    (UnaryVectorFunctor<std::function<TS(const TS&)>,IndexSet,IndexSetS,T,TS> \
       (std::bind(unambiguous,std::placeholders::_1,TS(0)), \
        a.raw_data(), returnval.raw_data())); \
   typename IndexSet2::template Difference<IndexSet>::type::ForEach() \
-    (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet2,IndexSetS,T2,TS> \
+    (UnaryVectorFunctor<std::function<TS(const TS&)>,IndexSet2,IndexSetS,T2,TS> \
       (std::bind(unambiguous,TS(0),std::placeholders::_1), \
        b.raw_data(), returnval.raw_data())); \
  \
@@ -896,11 +897,11 @@ funcname (const SparseNumberVector<T, IndexSet>& a, const SparseNumberVector<T, 
 { \
   SparseNumberVector<T, IndexSet> returnval; \
  \
-  const T& (*unambiguous) (const T&, const T&); \
-  unambiguous = std::funcname<T>; \
+  T (*unambiguous) (const T&, const T&); \
+  unambiguous = math::funcname<T>; \
  \
   typename IndexSet::ForEach() \
-    (BinaryVectorFunctor<std::function<const T&(const T&,const T&)>,IndexSet,IndexSet,IndexSet,T,T,T> \
+    (BinaryVectorFunctor<std::function<T(const T&,const T&)>,IndexSet,IndexSet,IndexSet,T,T,T> \
       (unambiguous, \
        a.raw_data(), b.raw_data(), returnval.raw_data())); \
  \
@@ -915,11 +916,11 @@ funcname (const SparseNumberVector<T, IndexSet>& a, const T2& b) \
   typedef typename SymmetricCompareTypes<T,T2>::supertype TS; \
   SparseNumberVector<TS, IndexSet> returnval; \
  \
-  const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  TS (*unambiguous) (const TS&, const TS&); \
+  unambiguous = math::funcname<TS>; \
  \
   typename IndexSet::ForEach() \
-    (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet,IndexSet,T,TS> \
+    (UnaryVectorFunctor<std::function<TS(const TS&)>,IndexSet,IndexSet,T,TS> \
       (std::bind(unambiguous,std::placeholders::_1,TS(b)), \
        a.raw_data(), returnval.raw_data())); \
  \
@@ -934,11 +935,11 @@ funcname (const T& a, const SparseNumberVector<T2, IndexSet>& b) \
   typedef typename SymmetricCompareTypes<T,T2>::supertype TS; \
   SparseNumberVector<TS, IndexSet> returnval; \
  \
-  const TS& (*unambiguous) (const TS&, const TS&); \
-  unambiguous = std::funcname<TS>; \
+  TS (*unambiguous) (const TS&, const TS&); \
+  unambiguous = math::funcname<TS>; \
  \
   typename IndexSet::ForEach() \
-    (UnaryVectorFunctor<std::function<const TS&(const TS&)>,IndexSet,IndexSet,T2,TS> \
+    (UnaryVectorFunctor<std::function<TS(const TS&)>,IndexSet,IndexSet,T2,TS> \
       (std::bind(unambiguous,TS(a),std::placeholders::_1), \
        b.raw_data(), returnval.raw_data())); \
  \
@@ -950,13 +951,13 @@ funcname (const T& a, const SparseNumberVector<T2, IndexSet>& b) \
 // function types without decltype, and we can't declare a
 // pointer_to_binary_function without a function type.  So let's make
 // our own intermediate function.  This should allow us to use
-// std::pow(foo,int) without conversions.
+// math::pow(foo,int) without conversions.
 template <typename TP, typename TP2>
 inline
 typename SymmetricCompareTypes<TP,TP2>::supertype
 snv_pow(TP tp, TP2 tp2)
 {
-  return std::pow(tp, tp2);
+  return math::pow(tp, tp2);
 }
 
 
