@@ -25,8 +25,6 @@
 #define METAPHYSICL_DYNAMIC_STD_ARRAY_WRAPPER_H
 
 #include "metaphysicl/dynamic_array_wrapper.h"
-#include "metaphysicl/metaphysicl_asserts.h"
-#include "metaphysicl/metaphysicl_config.h"
 
 #include <array>
 

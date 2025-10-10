@@ -145,7 +145,7 @@ public:
 
 protected:
 #ifdef METAPHYSICL_HAVE_TIMPI
-  friend class TIMPI::StandardType<DynamicArrayWrapper<T, NType>>;
+  friend class TIMPI::StandardType<DynamicArrayWrapper<Array, T, N>>;
 #endif
   Array<T, N> _data;
   std::size_t _dynamic_n = 0;

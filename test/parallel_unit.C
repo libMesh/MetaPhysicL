@@ -448,7 +448,7 @@ main(int argc, const char * const * argv)
   testStandardTypeAssignment<NumberArray<maxarraysize, double>>();
   testStandardTypeAssignment<SemiDynamicSparseNumberArray<double, unsigned int, NWrapper<maxarraysize>>>();
   testStandardTypeAssignment<SemiDynamicSparseNumberArray<double, unsigned long long, NWrapper<maxarraysize>>>();
-  testStandardTypeAssignment<DynamicStdArrayWrapper<double, NWrapper<maxarraysize>>>();
+  testStandardTypeAssignment<DynamicArrayWrapper<std::array, double, maxarraysize>>();
   testStandardTypeAssignment<DualNumber<double>>();
 
   return 0;
