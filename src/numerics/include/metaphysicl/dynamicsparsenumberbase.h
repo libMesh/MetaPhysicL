@@ -315,7 +315,7 @@ METAPHYSICL_INLINE
 void
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::sparsity_union (const Indices2 & new_indices)
 {
-#ifdef DEBUG
+#ifndef NDEBUG
   // Assert sorted and no duplicates
   if (_indices.size() > 1)
     for (std::size_t i = 0; i < _indices.size() - 1; ++i)
@@ -443,7 +443,7 @@ void
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::
 sparsity_intersection (const Indices2 & new_indices)
 {
-#ifdef DEBUG
+#ifndef NDEBUG
   // Assert sorted and no duplicates
   if (_indices.size() > 1)
     for (std::size_t i = 0; i < _indices.size() - 1; ++i)
