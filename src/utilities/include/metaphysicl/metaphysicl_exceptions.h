@@ -78,6 +78,6 @@ namespace MetaPhysicL
 
 } // end namespace MetaPhysicL
 
-#define METAPHYSICL_THROW(e) do { METAPHYSICL_IF_ON_HOST((throw e;)) } while (0)
+#define METAPHYSICL_THROW(e) do { METAPHYSICL_IF_ON_HOST((throw e;)); } while (0)
 
 #endif // METAPHYSICL_EXCEPTIONS_H

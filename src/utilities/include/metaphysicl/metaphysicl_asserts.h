@@ -37,7 +37,7 @@
 #include "metaphysicl/metaphysicl_exceptions.h"
 #include "metaphysicl/metaphysicl_device.h"
 
-#define metaphysicl_here()     do { METAPHYSICL_IF_ON_HOST((std::cerr << __FILE__ << ", line " << __LINE__ << ", compiled " << __DATE__ << " at " << __TIME__ << std::endl;)) } while (0)
+#define metaphysicl_here()     do { METAPHYSICL_IF_ON_HOST((std::cerr << __FILE__ << ", line " << __LINE__ << ", compiled " << __DATE__ << " at " << __TIME__ << std::endl;)); } while (0)
 
 // The metaphysicl_assert() macro acts like C's assert(), but throws a
 // metaphysicl_error() (including stack trace, etc) instead of just exiting
@@ -54,26 +54,26 @@
 
 #else
 
-#define metaphysicl_assert(asserted)  do { if (!(asserted)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #asserted "' failed." << std::endl;)) metaphysicl_error(); } } while(0)
+#define metaphysicl_assert(asserted)  do { if (!(asserted)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #asserted "' failed." << std::endl;)); metaphysicl_error(); } } while(0)
 
 #ifdef METAPHYSICL_HAVE_CXX11
 
 #define metaphysicl_assert_types(expr1,expr2) typedef typename std::remove_reference<decltype(expr1)>::type type1; typedef typename std::remove_reference<decltype(expr2)>::type type2
-#define metaphysicl_assert_equal_to(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 == static_cast<type1>(expr2) && static_cast<type2>(expr1) == expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " == " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_not_equal_to(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 != static_cast<type1>(expr2) && static_cast<type2>(expr1) != expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " != " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_less(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 < static_cast<type1>(expr2) && static_cast<type2>(expr1) < expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " < " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_greater(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 > static_cast<type1>(expr2) && static_cast<type2>(expr1) > expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " > " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_less_equal(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 <= static_cast<type1>(expr2) && static_cast<type2>(expr1) <= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " <= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_greater_equal(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 >= static_cast<type1>(expr2) && static_cast<type2>(expr1) >= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " >= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_equal_to(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 == static_cast<type1>(expr2) && static_cast<type2>(expr1) == expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " == " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_not_equal_to(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 != static_cast<type1>(expr2) && static_cast<type2>(expr1) != expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " != " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_less(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 < static_cast<type1>(expr2) && static_cast<type2>(expr1) < expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " < " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_greater(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 > static_cast<type1>(expr2) && static_cast<type2>(expr1) > expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " > " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_less_equal(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 <= static_cast<type1>(expr2) && static_cast<type2>(expr1) <= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " <= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_greater_equal(expr1,expr2)  do { metaphysicl_assert_types(expr1,expr2); if (!(expr1 >= static_cast<type1>(expr2) && static_cast<type2>(expr1) >= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " >= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
 
 #else
 
-#define metaphysicl_assert_equal_to(expr1,expr2)  do { if (!(expr1 == expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " == " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_not_equal_to(expr1,expr2)  do { if (!(expr1 != expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " != " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_less(expr1,expr2)  do { if (!(expr1 < expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " < " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_greater(expr1,expr2)  do { if (!(expr1 > expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " > " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_less_equal(expr1,expr2)  do { if (!(expr1 <= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " <= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
-#define metaphysicl_assert_greater_equal(expr1,expr2)  do { if (!(expr1 >= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " >= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)) metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_equal_to(expr1,expr2)  do { if (!(expr1 == expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " == " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_not_equal_to(expr1,expr2)  do { if (!(expr1 != expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " != " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_less(expr1,expr2)  do { if (!(expr1 < expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " < " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_greater(expr1,expr2)  do { if (!(expr1 > expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " > " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_less_equal(expr1,expr2)  do { if (!(expr1 <= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " <= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
+#define metaphysicl_assert_greater_equal(expr1,expr2)  do { if (!(expr1 >= expr2)) { METAPHYSICL_IF_ON_HOST((std::cerr << "Assertion `" #expr1 " >= " #expr2 "' failed.\n" #expr1 " = " << (expr1) << "\n" #expr2 " = " << (expr2) << std::endl;)); metaphysicl_error(); } } while(0)
 
 #endif
 #endif

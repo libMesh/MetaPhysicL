@@ -38,7 +38,7 @@ METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::S
   // This makes no sense unless val is 0!
 #ifndef NDEBUG
   METAPHYSICL_IF_ON_HOST((if (val)
-    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");))
+    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");));
 #endif
 }
 
@@ -51,7 +51,7 @@ METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>::S
   // This makes no sense unless val is 0!
 #ifndef NDEBUG
   METAPHYSICL_IF_ON_HOST((if (val)
-    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");))
+    throw std::domain_error("Cannot initialize SemiDynamicSparseNumberArrayGeneric with non-zero scalar");));
 #endif
 }
 

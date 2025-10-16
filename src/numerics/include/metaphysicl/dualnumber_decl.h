@@ -161,7 +161,7 @@ public:
 
   METAPHYSICL_INLINE
   static bool get_do_derivatives() {
-    METAPHYSICL_IF_ON_HOST((return do_derivatives;))
+    METAPHYSICL_IF_ON_HOST((return do_derivatives;));
     return true;
   }
 
