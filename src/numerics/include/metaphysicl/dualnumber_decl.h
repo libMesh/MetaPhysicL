@@ -160,16 +160,26 @@ public:
   METAPHYSICL_INLINE DualNumber<T, D, asd> & operator/= (const T2& a);
 
   METAPHYSICL_INLINE
-  static bool get_do_derivatives() {
-    METAPHYSICL_IF_ON_HOST((return do_derivatives;));
+  static bool take_derivatives() {
+    METAPHYSICL_IF_ON_HOST((return _do_derivatives_on_host;));
     return true;
   }
 
-  static bool do_derivatives;
+  METAPHYSICL_INLINE static void
+  take_derivatives_on_host(const bool take_derivatives_on_host_in) {
+    _do_derivatives_on_host = take_derivatives_on_host_in;
+  }
+
+  /// This static data member is deprecated. Please use the public take_derivatives() getter
+  /// and take_derivatives_on_host() setter instead. Note that per the API names the user
+  /// does not have any control over setting whether to compute derivatives on device...
+  /// we always compute derivatives on device
+  static bool & do_derivatives;
 
 private:
   T _val;
   D _deriv;
+  static bool _do_derivatives_on_host;
 };
 
 // Helper class to handle partial specialization for DualNumber

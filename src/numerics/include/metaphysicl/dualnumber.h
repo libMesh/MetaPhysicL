@@ -42,7 +42,9 @@ class NotADuckDualNumber;
 
 // static member initialization
 template <typename T, typename D, bool asd>
-bool DualNumber<T,D,asd>::do_derivatives = true;
+bool DualNumber<T,D,asd>::_do_derivatives_on_host = true;
+template <typename T, typename D, bool asd>
+bool & DualNumber<T,D,asd>::do_derivatives = DualNumber<T, D, asd>::_do_derivatives_on_host;
 
 // Member definitions
 template <typename T, typename D, bool asd>
@@ -88,7 +90,7 @@ DualNumber<T,D,asd>::operator=(const DualNumber<T2,D2,asd> & dn)
 {
   _val = dn.value();
 
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 
   return *this;
@@ -101,7 +103,7 @@ DualNumber<T,D,asd>::operator=(const DualNumber<T,D,asd> & dn)
 {
   _val = dn.value();
 
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 
   return *this;
@@ -115,7 +117,7 @@ DualNumber<T,D,asd>::operator=(DualNumber<T,D,asd> && dn)
 {
   _val = std::move(dn.value());
 
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = std::move(dn.derivatives());
 
   return *this;
@@ -130,7 +132,7 @@ DualNumber<T,D,asd>::operator=(const NotADuckDualNumber<T2,D2> & nd_dn)
 {
   _val = nd_dn.value();
 
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = nd_dn.derivatives();
 
   return *this;
@@ -141,7 +143,7 @@ METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumber<T,D,asd> & dn) :
     _val(dn.value())
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 }
 
@@ -151,7 +153,7 @@ METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(DualNumber<T,D,asd> && dn) :
     _val(std::move(dn.value()))
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = std::move(dn.derivatives());
 }
 #endif // METAPHYSICL_USE_STD_MOVE
@@ -162,7 +164,7 @@ METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumberSurrogate<T2,D2> & dns) :
     _val(dns.value())
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
   {
     auto size = dns.derivatives().size();
     for (decltype(size) i = 0; i < size; ++i)
@@ -178,7 +180,7 @@ DualNumber<T,D,asd>::operator=(const DualNumberSurrogate<T2,D2> & dns)
 {
   _val = dns.value();
 
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
   {
     auto size = dns.derivatives().size();
     for (decltype(size) i = 0; i < size; ++i)
@@ -194,7 +196,7 @@ DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const T2 & scalar)
 {
   _val = scalar;
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = 0;
   return *this;
 }
@@ -210,7 +212,7 @@ METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumber<T2, D2, asd> & val, typename std::enable_if<std::is_convertible<T2,T>::value && std::is_convertible<D2,D>::value, void*>::type) :
     _val  (DualNumberConstructor<T,D,asd>::value(val))
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val);
 }
 
@@ -221,7 +223,7 @@ METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const T2& val, typename std::enable_if<std::is_convertible<T2,T>::value, void*>::type) :
     _val  (DualNumberConstructor<T,D,asd>::value(val))
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val);
 }
 
@@ -232,7 +234,7 @@ DualNumber<T,D,asd>::DualNumber(const T2& val,
                             const D2& deriv) :
   _val  (DualNumberConstructor<T,D,asd>::value(val,deriv))
 {
-  if (!allow_skipping_derivatives || this->get_do_derivatives())
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val,deriv);
 }
 
@@ -249,7 +251,7 @@ METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<T, D<N, DT>, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.get_do_derivatives())
+  if (asd && !out.take_derivatives())
     return;
 
   auto & din = in.derivatives();
@@ -266,7 +268,7 @@ METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.get_do_derivatives())
+  if (asd && !out.take_derivatives())
     return;
 
   if (&in == &out)
@@ -283,7 +285,7 @@ METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2, asd> & in)
 {
   // Potentially different classes so need to check both
-  if (asd && !(out.get_do_derivatives() || in.get_do_derivatives()))
+  if (asd && !(out.take_derivatives() || in.take_derivatives()))
     return;
 
   out.derivatives() *= in.value();
@@ -301,7 +303,7 @@ METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<T, D<N, DT>, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.get_do_derivatives())
+  if (asd && !out.take_derivatives())
     return;
 
   auto & din = in.derivatives();
@@ -318,7 +320,7 @@ METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.get_do_derivatives())
+  if (asd && !out.take_derivatives())
     return;
 
   if (&in == &out)
@@ -336,7 +338,7 @@ METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2, asd> & in)
 {
   // Potentially different classes so need to check both
-  if (asd && !(out.get_do_derivatives() || in.get_do_derivatives()))
+  if (asd && !(out.take_derivatives() || in.take_derivatives()))
     return;
 
   out.derivatives() /= in.value();
@@ -358,7 +360,7 @@ METAPHYSICL_INLINE \
 DualNumber<T,D,asd>& \
 DualNumber<T,D,asd>::operator opname##= (const T2& in) \
 { \
-  if (!allow_skipping_derivatives || this->get_do_derivatives()) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     simplecalc; \
   } \
@@ -372,7 +374,7 @@ METAPHYSICL_INLINE \
 DualNumber<T,D,asd>& \
 DualNumber<T,D,asd>::operator opname##= (const DualNumber<T2,D2,asd>& in) \
 { \
-  if (!allow_skipping_derivatives || this->get_do_derivatives()) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     dualcalc; \
   } \
@@ -386,7 +388,7 @@ METAPHYSICL_INLINE \
 DualNumber<T,D,asd> & \
 DualNumber<T,D,asd>::operator opname##= (const NotADuckDualNumber<T2,D2>& in) \
 { \
-  if (!allow_skipping_derivatives || this->get_do_derivatives()) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     dualcalc; \
   } \
@@ -561,7 +563,7 @@ DualNumber<T,D,asd> funcname (const DualNumber<T,D,asd> & in) \
 { \
   DualNumber<T,D,asd> returnval = in; \
   T funcval = math::funcname(in.value()); \
-  if (!asd || in.get_do_derivatives()) \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     returnval.derivatives() *= derivative; \
@@ -575,7 +577,7 @@ METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> && in) \
 { \
   T funcval = math::funcname(in.value()); \
-  if (!asd || in.get_do_derivatives()) \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     in.derivatives() *= derivative; \
@@ -607,7 +609,7 @@ METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> in) \
 { \
   T funcval = math::funcname(in.value()); \
-  if (!asd || in.get_do_derivatives()) \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     in.derivatives() *= derivative; \
@@ -737,7 +739,7 @@ funcname (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
   typedef typename CompareTypes<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype type; \
  \
   TS funcval = math::funcname(a.value(), b.value()); \
-  if (asd && !(a.get_do_derivatives() || b.get_do_derivatives())) \
+  if (asd && !(a.take_derivatives() || b.take_derivatives())) \
     return type(funcval, 0); \
   else \
     return type(funcval, derivative); \
@@ -749,7 +751,7 @@ DualNumber<T,D,asd> \
 funcname (const DualNumber<T,D,asd>& a, const DualNumber<T,D,asd>& b) \
 { \
   T funcval = math::funcname(a.value(), b.value()); \
-  if (asd && !a.get_do_derivatives()) \
+  if (asd && !a.take_derivatives()) \
     return DualNumber<T,D,asd>(funcval, 0); \
   else \
     return DualNumber<T,D,asd>(funcval, derivative); \
@@ -763,7 +765,7 @@ funcname (const T& a, const DualNumber<T2,D,asd>& b) \
   typedef typename CompareTypes<T,T2>::supertype TS; \
   TS funcval = math::funcname(a, b.value()); \
   typedef typename CompareTypes<DualNumber<T2,D,asd>,T,true>::supertype type; \
-  if (asd && !b.get_do_derivatives()) \
+  if (asd && !b.take_derivatives()) \
     return type(funcval, 0); \
   else \
     return type(funcval, rightderiv); \
@@ -777,7 +779,7 @@ funcname (const DualNumber<T,D,asd>& a, const T2& b) \
   typedef typename CompareTypes<T,T2>::supertype TS; \
   TS funcval = math::funcname(a.value(), b); \
   typedef typename CompareTypes<DualNumber<T,D,asd>,T2>::supertype type; \
-  if (asd && !a.get_do_derivatives()) \
+  if (asd && !a.take_derivatives()) \
     return type(funcval, 0); \
   else \
     return type(funcval, leftderiv); \
