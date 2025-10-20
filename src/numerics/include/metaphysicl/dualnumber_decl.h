@@ -159,12 +159,20 @@ public:
   template <typename T2>
   METAPHYSICL_INLINE DualNumber<T, D, asd> & operator/= (const T2& a);
 
+  /**
+   * Whether to perform derivative computations. This is always true on device
+   * and defaults to true on host but users can control the behavior by calling
+   * the \p take_derivatives_on_host() setter
+   */
   METAPHYSICL_INLINE
   static bool take_derivatives() {
     METAPHYSICL_IF_ON_HOST((return _do_derivatives_on_host;));
     return true;
   }
 
+  /**
+   * Sets whether to perform dual number derivative calculations in host memory
+   */
   METAPHYSICL_INLINE static void
   take_derivatives_on_host(const bool take_derivatives_on_host_in) {
     _do_derivatives_on_host = take_derivatives_on_host_in;
