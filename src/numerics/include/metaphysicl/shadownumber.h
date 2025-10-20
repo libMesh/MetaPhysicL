@@ -363,7 +363,7 @@ template <typename T, typename S>
 class numeric_limits<ShadowNumber<T, S> > :
   public MetaPhysicL::raw_numeric_limits<ShadowNumber<T, S>, T> {};
 
-} // namespace MetaPhyiscL
+} // namespace MetaPhysicL
 
 
 
