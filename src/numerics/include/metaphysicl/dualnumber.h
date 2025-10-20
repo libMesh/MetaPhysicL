@@ -668,13 +668,13 @@ DualNumber_std_unary(rint, 0,)
 
 #define DualNumber_complex_std_unary_real(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<T, typename D::template rebind<T>::other, asd> \
+METAPHYSICL_INLINE DualNumber<T, typename D::template rebind<T>::other, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in) \
 { \
   return {math::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<T,T,asd> \
+METAPHYSICL_INLINE DualNumber<T,T,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in)    \
 { \
   return {math::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
@@ -687,14 +687,14 @@ DualNumber_complex_std_unary_real(abs)
 
 #define DualNumber_complex_std_unary_complex_pre(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in) \
 { \
   return {math::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
                                                      std::numeric_limits<double>::quiet_NaN()}}; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in) \
 { \
   return {math::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
@@ -705,7 +705,7 @@ funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in) \
 #define DualNumber_complex_std_unary_complex(funcname) \
 DualNumber_complex_std_unary_complex_pre(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(DualNumber<std::complex<T>, D, asd> && in) \
 { \
   in.value() = math::funcname(in.value()); \
@@ -714,7 +714,7 @@ funcname(DualNumber<std::complex<T>, D, asd> && in) \
   return in; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(DualNumber<std::complex<T>,std::complex<T>,asd> && in) \
 { \
   in.value() = math::funcname(in.value()); \

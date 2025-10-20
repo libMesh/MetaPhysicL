@@ -635,10 +635,10 @@ DualNumber_decl_std_unary(rint)
 
 #define DualNumber_decl_complex_std_unary_real(funcname) \
 template <typename T, typename D, bool asd> \
-DualNumber<T, typename D::template rebind<T>::other, asd> \
+METAPHYSICL_INLINE DualNumber<T, typename D::template rebind<T>::other, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in); \
 template <typename T, bool asd> \
-DualNumber<T,T,asd> \
+METAPHYSICL_INLINE DualNumber<T,T,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in)
 
 DualNumber_decl_complex_std_unary_real(real);
@@ -648,21 +648,21 @@ DualNumber_decl_complex_std_unary_real(abs);
 
 #define DualNumber_decl_complex_std_unary_complex_pre(funcname) \
 template <typename T, typename D, bool asd> \
-DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in); \
 template <typename T, bool asd> \
-DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in)
 
 #if METAPHYSICL_USE_STD_MOVE
 #define DualNumber_decl_complex_std_unary_complex(funcname) \
 DualNumber_decl_complex_std_unary_complex_pre(funcname);  \
 template <typename T, typename D, bool asd> \
-DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(DualNumber<std::complex<T>, D, asd> && in); \
  \
 template <typename T, bool asd> \
-DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(DualNumber<std::complex<T>,std::complex<T>,asd> && in)
 
 #else
