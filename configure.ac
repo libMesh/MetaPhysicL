@@ -81,6 +81,8 @@ AC_PROG_FC
 # --------------------------------------------------------------
 ACSM_CXX_COMPILER_STANDARD([2011], [2017])
 
+AM_CONDITIONAL(CXX17_ENABLED,test x$HAVE_CXX17 = x1)
+
 AM_CONDITIONAL(CXX14_ENABLED,test x$HAVE_CXX14 = x1)
 
 AM_CONDITIONAL(CXX11_ENABLED,test x$HAVE_CXX11 = x1)
@@ -127,6 +129,9 @@ if (test x$HAVE_VEXCL = x1); then
   antioch_optional_test_LDFLAGS="$VEXCL_LDFLAGS $antioch_optional_test_LDFLAGS"
   antioch_optional_test_LIBS="$VEXCL_LIBS $antioch_optional_test_LIBS"
 fi
+
+dnl Optional check for Kokkos
+CONFIGURE_KOKKOS
 
 dnl build dependencies from right to left, so mpi before timpi
 AS_IF([test "x$enablempi" = xyes],

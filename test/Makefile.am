@@ -1,3 +1,7 @@
+# Add suffixes for Kokkos
+# CXXSUFFIXES = .K
+# SUFFIXES = .K .lo
+
 check_PROGRAMS  =
 check_PROGRAMS += avoid_spurious_fpe_unit # first, to avoid confusion later
 check_PROGRAMS += compare_types_unit
@@ -35,6 +39,14 @@ check_PROGRAMS += dynamic_sparse_number_base_unit
 check_PROGRAMS += ct_types_unit
 
 AM_TESTS_ENVIRONMENT =
+if CXX17_ENABLED
+if KOKKOS_ENABLED
+  check_PROGRAMS += kokkos_sparse_derivs_unit
+  AM_TESTS_ENVIRONMENT += TEST_KOKKOS=yes; export TEST_KOKKOS;
+endif
+  AM_TESTS_ENVIRONMENT += TEST_CXX17=yes; export TEST_CXX17;
+endif
+
 if CXX14_ENABLED
   check_PROGRAMS += dualnamedarray_unit
   check_PROGRAMS += namedindexarray_unit
@@ -129,6 +141,7 @@ parallel_unit_SOURCES = parallel_unit.C
 pde_unit_SOURCES = pde_unit.C
 pde_unit_SOURCES += testing.h
 ct_types_unit_SOURCES = ct_types_unit.C
+kokkos_sparse_derivs_unit_SOURCES = kokkos_sparse_derivs_unit.K
 
 #Define tests to actually be run. TESTS is a special automake variable
 TESTS  = run_unit_tests.sh
@@ -154,6 +167,22 @@ if TIMPI_LIB_ENABLED
 endif
 endif
 
+kokkos_sparse_derivs_unit_CPPFLAGS = $(AM_CPPFLAGS) $(KOKKOS_CPPFLAGS)
+kokkos_sparse_derivs_unit_CXXFLAGS = $(AM_CXXFLAGS) $(KOKKOS_CXXFLAGS)
+kokkos_sparse_derivs_unit_LDFLAGS  = $(AM_LDFLAGS)  $(KOKKOS_LDFLAGS)
+kokkos_sparse_derivs_unit_LDADD    = $(KOKKOS_LIBS) $(LIBS)
+
+.K.o:
+	$(LIBTOOL) --tag=CXX --mode=compile $(KOKKOS_CXX) \
+	  $(kokkos_sparse_derivs_unit_CPPFLAGS) \
+	  $(kokkos_sparse_derivs_unit_CXXFLAGS) \
+	  -c $< -o $@
+
+# Force this target’s link step to use the Kokkos compiler/wrapper
+kokkos_sparse_derivs_unit_LINK = \
+  $(LIBTOOL) --tag=CXX --mode=link $(KOKKOS_CXX) \
+  $(kokkos_sparse_derivs_unit_LDFLAGS) -o $@
+
 CLEANFILES =
 
 if CODE_COVERAGE_ENABLED
@@ -163,7 +192,7 @@ endif
 if METAPHYSICL_LICENSESTAMPEXISTS
 BUILT_SOURCES   = .license.stamp
 
-.license.stamp: $(top_srcdir)/LICENSE
+.license.stamp:
 	$(top_srcdir)/src/common/lic_utils/update_license.pl $(top_srcdir)/LICENSE \
 	$(top_srcdir)/test/*.C
 	echo 'updated source license headers' >$@

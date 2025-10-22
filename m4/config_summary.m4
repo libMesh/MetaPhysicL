@@ -60,6 +60,16 @@ if test "x$HAVE_TIMPI" = "x1"; then
 else
   echo '  'TIMPI....................... : no
 fi
+if test "x$KOKKOS_CXX" != "x"; then
+  echo '  'KOKKOS...................... : yes
+  echo '  'KOKKOS_CXX.................. : $KOKKOS_CXX
+  echo '  'KOKKOS_CPPFLAGS............. : $KOKKOS_CPPFLAGS
+  echo '  'KOKKOS_CXXFLAGS............. : $KOKKOS_CXXFLAGS
+  echo '  'KOKKOS_LDFLAGS.............. : $KOKKOS_LDFLAGS
+  echo '  'KOKKOS_LIBS................. : $KOKKOS_LIBS
+else
+  echo '  'KOKKOS...................... : no
+fi
 echo
 echo '-------------------------------------------------------------------------------'
 
