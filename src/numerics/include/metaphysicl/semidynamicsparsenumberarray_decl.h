@@ -75,7 +75,7 @@ public:
 
 template <typename T, typename I, typename N>
 using SemiDynamicSparseNumberArray = SemiDynamicSparseNumberArrayGeneric<T, I, N, DynamicStdArrayWrapper<T, N::size>>;
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 template <typename T, typename I, typename N>
 using KokkosSemiDynamicSparseNumberArray = SemiDynamicSparseNumberArrayGeneric<T, I, N, DynamicKokkosArrayWrapper<T, N::size>>;
 #endif

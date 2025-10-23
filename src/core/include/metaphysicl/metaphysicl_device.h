@@ -1,7 +1,7 @@
 #ifndef METAPHYSICL_DEVICE_H
 #define METAPHYSICL_DEVICE_H
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 
 #include <Kokkos_Array.hpp>
 #include <Kokkos_Macros.hpp>

@@ -4,7 +4,7 @@
 
 #include "metaphysicl/metaphysicl_config.h"
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 
 #include "metaphysicl/dualsemidynamicsparsenumberarray.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
@@ -153,4 +153,4 @@ int main(int argc, char *argv[]) {
 
 int main() { return 0; }
 
-#endif // METAPHYSICL_HAVE_KOKKOS
+#endif // METAPHYSICL_KOKKOS_COMPILATION

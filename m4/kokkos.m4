@@ -15,7 +15,7 @@ AC_DEFUN([CONFIGURE_KOKKOS],
     [KOKKOS_PREFIX="$withval"], [KOKKOS_PREFIX=""])
 
   AS_IF([test "x$KOKKOS_PREFIX" != "x"], [
-    KOKKOS_CPPFLAGS="-DMETAPHYSICL_HAVE_KOKKOS -I$KOKKOS_PREFIX/include"
+    KOKKOS_CPPFLAGS="-DMETAPHYSICL_KOKKOS_COMPILATION -I$KOKKOS_PREFIX/include"
     KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler $KOKKOS_CXXFLAGS"
     KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler -L$KOKKOS_PREFIX/lib -Wl,-rpath,$KOKKOS_PREFIX/lib"
     KOKKOS_LIBS="-lkokkoscore"

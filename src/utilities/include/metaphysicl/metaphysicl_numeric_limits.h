@@ -1,7 +1,7 @@
 #ifndef METAPHYSICL_NUMERIC_LIMITS
 #define METAPHYSICL_NUMERIC_LIMITS
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 
 #include "metaphysicl/metaphysicl_device.h"
 #include <Kokkos_NumericTraits.hpp>
@@ -73,6 +73,6 @@ public:
 
 } // namespace MetaPhysicL
 
-#endif // METAPHYSICL_HAVE_KOKKOS
+#endif // METAPHYSICL_KOKKOS_COMPILATION
 
 #endif // METAPHYSICL_NUMERIC_LIMITS

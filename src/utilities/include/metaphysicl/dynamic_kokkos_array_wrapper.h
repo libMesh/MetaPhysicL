@@ -28,7 +28,7 @@
 #include "metaphysicl/metaphysicl_asserts.h"
 #include "metaphysicl/metaphysicl_config.h"
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 #include <Kokkos_Array.hpp>
 
 namespace MetaPhysicL {

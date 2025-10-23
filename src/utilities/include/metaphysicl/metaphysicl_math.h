@@ -9,7 +9,7 @@
 #define METAPHYSICL_MATH_H
 
 #include "metaphysicl/metaphysicl_device.h"
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 #include <Kokkos_Core.hpp>
 #else
 #include <cmath>
@@ -31,7 +31,7 @@ namespace math {
   }                                                                            \
   }
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 #define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY(NAME)                        \
   namespace detail {                                                           \
   template <class X> METAPHYSICL_INLINE auto unqualified_##NAME(const X &x) {  \
@@ -48,7 +48,7 @@ namespace math {
   METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_STD(NAME)
 #endif
 
-#ifdef METAPHYSICL_HAVE_KOKKOS
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 #define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_BINARY(NAME)                       \
   namespace detail {                                                           \
   template <class X, class Y>                                                  \
