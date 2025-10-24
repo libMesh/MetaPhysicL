@@ -1,7 +1,3 @@
-# Add suffixes for Kokkos
-# CXXSUFFIXES = .K
-# SUFFIXES = .K .lo
-
 check_PROGRAMS  =
 check_PROGRAMS += avoid_spurious_fpe_unit # first, to avoid confusion later
 check_PROGRAMS += compare_types_unit
