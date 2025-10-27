@@ -31,6 +31,10 @@ echo Build host.................... : $BUILD_HOST
 echo Configure date................ : $BUILD_DATE
 echo Build architecture............ : $BUILD_ARCH
 echo Git revision number........... : $BUILD_VERSION
+if test "x$enable_std_violation" = "xyes"; then
+  echo Library settings:
+  echo '  'Enable std:: violations..... : yes
+fi
 echo
 echo Optional Packages for Testing:
 if test "x$HAVE_MASA" = "x1"; then
