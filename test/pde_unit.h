@@ -145,6 +145,8 @@ int main(void)
 template <typename Vector>
 double evaluate_q (const Vector& xyz, const int ret)
 {
+  using namespace std;
+
   typedef typename Vector::value_type ADScalar;
 
   typedef typename RawType<ADScalar>::value_type Scalar;

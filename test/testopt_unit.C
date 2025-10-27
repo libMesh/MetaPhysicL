@@ -20,6 +20,8 @@ using namespace MetaPhysicL;
 
 int main(void)
 {
+  using namespace std;
+
   MetaPhysicL::enableFPE(true);
 
   std::cout << "4+4=" << testfunc(std::make_pair(4,2.0)).first << std::endl;

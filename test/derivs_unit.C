@@ -12,6 +12,7 @@
 static const unsigned int N = 10; // test pts.
 
 using namespace MetaPhysicL;
+using std::pow;
 
 #define one_test(test_func, error_quant) \
   error_quant = raw_value(test_func); \

@@ -76,6 +76,7 @@ public:
 
   T norm() const
     {
+      using std::sqrt;
       return sqrt(_coords[0] * _coords[0] + _coords[1] * _coords[1] + _coords[2] * _coords[2]);
     }
 };
