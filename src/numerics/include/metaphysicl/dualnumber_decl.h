@@ -541,6 +541,19 @@ struct CompareTypes<DualNumber<T, D, asd>, DualNumber<T, D, asd> > {
 };
 
 
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+using MetaPhysicL::DualNumber;
+using MetaPhysicL::CompareTypes;
+#endif
+
+
 template <typename T, typename D, bool asd>
 METAPHYSICL_INLINE D gradient(const DualNumber<T, D, asd>& a);
 
@@ -709,9 +722,9 @@ DualNumber_decl_std_binary(hypot)
 
 template <typename T, typename D, bool asd>
 class numeric_limits<DualNumber<T, D, asd> > :
-  public raw_numeric_limits<DualNumber<T, D, asd>, T> {};
+  public MetaPhysicL::raw_numeric_limits<DualNumber<T, D, asd>, T> {};
 
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_DUALNUMBER_DECL_H

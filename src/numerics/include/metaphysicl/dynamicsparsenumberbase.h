@@ -1241,6 +1241,22 @@ operator<< (std::ostream& output, const DynamicSparseNumberBase<Data, Indices, S
   return output;
 }
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+namespace math = MetaPhysicL::math;
+using MetaPhysicL::CompareTypes;
+using MetaPhysicL::DynamicSparseNumberBase;
+using MetaPhysicL::SymmetricCompareTypes;
+#endif
+
+
 #define DynamicSparseNumberBase_std_unary(funcname) \
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs> \
@@ -1487,7 +1503,7 @@ DynamicSparseNumberBase_std_unary_complex(real)
 DynamicSparseNumberBase_std_unary_complex(imag)
 DynamicSparseNumberBase_std_unary_complex(norm)
 
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_DYNAMICSPARSENUMBERARRAY_H

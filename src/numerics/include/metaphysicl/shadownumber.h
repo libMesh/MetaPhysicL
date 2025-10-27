@@ -254,6 +254,21 @@ struct RawType<ShadowNumber<T, S> >
   }
 };
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+namespace math = MetaPhysicL::math;
+using MetaPhysicL::CompareTypes;
+using MetaPhysicL::ShadowNumber;
+#endif
+
+
 // Now just combined declaration/definitions
 
 #define ShadowNumber_std_unary(funcname) \
@@ -363,7 +378,7 @@ template <typename T, typename S>
 class numeric_limits<ShadowNumber<T, S> > :
   public MetaPhysicL::raw_numeric_limits<ShadowNumber<T, S>, T> {};
 
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 
 

@@ -542,6 +542,19 @@ D gradient(const DualNumber<T, D, asd>& a)
   return a.derivatives();
 }
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+namespace math = MetaPhysicL::math;
+#endif
+
+
 template <typename T, typename D, bool asd>
 METAPHYSICL_INLINE bool isnan (const DualNumber<T,D,asd> & a)
 {
@@ -879,7 +892,7 @@ DualNumber_std_binary(hypot, (a.value()*a.derivatives() +
                               math::hypot(a, b.value()))
 #endif // __cplusplus >= 201103L
 
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_DUALNUMBER_H

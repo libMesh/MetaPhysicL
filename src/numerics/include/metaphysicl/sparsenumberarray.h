@@ -803,6 +803,24 @@ struct ValueType<SparseNumberArray<T, IndexSet> >
   typedef typename ValueType<T>::type type;
 };
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+namespace math = MetaPhysicL::math;
+using MetaPhysicL::SparseNumberArray;
+using MetaPhysicL::SymmetricCompareTypes;
+using MetaPhysicL::UnaryVectorFunctor;
+using MetaPhysicL::BinaryVectorFunctor;
+using MetaPhysicL::call_traits;
+#endif
+
+
 #define SparseNumberArray_std_unary(funcname) \
 template <typename T, typename IndexSet> \
 inline \
@@ -1034,7 +1052,7 @@ template <typename T, typename IndexSet>
 class numeric_limits<SparseNumberArray<T, IndexSet> > : 
   public MetaPhysicL::raw_numeric_limits<SparseNumberArray<T, IndexSet>, T> {};
 
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 #endif // __cplusplus >= 201103L
 

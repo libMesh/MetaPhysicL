@@ -370,6 +370,22 @@ struct templatename<subtypename<SubTypeArgs...>, \
       typename subtypename<SubTypeArgs...>::I>::other supertype; \
 }
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+namespace math = MetaPhysicL::math;
+using MetaPhysicL::CompareTypes;
+using MetaPhysicL::DynamicSparseNumberBase;
+using MetaPhysicL::SymmetricCompareTypes;
+#endif
+
+
 #define DynamicSparseNumberBase_decl_std_unary(funcname) \
 template <template <class...> class SubType, \
           typename Data, typename Indices, class... SubTypeArgs>  \
@@ -486,7 +502,7 @@ METAPHYSICL_INLINE auto funcname( \
 DynamicSparseNumberBase_decl_std_unary_complex(real);
 DynamicSparseNumberBase_decl_std_unary_complex(imag);
 DynamicSparseNumberBase_decl_std_unary_complex(norm);
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_DYNAMICSPARSENUMBERARRAY_DECL_H

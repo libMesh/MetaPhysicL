@@ -165,12 +165,25 @@ public:
   typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::template rebind<NewT>::type> type;
 };
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
+
+namespace std {
+
+using MetaPhysicL::SemiDynamicSparseNumberArrayGeneric;
+#endif
+
+
 template <typename T, typename I, typename N, typename ArrayWrapper>
 class numeric_limits<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
   : public MetaPhysicL::raw_numeric_limits<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, T>
 {
 };
 
-} // namespace MetaPhysicL
+} // namespace std (deprecated) or MetaPhysicL
 
 #endif // METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H

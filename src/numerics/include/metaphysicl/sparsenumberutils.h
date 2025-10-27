@@ -82,7 +82,7 @@ namespace MetaPhysicL {
     Tout* _dataout;
   };
 
-} // namespace std
+} // namespace MetaPhysicL
 
 
 #endif // METAPHYSICL_SPARSENUMBERUTILS_H
