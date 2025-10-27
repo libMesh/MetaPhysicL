@@ -29,15 +29,17 @@
 #ifndef METAPHYSICL_DYNAMICSPARSENUMBERBASE_DECL_H
 #define METAPHYSICL_DYNAMICSPARSENUMBERBASE_DECL_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_set.h"
 #include "metaphysicl/ct_types.h"
 #include "metaphysicl/metaphysicl_asserts.h"
 #include "metaphysicl/metaphysicl_common.h"
+#include "metaphysicl/metaphysicl_math.h"
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/sparsenumberutils.h"
 #include "metaphysicl/testable.h"
-#include "metaphysicl/metaphysicl_math.h"
 
 #include <algorithm>
 #include <functional>

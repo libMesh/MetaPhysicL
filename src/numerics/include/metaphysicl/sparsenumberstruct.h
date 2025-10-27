@@ -29,8 +29,11 @@
 #ifndef METAPHYSICL_SPARSENUMBERSTRUCT_H
 #define METAPHYSICL_SPARSENUMBERSTRUCT_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_set.h"
+#include "metaphysicl/metaphysicl_math.h"
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/testable.h"
 

@@ -29,14 +29,16 @@
 #ifndef METAPHYSICL_NUMBERARRAY_H
 #define METAPHYSICL_NUMBERARRAY_H
 
-#include <algorithm>
-#include <ostream>
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_types.h"
 #include "metaphysicl/metaphysicl_asserts.h"
-#include "metaphysicl/raw_type.h"
 #include "metaphysicl/metaphysicl_math.h"
+#include "metaphysicl/raw_type.h"
+
+#include <algorithm>
+#include <ostream>
 
 namespace MetaPhysicL {
 

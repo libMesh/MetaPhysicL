@@ -24,6 +24,8 @@
 #ifndef METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H
 #define METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/dynamicsparsenumberbase_decl.h"
 #include "metaphysicl/dynamic_std_array_wrapper.h"
 #include "metaphysicl/dynamic_kokkos_array_wrapper.h"

@@ -29,10 +29,7 @@
 #ifndef METAPHYSICL_SPARSENUMBERVECTOR_H
 #define METAPHYSICL_SPARSENUMBERVECTOR_H
 
-#include <algorithm>
-#include <functional>
-#include <stdexcept>
-#include <ostream>
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_set.h"
@@ -41,6 +38,11 @@
 #include "metaphysicl/sparsenumberutils.h"
 #include "metaphysicl/testable.h"
 #include "metaphysicl/metaphysicl_math.h"
+
+#include <algorithm>
+#include <functional>
+#include <stdexcept>
+#include <ostream>
 
 // We now depend on std::function and kin
 #if __cplusplus >= 201103L

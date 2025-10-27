@@ -29,6 +29,8 @@
 #ifndef METAPHYSICL_DUALNUMBER_DECL_H
 #define METAPHYSICL_DUALNUMBER_DECL_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/dualnumber_forward.h"
 
 #include "metaphysicl/metaphysicl_device.h"
