@@ -69,6 +69,7 @@ include_HEADERS += numerics/include/metaphysicl/numberarray.h
 include_HEADERS += numerics/include/metaphysicl/numbervector.h
 include_HEADERS += numerics/include/metaphysicl/raw_type.h
 include_HEADERS += numerics/include/metaphysicl/shadownumber.h
+include_HEADERS += numerics/include/metaphysicl/shadownumber_decl.h
 include_HEADERS += numerics/include/metaphysicl/sparsenumberarray.h
 include_HEADERS += numerics/include/metaphysicl/sparsenumberstruct.h
 include_HEADERS += numerics/include/metaphysicl/sparsenumberutils.h

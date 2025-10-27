@@ -29,9 +29,11 @@
 #define METAPHYSICL_DUALSHADOWSPARSEVECTOR_H
 
 
-// Order of declarations is important here?
-#include "metaphysicl/dualshadow.h"
+#include "metaphysicl/dualnumber_decl.h"
+#include "metaphysicl/shadownumber_decl.h"
+
 #include "metaphysicl/dualsparsenumbervector.h"
+#include "metaphysicl/dualshadow.h"
 
 // ShadowNumber is subordinate to SparseNumberVector
 // T-vs-ShadowNumber CompareTypes specializations...
