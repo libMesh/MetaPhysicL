@@ -113,6 +113,29 @@ AC_HAVE_FEEXCEPT
 
 LT_INIT
 
+
+# --------------------------------------------------------------
+# Deprecated code - enable by default
+# --------------------------------------------------------------
+AC_ARG_ENABLE(std-violation,
+              [AS_HELP_STRING([--enable-std-violation],[Add specializations to std::, not MetaPhysicL::])],
+              enable_std_violation=$enableval,
+              enable_std_violation=no)
+
+AC_SUBST(enable_std_violation)
+AS_IF([test "x$enable_std_violation" != xyes],
+      [
+        AC_MSG_RESULT([>>> Configuring library without C++ std:: violations <<<])
+      ],
+      [
+        AC_MSG_RESULT([<<< Configuring library with deprecated C++ std:: violations >>>])
+        AC_DEFINE(ENABLE_STD_VIOLATION, 1, [Flag indicating if the library should violate std::])
+      ])
+# --------------------------------------------------------------
+
+
+
+
 dnl---------------------------------------------------------
 dnl Checks for  library prerequisites for other libraries...
 dnl---------------------------------------------------------
