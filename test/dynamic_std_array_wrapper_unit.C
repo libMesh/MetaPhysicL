@@ -1,7 +1,7 @@
 #include <iostream>
 #include <exception>
 
-#include "metaphysicl_config.h"
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "metaphysicl/dynamic_std_array_wrapper.h"
 #include "metaphysicl/metaphysicl_exceptions.h"

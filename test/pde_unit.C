@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "metaphysicl_config.h"
+#include "metaphysicl/metaphysicl_config.h"
 #include "metaphysicl/metaphysicl_exceptions.h"
 
 // If we have MASA we test ourselves against an MMS solution; if not

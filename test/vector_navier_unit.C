@@ -1,4 +1,4 @@
-#include "metaphysicl_config.h"
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "testing.h"
 
