@@ -1,4 +1,4 @@
-#include "metaphysicl_config.h"
+#include "metaphysicl/metaphysicl_config.h"
 
 #define USE_SPARSE
 #define USE_DYNAMIC

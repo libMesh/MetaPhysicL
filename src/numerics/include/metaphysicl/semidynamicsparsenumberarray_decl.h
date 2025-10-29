@@ -24,55 +24,70 @@
 #ifndef METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H
 #define METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/dynamicsparsenumberbase_decl.h"
 #include "metaphysicl/dynamic_std_array_wrapper.h"
+#include "metaphysicl/dynamic_kokkos_array_wrapper.h"
 #include "metaphysicl/testable.h"
 
 namespace MetaPhysicL
 {
-template <typename T, typename I, typename N>
-class SemiDynamicSparseNumberArray : public DynamicSparseNumberBase<DynamicStdArrayWrapper<T, N>,
-                                                                    DynamicStdArrayWrapper<I, N>,
-                                                                    SemiDynamicSparseNumberArray,
-                                                                    T,
-                                                                    I,
-                                                                    N>,
-                                     public safe_bool<SemiDynamicSparseNumberArray<T, I, N>>
+template <size_t N>
+struct NWrapper
 {
+  static constexpr size_t size = N;
+};
+
+template <typename T, typename I, typename N, typename ArrayWrapper>
+class SemiDynamicSparseNumberArrayGeneric
+    : public DynamicSparseNumberBase<
+          ArrayWrapper, typename ArrayWrapper::template rebind<I>::type,
+          SemiDynamicSparseNumberArrayGeneric, T, I, N, ArrayWrapper>,
+      public safe_bool<
+          SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>> {
 public:
   template <typename T2, typename I2 = I>
   struct rebind
   {
-    typedef SemiDynamicSparseNumberArray<T2, I2, N> other;
+    typedef SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper> other;
   };
 
-  SemiDynamicSparseNumberArray() = default;
+  SemiDynamicSparseNumberArrayGeneric() = default;
 
-  SemiDynamicSparseNumberArray(const T & val);
+  METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric(const T & val);
 
   template <typename T2>
-  SemiDynamicSparseNumberArray(const T2 & val);
+  METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric(const T2 & val);
 
-  SemiDynamicSparseNumberArray(SemiDynamicSparseNumberArray && src) = default;
+  SemiDynamicSparseNumberArrayGeneric(SemiDynamicSparseNumberArrayGeneric && src) = default;
 
-  SemiDynamicSparseNumberArray & operator=(SemiDynamicSparseNumberArray && src) = default;
+  SemiDynamicSparseNumberArrayGeneric & operator=(SemiDynamicSparseNumberArrayGeneric && src) = default;
 
-  SemiDynamicSparseNumberArray(const SemiDynamicSparseNumberArray & src) = default;
+  SemiDynamicSparseNumberArrayGeneric(const SemiDynamicSparseNumberArrayGeneric & src) = default;
 
-  SemiDynamicSparseNumberArray & operator=(const SemiDynamicSparseNumberArray & src) = default;
+  SemiDynamicSparseNumberArrayGeneric & operator=(const SemiDynamicSparseNumberArrayGeneric & src) = default;
 
-  template <typename T2, typename I2>
-  SemiDynamicSparseNumberArray(const SemiDynamicSparseNumberArray<T2, I2, N> & src);
+  template <typename T2, typename I2, typename ArrayWrapper2>
+  METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric(const SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> & src);
 
-  template <typename T2, typename I2>
-  SemiDynamicSparseNumberArray(SemiDynamicSparseNumberArray<T2, I2, N> && src);
+  template <typename T2, typename I2, typename ArrayWrapper2>
+  METAPHYSICL_INLINE SemiDynamicSparseNumberArrayGeneric(SemiDynamicSparseNumberArrayGeneric<T2, I2, N, ArrayWrapper2> && src);
 };
+
+template <typename T, typename I, typename N>
+using SemiDynamicSparseNumberArray = SemiDynamicSparseNumberArrayGeneric<T, I, N, DynamicStdArrayWrapper<T, N::size>>;
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
+template <typename T, typename I, typename N>
+using KokkosSemiDynamicSparseNumberArray = SemiDynamicSparseNumberArrayGeneric<T, I, N, DynamicKokkosArrayWrapper<T, N::size>>;
+#endif
 
 //
 // Non-member functions
 //
 
 template <size_t N,
+          typename ArrayWrapper,
           unsigned int index1 = 0,
           typename Data1 = void,
           unsigned int index2 = 0,
@@ -106,56 +121,71 @@ struct SemiDynamicSparseNumberArrayOf
                           typename SymmetricCompareTypes<Data7, Data8>::supertype>::supertype>::
                       supertype>::supertype>::supertype>::supertype>::supertype supertype;
 
-  typedef SemiDynamicSparseNumberArray<supertype, unsigned int, NWrapper<N>> type;
+  typedef SemiDynamicSparseNumberArrayGeneric<supertype, unsigned int, NWrapper<N>, ArrayWrapper> type;
 };
 
-DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArray, +, Plus)       // Union)
-DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArray, -, Minus)      // Union)
-DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArray, *, Multiplies) // Intersection)
-DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArray, /, Divides)    // First)
+DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArrayGeneric, +, Plus)       // Union)
+DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArrayGeneric, -, Minus)      // Union)
+DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArrayGeneric, *, Multiplies) // Intersection)
+DynamicSparseNumberBase_decl_op(SemiDynamicSparseNumberArrayGeneric, /, Divides)    // First)
 
 // CompareTypes, RawType, ValueType specializations
 
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, CompareTypes);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, PlusType);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, MinusType);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, MultipliesType);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, DividesType);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, AndType);
-DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArray, OrType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, CompareTypes);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, PlusType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, MinusType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, MultipliesType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, DividesType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, AndType);
+DynamicSparseNumberBase_comparisons(SemiDynamicSparseNumberArrayGeneric, OrType);
 
-template <typename T, typename I, typename N>
-struct RawType<SemiDynamicSparseNumberArray<T, I, N>>
+template <typename T, typename I, typename N, typename ArrayWrapper>
+struct RawType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
-  typedef SemiDynamicSparseNumberArray<typename RawType<T>::value_type, I, N> value_type;
+private:
+  typedef typename RawType<T>::value_type NewT;
 
-  static value_type value(const SemiDynamicSparseNumberArray<T, I, N> & a);
+public:  
+  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::template rebind<NewT>::type> value_type;
+
+  METAPHYSICL_INLINE static value_type value(const SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> & a);
 };
 
-template <typename T, typename I, typename N>
-struct ValueType<SemiDynamicSparseNumberArray<T, I, N>>
+template <typename T, typename I, typename N, typename ArrayWrapper>
+struct ValueType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
 {
   typedef typename ValueType<T>::type type;
 };
 
-template <typename T, typename I, typename N, typename U>
-struct ReplaceAlgebraicType<SemiDynamicSparseNumberArray<T, I, N>, U>
+template <typename T, typename I, typename N, typename ArrayWrapper, typename U>
+struct ReplaceAlgebraicType<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, U>
 {
-  typedef SemiDynamicSparseNumberArray<typename ReplaceAlgebraicType<T,U>::type, I, N> type;
+private:
+  typedef typename ReplaceAlgebraicType<T,U>::type NewT;
+
+public:
+  typedef SemiDynamicSparseNumberArrayGeneric<NewT, I, N, typename ArrayWrapper::template rebind<NewT>::type> type;
 };
+
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
 } // namespace MetaPhysicL
 
-namespace std
-{
+namespace std {
 
-using MetaPhysicL::SemiDynamicSparseNumberArray;
+using MetaPhysicL::SemiDynamicSparseNumberArrayGeneric;
+#endif
 
-template <typename T, typename I, typename N>
-class numeric_limits<SemiDynamicSparseNumberArray<T, I, N>>
-  : public MetaPhysicL::raw_numeric_limits<SemiDynamicSparseNumberArray<T, I, N>, T>
+
+template <typename T, typename I, typename N, typename ArrayWrapper>
+class numeric_limits<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>>
+  : public MetaPhysicL::raw_numeric_limits<SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>, T>
 {
 };
 
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 #endif // METAPHYSICL_SEMIDYNAMICSPARSENUMBERARRAY_DECL_H

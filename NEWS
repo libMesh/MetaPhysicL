@@ -1,3 +1,23 @@
+1.4.0 -> 2.0.0
+  * Improve nvc++ compatibility
+  * Improved parallel testing
+  * Enable and address paranoid warnings
+  * Eliminate code deprecated in c++17
+  * Update autotools
+  * Avoid and test for spurious floating point exceptions
+  * Remove pessimizing std::move
+  * Update autoconf submodule
+  * vexcl.m4 fix when only part of boost is installed
+  * Allow dual numbers to execute on device
+    * Focuses on the SemiDynamicSparseNumberArrayGeneric derivative container
+    * Public do_derivatives static member deprecated
+    * Float and long double overloads removed
+    * Introduction of generic DynamicArrayWrapper
+      * Template using declarations for wrapping std::array and KokkosArray
+      * N template parameter changed from a typename to size_t
+      * typename N parameter moved to SemiDynamicSparseNumberArrayGeneric since
+        base template DynamicSparseNumberBase requires parameter pack of typename
+
 1.3.3 -> 1.4.0
   * Throw exception in opt mode if DynamicStdArrayWrapper size exceeded
   * Add tolerance argument to DynamicSparseNumberBase::sparsity_trim()

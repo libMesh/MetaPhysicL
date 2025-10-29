@@ -21,16 +21,20 @@
 //
 //-----------------------------------------------------------------------el-
 
-#ifndef METAPHYSICL_DYNAMIC_STD_ARRAY_WRAPPER_H
-#define METAPHYSICL_DYNAMIC_STD_ARRAY_WRAPPER_H
+#ifndef METAPHYSICL_DYNAMIC_KOKKOS_ARRAY_WRAPPER_H
+#define METAPHYSICL_DYNAMIC_KOKKOS_ARRAY_WRAPPER_H
 
 #include "metaphysicl/dynamic_array_wrapper.h"
+#include "metaphysicl/metaphysicl_asserts.h"
+#include "metaphysicl/metaphysicl_config.h"
 
-#include <array>
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
+#include <Kokkos_Array.hpp>
 
 namespace MetaPhysicL {
 template <typename T, size_t N>
-using DynamicStdArrayWrapper = DynamicArrayWrapper<std::array, T, N>;
+using DynamicKokkosArrayWrapper = DynamicArrayWrapper<Kokkos::Array, T, N>;
 }
 
-#endif // METAPHYSICL_DYNAMIC_STD_ARRAY_WRAPPER_H
+#endif
+#endif // METAPHYSICL_DYNAMIC_KOKKOS_ARRAY_WRAPPER_H

@@ -29,8 +29,9 @@
 #define METAPHYSICL_DUALSHADOWVECTOR_H
 
 
-// Order of declarations is important here?
 #include "metaphysicl/dualnumber_decl.h"
+#include "metaphysicl/shadownumber_decl.h"
+
 #include "metaphysicl/numbervector.h"
 #include "metaphysicl/dualshadow.h"
 #include "metaphysicl/dualnumbervector.h"

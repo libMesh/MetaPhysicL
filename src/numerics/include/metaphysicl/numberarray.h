@@ -29,13 +29,16 @@
 #ifndef METAPHYSICL_NUMBERARRAY_H
 #define METAPHYSICL_NUMBERARRAY_H
 
-#include <algorithm>
-#include <ostream>
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_types.h"
 #include "metaphysicl/metaphysicl_asserts.h"
+#include "metaphysicl/metaphysicl_math.h"
 #include "metaphysicl/raw_type.h"
+
+#include <algorithm>
+#include <ostream>
 
 namespace MetaPhysicL {
 
@@ -474,14 +477,20 @@ struct ReplaceAlgebraicType<NumberArray<N, T>, U>
   typedef NumberArray<N, typename ReplaceAlgebraicType<T, U>::type> type;
 };
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
 } // namespace MetaPhysicL
-
-
 
 namespace std {
 
+namespace math = MetaPhysicL::math;
 using MetaPhysicL::NumberArray;
 using MetaPhysicL::CompareTypes;
+#endif
+
 
 #define NumberArray_std_unary(funcname) \
 template <std::size_t N, typename T> \
@@ -490,20 +499,10 @@ NumberArray<N, T> \
 funcname (NumberArray<N, T> a) \
 { \
   for (std::size_t i=0; i != N; ++i) \
-    a[i] = std::funcname(a[i]); \
+    a[i] = math::funcname(a[i]); \
  \
   return a; \
 }
-
-
-#define NumberArray_fl_unary(funcname) \
-NumberArray_std_unary(funcname##f) \
-NumberArray_std_unary(funcname##l)
-
-
-#define NumberArray_stdfl_unary(funcname) \
-NumberArray_std_unary(funcname) \
-NumberArray_fl_unary(funcname)
 
 
 #define NumberArray_std_binary_abab(funcname, atype, btype, abtypes, aarg, barg) \
@@ -516,7 +515,7 @@ funcname (const atype& a, const btype& b) \
   TS returnval; \
  \
   for (std::size_t i=0; i != N; ++i) \
-    returnval[i] = std::funcname(aarg, barg); \
+    returnval[i] = math::funcname(aarg, barg); \
  \
   return returnval; \
 }
@@ -530,7 +529,7 @@ funcname (const atype& a, const atype& b) \
   atype returnval; \
  \
   for (std::size_t i=0; i != N; ++i) \
-    returnval[i] = std::funcname(a[i], b[i]); \
+    returnval[i] = math::funcname(a[i], b[i]); \
  \
   return returnval; \
 }
@@ -544,16 +543,6 @@ NumberArray_std_binary_abab(funcname,                             T , NumberArra
 NumberArray_std_binary_abab(funcname, NumberArray<N MacroComma T>,                             T2 , \
                             NumberArray<N MacroComma T> MacroComma T2,                              a[i],    b) \
 NumberArray_std_binary_aa(funcname, NumberArray<N MacroComma T>)
-
-
-#define NumberArray_fl_binary(funcname) \
-NumberArray_std_binary(funcname##f) \
-NumberArray_std_binary(funcname##l)
-
-
-#define NumberArray_stdfl_binary(funcname) \
-NumberArray_std_binary(funcname) \
-NumberArray_fl_binary(funcname)
 
 
 NumberArray_std_binary(pow)
@@ -580,49 +569,28 @@ NumberArray_std_unary(floor)
 NumberArray_std_binary(fmod)
 
 #if __cplusplus >= 201103L
-NumberArray_std_unary(llabs)
-NumberArray_std_unary(imaxabs)
-NumberArray_fl_unary(fabs)
-NumberArray_fl_unary(exp)
-NumberArray_stdfl_unary(exp2)
-NumberArray_stdfl_unary(expm1)
-NumberArray_fl_unary(log)
-NumberArray_fl_unary(log10)
-NumberArray_stdfl_unary(log2)
-NumberArray_stdfl_unary(log1p)
-NumberArray_fl_unary(sqrt)
-NumberArray_stdfl_unary(cbrt)
-NumberArray_fl_unary(sin)
-NumberArray_fl_unary(cos)
-NumberArray_fl_unary(tan)
-NumberArray_fl_unary(asin)
-NumberArray_fl_unary(acos)
-NumberArray_fl_unary(atan)
-NumberArray_fl_unary(sinh)
-NumberArray_fl_unary(cosh)
-NumberArray_fl_unary(tanh)
-NumberArray_stdfl_unary(asinh)
-NumberArray_stdfl_unary(acosh)
-NumberArray_stdfl_unary(atanh)
-NumberArray_stdfl_unary(erf)
-NumberArray_stdfl_unary(erfc)
-NumberArray_stdfl_unary(tgamma)
-NumberArray_stdfl_unary(lgamma)
-NumberArray_fl_unary(ceil)
-NumberArray_fl_unary(floor)
-NumberArray_stdfl_unary(trunc)
-NumberArray_stdfl_unary(round)
-NumberArray_stdfl_unary(nearbyint)
-NumberArray_stdfl_unary(rint)
+NumberArray_std_unary(exp2)
+NumberArray_std_unary(expm1)
+NumberArray_std_unary(log2)
+NumberArray_std_unary(log1p)
+NumberArray_std_unary(cbrt)
+NumberArray_std_unary(asinh)
+NumberArray_std_unary(acosh)
+NumberArray_std_unary(atanh)
+NumberArray_std_unary(erf)
+NumberArray_std_unary(erfc)
+NumberArray_std_unary(tgamma)
+NumberArray_std_unary(lgamma)
+NumberArray_std_unary(trunc)
+NumberArray_std_unary(round)
+NumberArray_std_unary(nearbyint)
+NumberArray_std_unary(rint)
 
-NumberArray_fl_binary(pow)
-NumberArray_fl_binary(fmod)
-NumberArray_stdfl_binary(remainder)
-NumberArray_stdfl_binary(fmax)
-NumberArray_stdfl_binary(fmin)
-NumberArray_stdfl_binary(fdim)
-NumberArray_stdfl_binary(hypot)
-NumberArray_fl_binary(atan2)
+NumberArray_std_binary(remainder)
+NumberArray_std_binary(fmax)
+NumberArray_std_binary(fmin)
+NumberArray_std_binary(fdim)
+NumberArray_std_binary(hypot)
 #endif // __cplusplus >= 201103L
 
 
@@ -631,7 +599,7 @@ template <std::size_t N, typename T>
 class numeric_limits<NumberArray<N, T> > :
   public MetaPhysicL::raw_numeric_limits<NumberArray<N, T>, T> {};
 
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_NUMBERARRAY_H

@@ -29,85 +29,107 @@
 #ifndef METAPHYSICL_SHADOWNUMBER_H
 #define METAPHYSICL_SHADOWNUMBER_H
 
-#include <algorithm>
-#include <iostream>
-#include <limits>
-
-#include "metaphysicl/compare_types.h"
-#include "metaphysicl/raw_type.h"
-#include "metaphysicl/testable.h"
+#include "metaphysicl/shadownumber_decl.h"
 
 namespace MetaPhysicL {
 
+// Member definitions
 template <typename T, typename S>
-class ShadowNumber : public safe_bool<ShadowNumber<T,S> >
-{
-public:
-  typedef T value_type;
+METAPHYSICL_INLINE
+ShadowNumber<T,S>::ShadowNumber() {}
 
-  typedef S shadow_type;
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>::ShadowNumber(const T2& v, const S2& s) : _val(v), _shadow(s) {}
 
-  ShadowNumber() {}
+template <typename T, typename S>
+template <typename T2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>::ShadowNumber(const T2& val) : _val(val), _shadow(val) {}
 
-  template <typename T2, typename S2>
-  ShadowNumber(const T2& v, const S2& s) : _val(v), _shadow(s) {}
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>::ShadowNumber(ShadowNumber<T2, S2>& other) : _val(other._val), _shadow(other._shadow) {}
 
-  template <typename T2>
-  ShadowNumber(const T2& val) : _val(val), _shadow(val) {}
+template <typename T, typename S>
+METAPHYSICL_INLINE
+T& ShadowNumber<T,S>::value() { return _val; }
 
-  template <typename T2, typename S2>
-  ShadowNumber(ShadowNumber<T2, S2>& other) : _val(other._val), _shadow(other._shadow) {}
+template <typename T, typename S>
+METAPHYSICL_INLINE
+const T& ShadowNumber<T,S>::value() const { return _val; }
 
-  T& value() { return _val; }
+template <typename T, typename S>
+METAPHYSICL_INLINE
+S& ShadowNumber<T,S>::shadow() { return _shadow; }
 
-  const T& value() const { return _val; }
+template <typename T, typename S>
+METAPHYSICL_INLINE
+const S& ShadowNumber<T,S>::shadow() const { return _shadow; }
 
-  S& shadow() { return _shadow; }
+template <typename T, typename S>
+METAPHYSICL_INLINE
+bool ShadowNumber<T,S>::boolean_test() const { return _val; }
 
-  const S& shadow() const { return _shadow; }
+template <typename T, typename S>
+METAPHYSICL_INLINE
+ShadowNumber<T,S> ShadowNumber<T,S>::operator- () const { return ShadowNumber<T,S> (-_val, -_shadow); }
 
-  bool boolean_test() const { return _val; }
+template <typename T, typename S>
+METAPHYSICL_INLINE
+ShadowNumber<T,S> ShadowNumber<T,S>::operator! () const { return ShadowNumber<T,S> (!_val, !_shadow); }
 
-  ShadowNumber<T,S> operator- () const { return ShadowNumber<T,S> (-_val, -_shadow); }
 
-  ShadowNumber<T,S> operator! () const { return ShadowNumber<T,S> (!_val, !_shadow); }
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator+= (const ShadowNumber<T2,S2>& a)
+  { _val += a.value(); _shadow += a.shadow(); return *this; }
 
-  template <typename T2, typename S2>
-  ShadowNumber<T,S>& operator+= (const ShadowNumber<T2,S2>& a)
-    { _val += a.value(); _shadow += a.shadow(); return *this; }
+template <typename T, typename S>
+template <typename T2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator+= (const T2& a)
+  { _val += a; _shadow += a; return *this; }
 
-  template <typename T2>
-  ShadowNumber<T,S>& operator+= (const T2& a)
-    { _val += a; _shadow += a; return *this; }
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator-= (const ShadowNumber<T2,S2>& a)
+  { _val -= a.value(); _shadow -= a.shadow(); return *this; }
 
-  template <typename T2, typename S2>
-  ShadowNumber<T,S>& operator-= (const ShadowNumber<T2,S2>& a)
-    { _val -= a.value(); _shadow -= a.shadow(); return *this; }
+template <typename T, typename S>
+template <typename T2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator-= (const T2& a)
+  { _val -= a; _shadow -= a; return *this; }
 
-  template <typename T2>
-  ShadowNumber<T,S>& operator-= (const T2& a)
-    { _val -= a; _shadow -= a; return *this; }
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator*= (const ShadowNumber<T2,S2>& a)
+  { _val *= a.value(); _shadow *= a.shadow(); return *this; }
 
-  template <typename T2, typename S2>
-  ShadowNumber<T,S>& operator*= (const ShadowNumber<T2,S2>& a)
-    { _val *= a.value(); _shadow *= a.shadow(); return *this; }
+template <typename T, typename S>
+template <typename T2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator*= (const T2& a)
+  { _val *= a; _shadow *= a; return *this; }
 
-  template <typename T2>
-  ShadowNumber<T,S>& operator*= (const T2& a)
-    { _val *= a; _shadow *= a; return *this; }
+template <typename T, typename S>
+template <typename T2, typename S2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator/= (const ShadowNumber<T2,S2>& a)
+  { _val /= a.value(); _shadow /= a.shadow(); return *this; }
 
-  template <typename T2, typename S2>
-  ShadowNumber<T,S>& operator/= (const ShadowNumber<T2,S2>& a)
-    { _val /= a.value(); _shadow /= a.shadow(); return *this; }
+template <typename T, typename S>
+template <typename T2>
+METAPHYSICL_INLINE
+ShadowNumber<T,S>& ShadowNumber<T,S>::operator/= (const T2& a)
+  { _val /= a; _shadow /= a; return *this; }
 
-  template <typename T2>
-  ShadowNumber<T,S>& operator/= (const T2& a)
-    { _val /= a; _shadow /= a; return *this; }
-
-private:
-  T _val;
-  S _shadow;
-};
 
 //
 // Non-member functions
@@ -115,7 +137,7 @@ private:
 
 #define ShadowNumber_op(opname) \
 template <typename T, typename S, typename T2, typename S2> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T,S>,ShadowNumber<T2,S2> >::supertype \
 operator opname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 { \
@@ -126,7 +148,7 @@ operator opname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 } \
  \
 template <typename T, typename S, typename T2> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T,S>,T2>::supertype \
 operator opname (const ShadowNumber<T,S>& a, const T2& b) \
 { \
@@ -137,7 +159,7 @@ operator opname (const ShadowNumber<T,S>& a, const T2& b) \
  \
 } \
 template <typename T, typename T2, typename S> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T2,S>,T>::supertype \
 operator opname (const T& a, const ShadowNumber<T2,S>& b) \
 { \
@@ -154,7 +176,7 @@ ShadowNumber_op(/)
 
 #define ShadowNumber_operator_binary(opname) \
 template <typename T, typename S, typename T2, typename S2> \
-inline \
+METAPHYSICL_INLINE \
 ShadowNumber<bool, bool> \
 operator opname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 { \
@@ -162,7 +184,7 @@ operator opname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 } \
  \
 template <typename T, typename S, typename T2> \
-inline \
+METAPHYSICL_INLINE \
 typename boostcopy::enable_if_class< \
   typename CompareTypes<ShadowNumber<T,S>,T2>::supertype, \
   ShadowNumber<bool,bool> \
@@ -173,7 +195,7 @@ operator opname (const ShadowNumber<T,S>& a, const T2& b) \
 } \
  \
 template <typename T, typename T2, typename S> \
-inline \
+METAPHYSICL_INLINE \
 typename boostcopy::enable_if_class< \
   typename CompareTypes<ShadowNumber<T2,S>,T>::supertype, \
   ShadowNumber<bool,bool> \
@@ -192,49 +214,12 @@ ShadowNumber_operator_binary(==)
 ShadowNumber_operator_binary(!=)
 
 template <typename T, typename S>
-inline
+METAPHYSICL_INLINE
 std::ostream&      
 operator<< (std::ostream& output, const ShadowNumber<T,S>& a)
 {
   return output << '(' << a.value() << ',' << a.shadow() << ')';
 }
-
-
-// ScalarTraits, RawType, CompareTypes specializations
-
-template <typename T, typename S>
-struct ScalarTraits<ShadowNumber<T, S> >
-{
-  static const bool value = ScalarTraits<T>::value;
-};
-
-#define ShadowNumber_comparisons(templatename) \
-template<typename T, typename S, bool reverseorder> \
-struct templatename<ShadowNumber<T,S>, ShadowNumber<T,S>, reverseorder> { \
-  typedef ShadowNumber<T, S> supertype; \
-}; \
- \
-template<typename T, typename S, typename T2, typename S2, bool reverseorder> \
-struct templatename<ShadowNumber<T,S>, ShadowNumber<T2,S2>, reverseorder> { \
-  typedef ShadowNumber<typename Symmetric##templatename<T, T2, reverseorder>::supertype, \
-                       typename Symmetric##templatename<S, S2, reverseorder>::supertype> supertype; \
-}; \
- \
-template<typename T, typename S, typename T2, bool reverseorder> \
-struct templatename<ShadowNumber<T, S>, T2, reverseorder, \
-                    typename boostcopy::enable_if<BuiltinTraits<T2> >::type> { \
-  typedef ShadowNumber<typename Symmetric##templatename<T, T2, reverseorder>::supertype, \
-                       typename Symmetric##templatename<S, T2, reverseorder>::supertype> supertype; \
-}
-
-ShadowNumber_comparisons(CompareTypes);
-ShadowNumber_comparisons(PlusType);
-ShadowNumber_comparisons(MinusType);
-ShadowNumber_comparisons(MultipliesType);
-ShadowNumber_comparisons(DividesType);
-ShadowNumber_comparisons(AndType);
-ShadowNumber_comparisons(OrType);
-
 
 
 template <typename T, typename S>
@@ -243,98 +228,85 @@ struct RawType<ShadowNumber<T, S> >
   typedef typename RawType<T>::value_type value_type;
 
   static value_type value(const ShadowNumber<T, S>& a) {
-    const S max_value = std::max(S(a.value()), a.shadow());
+    const S max_value = math::max(S(a.value()), a.shadow());
     if (max_value) {
       const S relative_error = (a.value() - a.shadow()) / max_value;
-      if (relative_error > 10*std::numeric_limits<T>::epsilon())
+      if (relative_error > 10*numeric_limits<T>::epsilon())
         std::cerr << "Shadow relative error = " << relative_error << std::endl;
     }
     return a.value();
   }
 };
 
-} // namespace MetaPhysicL
 
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
 
 namespace std {
 
+namespace math = MetaPhysicL::math;
 using MetaPhysicL::CompareTypes;
 using MetaPhysicL::ShadowNumber;
+#endif
+
 
 // Now just combined declaration/definitions
 
 #define ShadowNumber_std_unary(funcname) \
 template <typename T, typename S> \
-inline \
+METAPHYSICL_INLINE \
 ShadowNumber<T, S> \
 funcname (ShadowNumber<T, S> a) \
 { \
-  a.value() = std::funcname(a.value()); \
-  a.shadow() = std::funcname(a.shadow()); \
+  a.value() = math::funcname(a.value()); \
+  a.shadow() = math::funcname(a.shadow()); \
   return a; \
 }
 
 
-#define ShadowNumber_fl_unary(funcname) \
-ShadowNumber_std_unary(funcname##f) \
-ShadowNumber_std_unary(funcname##l)
-
-
-#define ShadowNumber_stdfl_unary(funcname) \
-ShadowNumber_std_unary(funcname) \
-ShadowNumber_fl_unary(funcname)
-
-
 #define ShadowNumber_std_binary(funcname) \
 template <typename T, typename S, typename T2, typename S2> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T,S>,ShadowNumber<T2,S2> >::supertype \
 funcname (const ShadowNumber<T,S>& a, const ShadowNumber<T2,S2>& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T,S>,ShadowNumber<T2,S2> >::supertype TS; \
-  return TS (std::funcname(a.value(), b.value()), \
-             std::funcname(a.shadow(), b.shadow())); \
+  return TS (math::funcname(a.value(), b.value()), \
+             math::funcname(a.shadow(), b.shadow())); \
 } \
  \
 template <typename T, typename S> \
-inline \
+METAPHYSICL_INLINE \
 ShadowNumber<T,S> \
 funcname (const ShadowNumber<T,S>& a, const ShadowNumber<T,S>& b) \
 { \
   return ShadowNumber<T,S> \
-    (std::funcname(a.value(), b.value()), \
-     std::funcname(a.shadow(), b.shadow())); \
+    (math::funcname(a.value(), b.value()), \
+     math::funcname(a.shadow(), b.shadow())); \
 } \
  \
 template <typename T, typename S, typename T2> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T,S>,T2>::supertype \
 funcname (const ShadowNumber<T,S>& a, const T2& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T,S>,T2>::supertype TS; \
-  return TS (std::funcname(a.value(), b), \
-             std::funcname(a.shadow(), b)); \
+  return TS (math::funcname(a.value(), b), \
+             math::funcname(a.shadow(), b)); \
 } \
  \
 template <typename T, typename T2, typename S> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<ShadowNumber<T2,S>,T>::supertype \
 funcname (const T& a, const ShadowNumber<T2,S>& b) \
 { \
   typedef typename CompareTypes<ShadowNumber<T2,S>,T>::supertype TS; \
-  return TS (std::funcname(a, b.value()), \
-             std::funcname(a, b.shadow())); \
+  return TS (math::funcname(a, b.value()), \
+             math::funcname(a, b.shadow())); \
 }
-
-
-#define ShadowNumber_fl_binary(funcname) \
-ShadowNumber_std_binary(funcname##f) \
-ShadowNumber_std_binary(funcname##l)
-
-
-#define ShadowNumber_stdfl_binary(funcname) \
-ShadowNumber_std_binary(funcname) \
-ShadowNumber_fl_binary(funcname)
 
 
 ShadowNumber_std_binary(pow)
@@ -361,57 +333,31 @@ ShadowNumber_std_unary(floor)
 ShadowNumber_std_binary(fmod)
 
 #if __cplusplus >= 201103L
-ShadowNumber_std_unary(llabs)
-ShadowNumber_std_unary(imaxabs)
-ShadowNumber_fl_unary(fabs)
-ShadowNumber_fl_unary(exp)
-ShadowNumber_stdfl_unary(exp2)
-ShadowNumber_stdfl_unary(expm1)
-ShadowNumber_fl_unary(log)
-ShadowNumber_fl_unary(log10)
-ShadowNumber_stdfl_unary(log2)
-ShadowNumber_stdfl_unary(log1p)
-ShadowNumber_fl_unary(sqrt)
-ShadowNumber_stdfl_unary(cbrt)
-ShadowNumber_fl_unary(sin)
-ShadowNumber_fl_unary(cos)
-ShadowNumber_fl_unary(tan)
-ShadowNumber_fl_unary(asin)
-ShadowNumber_fl_unary(acos)
-ShadowNumber_fl_unary(atan)
-ShadowNumber_fl_unary(sinh)
-ShadowNumber_fl_unary(cosh)
-ShadowNumber_fl_unary(tanh)
-ShadowNumber_stdfl_unary(asinh)
-ShadowNumber_stdfl_unary(acosh)
-ShadowNumber_stdfl_unary(atanh)
-ShadowNumber_stdfl_unary(erf)
-ShadowNumber_stdfl_unary(erfc)
-ShadowNumber_stdfl_unary(tgamma)
-ShadowNumber_stdfl_unary(lgamma)
-ShadowNumber_fl_unary(ceil)
-ShadowNumber_fl_unary(floor)
-ShadowNumber_stdfl_unary(trunc)
-ShadowNumber_stdfl_unary(round)
-ShadowNumber_stdfl_unary(nearbyint)
-ShadowNumber_stdfl_unary(rint)
+ShadowNumber_std_unary(exp2)
+ShadowNumber_std_unary(expm1)
+ShadowNumber_std_unary(log2)
+ShadowNumber_std_unary(log1p)
+ShadowNumber_std_unary(cbrt)
+ShadowNumber_std_unary(asinh)
+ShadowNumber_std_unary(acosh)
+ShadowNumber_std_unary(atanh)
+ShadowNumber_std_unary(erf)
+ShadowNumber_std_unary(erfc)
+ShadowNumber_std_unary(tgamma)
+ShadowNumber_std_unary(lgamma)
+ShadowNumber_std_unary(trunc)
+ShadowNumber_std_unary(round)
+ShadowNumber_std_unary(nearbyint)
+ShadowNumber_std_unary(rint)
 
-ShadowNumber_fl_binary(pow)
-ShadowNumber_fl_binary(fmod)
-ShadowNumber_stdfl_binary(remainder)
-ShadowNumber_stdfl_binary(fmax)
-ShadowNumber_stdfl_binary(fmin)
-ShadowNumber_stdfl_binary(fdim)
-ShadowNumber_stdfl_binary(hypot)
-ShadowNumber_fl_binary(atan2)
+ShadowNumber_std_binary(remainder)
+ShadowNumber_std_binary(fmax)
+ShadowNumber_std_binary(fmin)
+ShadowNumber_std_binary(fdim)
+ShadowNumber_std_binary(hypot)
 #endif // __cplusplus >= 201103L
 
-
-template <typename T, typename S>
-class numeric_limits<ShadowNumber<T, S> > :
-  public MetaPhysicL::raw_numeric_limits<ShadowNumber<T, S>, T> {};
-
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 
 

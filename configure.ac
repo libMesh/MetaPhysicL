@@ -2,7 +2,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(metaphysicl, 1.4.0, roystgnr@ices.utexas.edu)
+AC_INIT(metaphysicl, 2.0.0, roystgnr@gmail.com)
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_HEADERS([src/utilities/include/metaphysicl/metaphysicl_config.h.tmp])
@@ -81,6 +81,8 @@ AC_PROG_FC
 # --------------------------------------------------------------
 ACSM_CXX_COMPILER_STANDARD([2011], [2017])
 
+AM_CONDITIONAL(CXX17_ENABLED,test x$HAVE_CXX17 = x1)
+
 AM_CONDITIONAL(CXX14_ENABLED,test x$HAVE_CXX14 = x1)
 
 AM_CONDITIONAL(CXX11_ENABLED,test x$HAVE_CXX11 = x1)
@@ -111,6 +113,29 @@ AC_HAVE_FEEXCEPT
 
 LT_INIT
 
+
+# --------------------------------------------------------------
+# Deprecated code - disable by default
+# --------------------------------------------------------------
+AC_ARG_ENABLE(std-violation,
+              [AS_HELP_STRING([--enable-std-violation],[Add specializations to std::, not MetaPhysicL::])],
+              enable_std_violation=$enableval,
+              enable_std_violation=no)
+
+AC_SUBST(enable_std_violation)
+AS_IF([test "x$enable_std_violation" != xyes],
+      [
+        AC_MSG_RESULT([<<< Configuring library without C++ std:: violations >>>])
+      ],
+      [
+        AC_MSG_RESULT([<<< Configuring library with deprecated C++ std:: violations >>>])
+        AC_DEFINE(ENABLE_STD_VIOLATION, 1, [Flag indicating if the library should violate std::])
+      ])
+# --------------------------------------------------------------
+
+
+
+
 dnl---------------------------------------------------------
 dnl Checks for  library prerequisites for other libraries...
 dnl---------------------------------------------------------
@@ -127,6 +152,9 @@ if (test x$HAVE_VEXCL = x1); then
   antioch_optional_test_LDFLAGS="$VEXCL_LDFLAGS $antioch_optional_test_LDFLAGS"
   antioch_optional_test_LIBS="$VEXCL_LIBS $antioch_optional_test_LIBS"
 fi
+
+dnl Optional check for Kokkos
+CONFIGURE_KOKKOS
 
 dnl build dependencies from right to left, so mpi before timpi
 AS_IF([test "x$enablempi" = xyes],

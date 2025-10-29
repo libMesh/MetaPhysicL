@@ -31,6 +31,10 @@ echo Build host.................... : $BUILD_HOST
 echo Configure date................ : $BUILD_DATE
 echo Build architecture............ : $BUILD_ARCH
 echo Git revision number........... : $BUILD_VERSION
+if test "x$enable_std_violation" = "xyes"; then
+  echo Library settings:
+  echo '  'Enable std:: violations..... : yes
+fi
 echo
 echo Optional Packages for Testing:
 if test "x$HAVE_MASA" = "x1"; then
@@ -59,6 +63,16 @@ if test "x$HAVE_TIMPI" = "x1"; then
   echo '  'TIMPI_LIBS.................. : $TIMPI_LIBS
 else
   echo '  'TIMPI....................... : no
+fi
+if test "x$KOKKOS_CXX" != "x"; then
+  echo '  'KOKKOS...................... : yes
+  echo '  'KOKKOS_CXX.................. : $KOKKOS_CXX
+  echo '  'KOKKOS_CPPFLAGS............. : $KOKKOS_CPPFLAGS
+  echo '  'KOKKOS_CXXFLAGS............. : $KOKKOS_CXXFLAGS
+  echo '  'KOKKOS_LDFLAGS.............. : $KOKKOS_LDFLAGS
+  echo '  'KOKKOS_LIBS................. : $KOKKOS_LIBS
+else
+  echo '  'KOKKOS...................... : no
 fi
 echo
 echo '-------------------------------------------------------------------------------'
