@@ -136,10 +136,10 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/m4/common/vexcl.m4 \
 	$(top_srcdir)/m4/acsm_cxx_tests.m4 \
 	$(top_srcdir)/m4/config_summary.m4 \
-	$(top_srcdir)/m4/feexcept.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/feexcept.m4 $(top_srcdir)/m4/kokkos.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(include_HEADERS) \
@@ -364,11 +364,18 @@ HAVE_CXX17 = @HAVE_CXX17@
 HAVE_GCOV_TOOLS = @HAVE_GCOV_TOOLS@
 HAVE_MASA = @HAVE_MASA@
 HAVE_VEXCL = @HAVE_VEXCL@
+HIPCC = @HIPCC@
+ICPX = @ICPX@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+KOKKOS_CPPFLAGS = @KOKKOS_CPPFLAGS@
+KOKKOS_CXX = @KOKKOS_CXX@
+KOKKOS_CXXFLAGS = @KOKKOS_CXXFLAGS@
+KOKKOS_LDFLAGS = @KOKKOS_LDFLAGS@
+KOKKOS_LIBS = @KOKKOS_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -395,6 +402,7 @@ MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
+NVCC = @NVCC@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OTOOL = @OTOOL@
@@ -456,6 +464,7 @@ datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
+enable_std_violation = @enable_std_violation@
 exec_prefix = @exec_prefix@
 gitquery = @gitquery@
 have_gcov = @have_gcov@
@@ -497,7 +506,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libmetaphysicl.la
-libmetaphysicl_la_LDFLAGS = -version-info 10:0:0
+libmetaphysicl_la_LDFLAGS = -version-info 11:0:0
 
 #----------------------------------------------
 # List of source files to build dynamic library
@@ -520,6 +529,7 @@ include_HEADERS = core/include/metaphysicl/compare_types.h \
 	core/include/metaphysicl/ct_set.h \
 	core/include/metaphysicl/ct_types.h \
 	core/include/metaphysicl/metaphysicl_common.h \
+	core/include/metaphysicl/metaphysicl_device.h \
 	graphs/include/metaphysicl/physics.h \
 	numerics/include/metaphysicl/dualderivatives.h \
 	numerics/include/metaphysicl/dualdynamicsparsenumberarray.h \
@@ -556,6 +566,7 @@ include_HEADERS = core/include/metaphysicl/compare_types.h \
 	numerics/include/metaphysicl/numbervector.h \
 	numerics/include/metaphysicl/raw_type.h \
 	numerics/include/metaphysicl/shadownumber.h \
+	numerics/include/metaphysicl/shadownumber_decl.h \
 	numerics/include/metaphysicl/sparsenumberarray.h \
 	numerics/include/metaphysicl/sparsenumberstruct.h \
 	numerics/include/metaphysicl/sparsenumberutils.h \
@@ -574,9 +585,13 @@ include_HEADERS = core/include/metaphysicl/compare_types.h \
 	utilities/include/metaphysicl/metaprogramming.h \
 	utilities/include/metaphysicl/testable.h \
 	utilities/include/metaphysicl/dynamic_std_array_wrapper.h \
-	utilities/include/metaphysicl/parallel_dynamic_std_array_wrapper.h \
+	utilities/include/metaphysicl/dynamic_kokkos_array_wrapper.h \
+	utilities/include/metaphysicl/dynamic_array_wrapper.h \
+	utilities/include/metaphysicl/parallel_dynamic_array_wrapper.h \
 	utilities/include/metaphysicl/ignore_warnings.h \
 	utilities/include/metaphysicl/restore_warnings.h \
+	utilities/include/metaphysicl/metaphysicl_math.h \
+	utilities/include/metaphysicl/metaphysicl_numeric_limits.h \
 	$(top_builddir)/src/utilities/include/metaphysicl/metaphysicl_version.h \
 	$(top_builddir)/src/utilities/include/metaphysicl/metaphysicl_config.h
 

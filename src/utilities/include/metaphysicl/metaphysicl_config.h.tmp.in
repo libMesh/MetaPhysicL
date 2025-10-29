@@ -18,6 +18,9 @@
 /* SVN revision */
 #undef BUILD_VERSION
 
+/* Flag indicating if the library should violate std:: */
+#undef ENABLE_STD_VIOLATION
+
 /* Defined if the requested minimum BOOST version is satisfied */
 #undef HAVE_BOOST
 
