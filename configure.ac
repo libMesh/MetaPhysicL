@@ -115,7 +115,7 @@ LT_INIT
 
 
 # --------------------------------------------------------------
-# Deprecated code - enable by default
+# Deprecated code - disable by default
 # --------------------------------------------------------------
 AC_ARG_ENABLE(std-violation,
               [AS_HELP_STRING([--enable-std-violation],[Add specializations to std::, not MetaPhysicL::])],
