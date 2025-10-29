@@ -7,6 +7,7 @@
 #include "metaphysicl/numberarray.h"
 
 using namespace MetaPhysicL;
+using namespace std;
 
 #define expect_near(double1, double2, tolerance)                                                   \
   {                                                                                                \
@@ -18,7 +19,7 @@ using namespace MetaPhysicL;
 
 #define expect_nan(number)                                                                         \
   {                                                                                                \
-    int new_returnval = !std::isnan(number);                                                       \
+    int new_returnval = !isnan(number);                                                       \
     if (new_returnval)                                                                             \
       std::cerr << "Failed test at line " << __LINE__ << std::endl;                                \
     returnval = returnval || new_returnval;                                                        \
@@ -47,46 +48,46 @@ main()
     DualNumber<std::complex<double>, NumberArray<2, std::complex<double>>> cdn{
         std::complex<double>{1., 1.}};
 
-    DualNumber<double, NumberArray<2, double>> dn_real = std::real(cdn);
+    DualNumber<double, NumberArray<2, double>> dn_real = real(cdn);
     expect_near(dn_real.value(), 1, tol);
     expect_nan_dualnumber(dn_real);
 
-    DualNumber<double, NumberArray<2, double>> dn_imag = std::imag(cdn);
+    DualNumber<double, NumberArray<2, double>> dn_imag = imag(cdn);
     expect_near(dn_imag.value(), 1, tol);
     expect_nan_dualnumber(dn_imag);
 
-    DualNumber<double, NumberArray<2, double>> dn_norm = std::norm(cdn);
+    DualNumber<double, NumberArray<2, double>> dn_norm = norm(cdn);
     expect_near(dn_norm.value(), 2, tol);
     expect_nan_dualnumber(dn_norm);
 
-    DualNumber<double, NumberArray<2, double>> dn_abs = std::abs(cdn);
+    DualNumber<double, NumberArray<2, double>> dn_abs = abs(cdn);
     expect_near(dn_abs.value(), sqrt2, tol);
     expect_nan_dualnumber(dn_abs);
 
-    DualNumber<std::complex<double>, NumberArray<2, std::complex<double>>> dn_conj = std::conj(cdn);
+    DualNumber<std::complex<double>, NumberArray<2, std::complex<double>>> dn_conj = conj(cdn);
     expect_near(dn_conj.value().real(), 1, tol);
     expect_near(dn_conj.value().imag(), -1, tol);
     expect_complex_nan_dualnumber(dn_conj);
 
     DualNumber<std::complex<double>> cdn2{std::complex<double>{1., 1.}};
 
-    DualNumber<double> dn_real2 = std::real(cdn2);
+    DualNumber<double> dn_real2 = real(cdn2);
     expect_near(dn_real2.value(), 1, tol);
     expect_nan(dn_real2.derivatives());
 
-    DualNumber<double> dn_imag2 = std::imag(cdn2);
+    DualNumber<double> dn_imag2 = imag(cdn2);
     expect_near(dn_imag2.value(), 1, tol);
     expect_nan(dn_imag2.derivatives());
 
-    DualNumber<double> dn_norm2 = std::norm(cdn2);
+    DualNumber<double> dn_norm2 = norm(cdn2);
     expect_near(dn_norm2.value(), 2, tol);
     expect_nan(dn_norm2.derivatives());
 
-    DualNumber<double> dn_abs2 = std::abs(cdn2);
+    DualNumber<double> dn_abs2 = abs(cdn2);
     expect_near(dn_abs2.value(), sqrt2, tol);
     expect_nan(dn_abs2.derivatives());
 
-    DualNumber<std::complex<double>> dn_conj2 = std::conj(cdn2);
+    DualNumber<std::complex<double>> dn_conj2 = conj(cdn2);
     expect_near(dn_conj2.value().real(), 1, tol);
     expect_near(dn_conj2.value().imag(), -1, tol);
     expect_nan(dn_conj2.derivatives().real());
@@ -98,11 +99,11 @@ main()
     double_dsna.resize(1);
     double_dsna[0] = -1;
 
-    DynamicSparseNumberArray<double, unsigned int> double_dsna_real = std::real(double_dsna);
+    DynamicSparseNumberArray<double, unsigned int> double_dsna_real = real(double_dsna);
     expect_near(double_dsna_real[0], -1, tol);
-    DynamicSparseNumberArray<double, unsigned int> double_dsna_imag = std::imag(double_dsna);
+    DynamicSparseNumberArray<double, unsigned int> double_dsna_imag = imag(double_dsna);
     expect_near(double_dsna_imag[0], 0, tol);
-    DynamicSparseNumberArray<double, unsigned int> double_dsna_norm = std::norm(double_dsna);
+    DynamicSparseNumberArray<double, unsigned int> double_dsna_norm = norm(double_dsna);
     expect_near(double_dsna_norm[0], 1, tol);
 
     DynamicSparseNumberArray<std::complex<double>, unsigned int> complex_dsna;
@@ -110,11 +111,11 @@ main()
     complex_dsna[0].real(-1);
     complex_dsna[0].imag(-1);
 
-    DynamicSparseNumberArray<double, unsigned int> complex_dsna_real = std::real(complex_dsna);
+    DynamicSparseNumberArray<double, unsigned int> complex_dsna_real = real(complex_dsna);
     expect_near(complex_dsna_real[0], -1, tol);
-    DynamicSparseNumberArray<double, unsigned int> complex_dsna_imag = std::imag(complex_dsna);
+    DynamicSparseNumberArray<double, unsigned int> complex_dsna_imag = imag(complex_dsna);
     expect_near(complex_dsna_imag[0], -1, tol);
-    DynamicSparseNumberArray<double, unsigned int> complex_dsna_norm = std::norm(complex_dsna);
+    DynamicSparseNumberArray<double, unsigned int> complex_dsna_norm = norm(complex_dsna);
     expect_near(complex_dsna_norm[0], 2, tol);
   }
 

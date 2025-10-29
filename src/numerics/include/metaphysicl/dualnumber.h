@@ -33,6 +33,7 @@
 
 #include "metaphysicl/dualnumber_surrogate.h"
 #include "metaphysicl/metaphysicl_common.h"
+#include "metaphysicl/metaphysicl_math.h"
 
 namespace MetaPhysicL {
 
@@ -41,66 +42,68 @@ class NotADuckDualNumber;
 
 // static member initialization
 template <typename T, typename D, bool asd>
-bool DualNumber<T,D,asd>::do_derivatives = true;
+bool DualNumber<T,D,asd>::_do_derivatives_on_host = true;
+template <typename T, typename D, bool asd>
+bool & DualNumber<T,D,asd>::do_derivatives = DualNumber<T, D, asd>::_do_derivatives_on_host;
 
 // Member definitions
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 T&
 DualNumber<T,D,asd>::value() { return _val; }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 const T&
 DualNumber<T,D,asd>::value() const { return _val; }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 D&
 DualNumber<T,D,asd>::derivatives() { return _deriv; }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 const D&
 DualNumber<T,D,asd>::derivatives() const { return _deriv; }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 bool
 DualNumber<T,D,asd>::boolean_test() const { return _val; }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>
 DualNumber<T,D,asd>::operator- () const { return DualNumber<T,D,asd>(-_val, -_deriv); }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>
 DualNumber<T,D,asd>::operator! () const { return DualNumber<T,D,asd>(!_val, !_deriv); }
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const DualNumber<T2,D2,asd> & dn)
 {
   _val = dn.value();
 
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 
   return *this;
 }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const DualNumber<T,D,asd> & dn)
 {
   _val = dn.value();
 
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 
   return *this;
@@ -108,13 +111,13 @@ DualNumber<T,D,asd>::operator=(const DualNumber<T,D,asd> & dn)
 
 #ifdef METAPHYSICL_USE_STD_MOVE
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(DualNumber<T,D,asd> && dn)
 {
   _val = std::move(dn.value());
 
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = std::move(dn.derivatives());
 
   return *this;
@@ -123,45 +126,45 @@ DualNumber<T,D,asd>::operator=(DualNumber<T,D,asd> && dn)
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const NotADuckDualNumber<T2,D2> & nd_dn)
 {
   _val = nd_dn.value();
 
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = nd_dn.derivatives();
 
   return *this;
 }
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumber<T,D,asd> & dn) :
     _val(dn.value())
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = dn.derivatives();
 }
 
 #ifdef METAPHYSICL_USE_STD_MOVE
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(DualNumber<T,D,asd> && dn) :
     _val(std::move(dn.value()))
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = std::move(dn.derivatives());
 }
 #endif // METAPHYSICL_USE_STD_MOVE
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumberSurrogate<T2,D2> & dns) :
     _val(dns.value())
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
   {
     auto size = dns.derivatives().size();
     for (decltype(size) i = 0; i < size; ++i)
@@ -171,13 +174,13 @@ DualNumber<T,D,asd>::DualNumber(const DualNumberSurrogate<T2,D2> & dns) :
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const DualNumberSurrogate<T2,D2> & dns)
 {
   _val = dns.value();
 
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
   {
     auto size = dns.derivatives().size();
     for (decltype(size) i = 0; i < size; ++i)
@@ -188,12 +191,12 @@ DualNumber<T,D,asd>::operator=(const DualNumberSurrogate<T2,D2> & dns)
 
 template <typename T, typename D, bool asd>
 template <typename T2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd> &
 DualNumber<T,D,asd>::operator=(const T2 & scalar)
 {
   _val = scalar;
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = 0;
   return *this;
 }
@@ -205,33 +208,33 @@ DualNumber<T,D,asd>::operator=(const T2 & scalar)
 // permit construction from another dual number if both value and derivative types are convertible
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const DualNumber<T2, D2, asd> & val, typename std::enable_if<std::is_convertible<T2,T>::value && std::is_convertible<D2,D>::value, void*>::type) :
     _val  (DualNumberConstructor<T,D,asd>::value(val))
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val);
 }
 
 // permit construction from any type, if it can be converted to this dual number's value type
 template <typename T, typename D, bool asd>
 template <typename T2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const T2& val, typename std::enable_if<std::is_convertible<T2,T>::value, void*>::type) :
     _val  (DualNumberConstructor<T,D,asd>::value(val))
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val);
 }
 
 template <typename T, typename D, bool asd>
 template <typename T2, typename D2>
-inline
+METAPHYSICL_INLINE
 DualNumber<T,D,asd>::DualNumber(const T2& val,
                             const D2& deriv) :
   _val  (DualNumberConstructor<T,D,asd>::value(val,deriv))
 {
-  if (!allow_skipping_derivatives || do_derivatives)
+  if (!allow_skipping_derivatives || this->take_derivatives())
     _deriv = DualNumberConstructor<T,D,asd>::deriv(val,deriv);
 }
 
@@ -244,11 +247,11 @@ template <typename T,
           typename DT,
           bool asd,
           typename std::enable_if<ScalarTraits<T>::value, int>::type = 0>
-inline void
+METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<T, D<N, DT>, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.do_derivatives)
+  if (asd && !out.take_derivatives())
     return;
 
   auto & din = in.derivatives();
@@ -261,11 +264,11 @@ derivative_multiply_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<
 }
 
 template <typename T, typename D, bool asd>
-inline void
+METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.do_derivatives)
+  if (asd && !out.take_derivatives())
     return;
 
   if (&in == &out)
@@ -278,11 +281,11 @@ derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, a
 }
 
 template <typename T, typename D, typename T2, typename D2, bool asd>
-inline void
+METAPHYSICL_INLINE void
 derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2, asd> & in)
 {
   // Potentially different classes so need to check both
-  if (asd && !(out.do_derivatives || in.do_derivatives))
+  if (asd && !(out.take_derivatives() || in.take_derivatives()))
     return;
 
   out.derivatives() *= in.value();
@@ -296,12 +299,13 @@ template <typename T,
           typename DT,
           bool asd,
           typename std::enable_if<ScalarTraits<T>::value, int>::type = 0>
-inline void
+METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<T, D<N, DT>, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.do_derivatives)
+  if (asd && !out.take_derivatives())
     return;
+
   auto & din = in.derivatives();
   auto & dout = out.derivatives();
   const auto vin = in.value();
@@ -312,11 +316,11 @@ derivative_division_helper(DualNumber<T, D<N, DT>, asd> & out, const DualNumber<
 }
 
 template <typename T, typename D, bool asd>
-inline void
+METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, asd> & in)
 {
   // do_derivatives is a static member so only need to check one object
-  if (asd && !out.do_derivatives)
+  if (asd && !out.take_derivatives())
     return;
 
   if (&in == &out)
@@ -330,12 +334,13 @@ derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T, D, a
 }
 
 template <typename T, typename D, typename T2, typename D2, bool asd>
-inline void
+METAPHYSICL_INLINE void
 derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2, asd> & in)
 {
   // Potentially different classes so need to check both
-  if (asd && !(out.do_derivatives || in.do_derivatives))
+  if (asd && !(out.take_derivatives() || in.take_derivatives()))
     return;
+
   out.derivatives() /= in.value();
   out.derivatives() -= out.value()/(in.value()*in.value()) * in.derivatives();
 }
@@ -351,11 +356,11 @@ derivative_division_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2,
 #define DualNumber_preop(opname, functorname, simplecalc, dualcalc) \
 template <typename T, typename D, bool asd> \
 template <typename T2> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd>& \
 DualNumber<T,D,asd>::operator opname##= (const T2& in) \
 { \
-  if (!allow_skipping_derivatives || do_derivatives) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     simplecalc; \
   } \
@@ -365,11 +370,11 @@ DualNumber<T,D,asd>::operator opname##= (const T2& in) \
  \
 template <typename T, typename D, bool asd> \
 template <typename T2, typename D2> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd>& \
 DualNumber<T,D,asd>::operator opname##= (const DualNumber<T2,D2,asd>& in) \
 { \
-  if (!allow_skipping_derivatives || do_derivatives) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     dualcalc; \
   } \
@@ -379,11 +384,11 @@ DualNumber<T,D,asd>::operator opname##= (const DualNumber<T2,D2,asd>& in) \
  \
 template <typename T, typename D, bool asd> \
 template <typename T2, typename D2> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> & \
 DualNumber<T,D,asd>::operator opname##= (const NotADuckDualNumber<T2,D2>& in) \
 { \
-  if (!allow_skipping_derivatives || do_derivatives) \
+  if (!allow_skipping_derivatives || this->take_derivatives()) \
   { \
     dualcalc; \
   } \
@@ -392,7 +397,7 @@ DualNumber<T,D,asd>::operator opname##= (const NotADuckDualNumber<T2,D2>& in) \
 } \
  \
 template <typename T, typename D, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename functorname##Type<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype \
 operator opname (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
 { \
@@ -405,7 +410,7 @@ operator opname (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename functorname##Type<DualNumber<T2,D,asd>,T,true>::supertype \
 operator opname (const T& a, const DualNumber<T2,D,asd>& b) \
 { \
@@ -417,7 +422,7 @@ operator opname (const T& a, const DualNumber<T2,D,asd>& b) \
 } \
  \
 template <typename T, typename D, typename T2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename functorname##Type<DualNumber<T,D,asd>,T2,false>::supertype \
 operator opname (const DualNumber<T,D,asd>& a, const T2& b) \
 { \
@@ -438,7 +443,7 @@ operator opname (const DualNumber<T,D,asd>& a, const T2& b) \
         DualNumber_preop(opname, functorname, simplecalc, dualcalc) \
  \
 template <typename T, typename D, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename functorname##Type<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype \
 operator opname (DualNumber<T,D,asd>&& a, const DualNumber<T2,D2,asd>& b) \
 { \
@@ -451,7 +456,7 @@ operator opname (DualNumber<T,D,asd>&& a, const DualNumber<T2,D2,asd>& b) \
 } \
  \
 template <typename T, typename D, typename T2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename functorname##Type<DualNumber<T,D,asd>,T2,false>::supertype \
 operator opname (DualNumber<T,D,asd>&& a, const T2& b) \
 { \
@@ -484,7 +489,7 @@ DualNumber_op(/,
 
 #define DualNumber_compare(opname)                          \
 template <typename T, typename D, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 bool \
 operator opname  (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
 { \
@@ -492,7 +497,7 @@ operator opname  (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) 
 } \
  \
 template <typename T, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename boostcopy::enable_if_class< \
   typename CompareTypes<DualNumber<T2,D2,asd>,T>::supertype, \
   bool \
@@ -503,7 +508,7 @@ operator opname  (const T& a, const DualNumber<T2,D2,asd>& b) \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename boostcopy::enable_if_class< \
   typename CompareTypes<DualNumber<T,D,asd>,T2>::supertype, \
   bool \
@@ -531,43 +536,47 @@ operator<<(std::ostream & output, const DualNumber<T, D, asd> & a)
 
 
 template <typename T, typename D, bool asd>
-inline
+METAPHYSICL_INLINE
 D gradient(const DualNumber<T, D, asd>& a)
 {
   return a.derivatives();
 }
-} // namespace MetaPhysicL
 
+
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
+} // namespace MetaPhysicL
 
 namespace std {
 
-using MetaPhysicL::DualNumber;
-using MetaPhysicL::CompareTypes;
+namespace math = MetaPhysicL::math;
+#endif
+
 
 template <typename T, typename D, bool asd>
-inline bool isnan (const DualNumber<T,D,asd> & a)
+METAPHYSICL_INLINE bool isnan (const DualNumber<T,D,asd> & a)
 {
-  using std::isnan;
-  return isnan(a.value());
+  return math::isnan(a.value());
 }
 
 template <typename T, typename D, bool asd>
-inline bool isinf (const DualNumber<T,D,asd> & a)
+METAPHYSICL_INLINE bool isinf (const DualNumber<T,D,asd> & a)
 {
-  using std::isinf;
-  return isinf(a.value());
+  return math::isinf(a.value());
 }
 
 
 #if METAPHYSICL_USE_STD_MOVE
 #define DualNumber_std_unary(funcname, derivative, precalc) \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (const DualNumber<T,D,asd> & in) \
 { \
   DualNumber<T,D,asd> returnval = in; \
-  T funcval = std::funcname(in.value()); \
-  if (!asd || in.do_derivatives) \
+  T funcval = math::funcname(in.value()); \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     returnval.derivatives() *= derivative; \
@@ -577,11 +586,11 @@ DualNumber<T,D,asd> funcname (const DualNumber<T,D,asd> & in) \
 } \
  \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> && in) \
 { \
-  T funcval = std::funcname(in.value()); \
-  if (!asd || in.do_derivatives) \
+  T funcval = math::funcname(in.value()); \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     in.derivatives() *= derivative; \
@@ -592,28 +601,28 @@ DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> && in) \
 
 #define DualNumber_equiv_unary(funcname, equivalent) \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (const DualNumber<T,D,asd> & in) \
 { \
-  return std::equivalent(in); \
+  return math::equivalent(in); \
 } \
  \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> && in) \
 { \
-  return std::equivalent(in); \
+  return math::equivalent(in); \
 }
 
 #else
 
 #define DualNumber_std_unary(funcname, derivative, precalc) \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> in) \
 { \
-  T funcval = std::funcname(in.value()); \
-  if (!asd || in.do_derivatives) \
+  T funcval = math::funcname(in.value()); \
+  if (!asd || in.take_derivatives()) \
   { \
     precalc; \
     in.derivatives() *= derivative; \
@@ -624,32 +633,27 @@ DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> in) \
 
 #define DualNumber_equiv_unary(funcname, equivalent) \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> funcname (DualNumber<T,D,asd> in) \
 { \
-  return std::equivalent(in); \
+  return math::equivalent(in); \
 }
 
 #endif
 
-#define DualNumber_equivfl_unary(funcname) \
-DualNumber_equiv_unary(funcname##f, funcname) \
-DualNumber_equiv_unary(funcname##l, funcname)
-
-
 DualNumber_std_unary(sqrt, 1 / (2 * funcval),)
 DualNumber_std_unary(exp, funcval,)
 DualNumber_std_unary(log, 1 / in.value(),)
-DualNumber_std_unary(log10, 1 / in.value() * (1/std::log(T(10.))),)
-DualNumber_std_unary(sin, std::cos(in.value()),)
-DualNumber_std_unary(cos, -std::sin(in.value()),)
-DualNumber_std_unary(tan, sec_in * sec_in, T sec_in = 1 / std::cos(in.value()))
-DualNumber_std_unary(asin, 1 / std::sqrt(1 - in.value()*in.value()),)
-DualNumber_std_unary(acos, -1 / std::sqrt(1 - in.value()*in.value()),)
+DualNumber_std_unary(log10, 1 / in.value() * (1/math::log(T(10.))),)
+DualNumber_std_unary(sin, math::cos(in.value()),)
+DualNumber_std_unary(cos, -math::sin(in.value()),)
+DualNumber_std_unary(tan, sec_in * sec_in, T sec_in = 1 / math::cos(in.value()))
+DualNumber_std_unary(asin, 1 / math::sqrt(1 - in.value()*in.value()),)
+DualNumber_std_unary(acos, -1 / math::sqrt(1 - in.value()*in.value()),)
 DualNumber_std_unary(atan, 1 / (1 + in.value()*in.value()),)
-DualNumber_std_unary(sinh, std::cosh(in.value()),)
-DualNumber_std_unary(cosh, std::sinh(in.value()),)
-DualNumber_std_unary(tanh, sech_in * sech_in, T sech_in = 1 / std::cosh(in.value()))
+DualNumber_std_unary(sinh, math::cosh(in.value()),)
+DualNumber_std_unary(cosh, math::sinh(in.value()),)
+DualNumber_std_unary(tanh, sech_in * sech_in, T sech_in = 1 / math::cosh(in.value()))
 DualNumber_std_unary(abs, (in.value() > 0) - (in.value() < 0),) // std < and > return 0 or 1
 DualNumber_equiv_unary(fabs, abs)
 DualNumber_std_unary(norm, 2. * in.value(),)
@@ -657,68 +661,36 @@ DualNumber_std_unary(ceil, 0,)
 DualNumber_std_unary(floor, 0,)
 
 #if __cplusplus >= 201103L
-DualNumber_equiv_unary(llabs, abs)
-DualNumber_equiv_unary(imaxabs, abs)
-DualNumber_equivfl_unary(fabs)
-DualNumber_equivfl_unary(exp)
-DualNumber_std_unary(exp2, std::log(T(2))*funcval,)
-DualNumber_equivfl_unary(exp2)
-DualNumber_std_unary(expm1, std::exp(in.value()),)
-DualNumber_equivfl_unary(expm1)
-DualNumber_equivfl_unary(log)
-DualNumber_equivfl_unary(log10)
-DualNumber_std_unary(log2, 1 / in.value() * (1/std::log(T(2))),)
-DualNumber_equivfl_unary(log2)
+DualNumber_std_unary(exp2, math::log(T(2))*funcval,)
+DualNumber_std_unary(expm1, math::exp(in.value()),)
+DualNumber_std_unary(log2, 1 / in.value() * (1/math::log(T(2))),)
 DualNumber_std_unary(log1p, 1 / (in.value() + 1),)
-DualNumber_equivfl_unary(log1p)
-DualNumber_equivfl_unary(sqrt)
 DualNumber_std_unary(cbrt, 1 / (3 * funcval * funcval),)
-DualNumber_equivfl_unary(cbrt)
-DualNumber_equivfl_unary(sin)
-DualNumber_equivfl_unary(cos)
-DualNumber_equivfl_unary(tan)
-DualNumber_equivfl_unary(asin)
-DualNumber_equivfl_unary(acos)
-DualNumber_equivfl_unary(atan)
-DualNumber_equivfl_unary(sinh)
-DualNumber_equivfl_unary(cosh)
-DualNumber_equivfl_unary(tanh)
-DualNumber_std_unary(asinh, 1 / sqrt(1 + in.value()*in.value()),)
-DualNumber_equivfl_unary(asinh)
-DualNumber_std_unary(acosh, 1 / sqrt(in.value()*in.value() - 1),)
-DualNumber_equivfl_unary(acosh)
+DualNumber_std_unary(asinh, 1 / math::sqrt(1 + in.value()*in.value()),)
+DualNumber_std_unary(acosh, 1 / math::sqrt(in.value()*in.value() - 1),)
 DualNumber_std_unary(atanh, 1 / (1 - in.value()*in.value()),)
-DualNumber_equivfl_unary(atanh)
 // 2/sqrt(pi) = 1/sqrt(atan(1.0))
-DualNumber_std_unary(erf, 1/sqrt(atan(T(1)))*exp(-in.value()*in.value()),)
-DualNumber_equivfl_unary(erf)
-DualNumber_std_unary(erfc, -1/sqrt(atan(T(1)))*exp(-in.value()*in.value()),)
-DualNumber_equivfl_unary(erfc)
+DualNumber_std_unary(erf, 1/math::sqrt(math::atan(T(1)))*math::exp(-in.value()*in.value()),)
+DualNumber_std_unary(erfc, -1/math::sqrt(math::atan(T(1)))*math::exp(-in.value()*in.value()),)
 // FIXME: how do we differentiate tgamma and lgamma without boost?
-DualNumber_equivfl_unary(ceil)
-DualNumber_equivfl_unary(floor)
 DualNumber_std_unary(trunc, 0,)
-DualNumber_equivfl_unary(trunc)
 DualNumber_std_unary(round, 0,)
-DualNumber_equivfl_unary(round)
 DualNumber_std_unary(nearbyint, 0,)
-DualNumber_equivfl_unary(nearbyint)
 DualNumber_std_unary(rint, 0,)
-DualNumber_equivfl_unary(rint)
 #endif // __cplusplus >= 201103L
 
 #define DualNumber_complex_std_unary_real(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<T, typename D::template rebind<T>::other, asd> \
+METAPHYSICL_INLINE DualNumber<T, typename D::template rebind<T>::other, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in) \
 { \
-  return {std::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
+  return {math::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<T,T,asd> \
+METAPHYSICL_INLINE DualNumber<T,T,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in)    \
 { \
-  return {std::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
+  return {math::funcname(in.value()), std::numeric_limits<double>::quiet_NaN()}; \
 }
 
 DualNumber_complex_std_unary_real(real)
@@ -728,17 +700,17 @@ DualNumber_complex_std_unary_real(abs)
 
 #define DualNumber_complex_std_unary_complex_pre(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(const DualNumber<std::complex<T>, D, asd> & in) \
 { \
-  return {std::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
+  return {math::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
                                                      std::numeric_limits<double>::quiet_NaN()}}; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in) \
 { \
-  return {std::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
+  return {math::funcname(in.value()), std::complex<T>{std::numeric_limits<double>::quiet_NaN(), \
                                                      std::numeric_limits<double>::quiet_NaN()}}; \
 }
 
@@ -746,19 +718,19 @@ funcname(const DualNumber<std::complex<T>,std::complex<T>,asd> & in) \
 #define DualNumber_complex_std_unary_complex(funcname) \
 DualNumber_complex_std_unary_complex_pre(funcname) \
 template <typename T, typename D, bool asd> \
-inline DualNumber<std::complex<T>, D, asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>, D, asd> \
 funcname(DualNumber<std::complex<T>, D, asd> && in) \
 { \
-  in.value() = std::funcname(in.value()); \
+  in.value() = math::funcname(in.value()); \
   in.derivatives() = std::complex<T>(std::numeric_limits<double>::quiet_NaN(), \
                                      std::numeric_limits<double>::quiet_NaN()); \
   return in; \
 } \
 template <typename T, bool asd> \
-inline DualNumber<std::complex<T>,std::complex<T>,asd> \
+METAPHYSICL_INLINE DualNumber<std::complex<T>,std::complex<T>,asd> \
 funcname(DualNumber<std::complex<T>,std::complex<T>,asd> && in) \
 { \
-  in.value() = std::funcname(in.value()); \
+  in.value() = math::funcname(in.value()); \
   in.derivatives() = std::complex<T>(std::numeric_limits<double>::quiet_NaN(), \
                                      std::numeric_limits<double>::quiet_NaN()); \
   return in; \
@@ -772,55 +744,55 @@ DualNumber_complex_std_unary_complex(conj)
 
 #define DualNumber_std_binary(funcname, derivative, rightderiv, leftderiv) \
 template <typename T, typename D, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype \
 funcname (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
 { \
   typedef typename CompareTypes<T,T2>::supertype TS; \
   typedef typename CompareTypes<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype type; \
  \
-  TS funcval = std::funcname(a.value(), b.value()); \
-  if (asd && !(a.do_derivatives || b.do_derivatives)) \
+  TS funcval = math::funcname(a.value(), b.value()); \
+  if (asd && !(a.take_derivatives() || b.take_derivatives())) \
     return type(funcval, 0); \
   else \
     return type(funcval, derivative); \
 } \
  \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> \
 funcname (const DualNumber<T,D,asd>& a, const DualNumber<T,D,asd>& b) \
 { \
-  T funcval = std::funcname(a.value(), b.value()); \
-  if (asd && !a.do_derivatives) \
+  T funcval = math::funcname(a.value(), b.value()); \
+  if (asd && !a.take_derivatives()) \
     return DualNumber<T,D,asd>(funcval, 0); \
   else \
     return DualNumber<T,D,asd>(funcval, derivative); \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T2,D,asd>,T,true>::supertype \
 funcname (const T& a, const DualNumber<T2,D,asd>& b) \
 { \
   typedef typename CompareTypes<T,T2>::supertype TS; \
-  TS funcval = std::funcname(a, b.value()); \
+  TS funcval = math::funcname(a, b.value()); \
   typedef typename CompareTypes<DualNumber<T2,D,asd>,T,true>::supertype type; \
-  if (asd && !b.do_derivatives) \
+  if (asd && !b.take_derivatives()) \
     return type(funcval, 0); \
   else \
     return type(funcval, rightderiv); \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T,D,asd>,T2>::supertype \
 funcname (const DualNumber<T,D,asd>& a, const T2& b) \
 { \
   typedef typename CompareTypes<T,T2>::supertype TS; \
-  TS funcval = std::funcname(a.value(), b); \
+  TS funcval = math::funcname(a.value(), b); \
   typedef typename CompareTypes<DualNumber<T,D,asd>,T2>::supertype type; \
-  if (asd && !a.do_derivatives) \
+  if (asd && !a.take_derivatives()) \
     return type(funcval, 0); \
   else \
     return type(funcval, leftderiv); \
@@ -828,40 +800,36 @@ funcname (const DualNumber<T,D,asd>& a, const T2& b) \
 
 #define DualNumber_equiv_binary(funcname, equivalent) \
 template <typename T, typename D, typename T2, typename D2, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T,D,asd>,DualNumber<T2,D2,asd> >::supertype \
 funcname (const DualNumber<T,D,asd>& a, const DualNumber<T2,D2,asd>& b) \
 { \
-  return std::equivalent(a,b); \
+  return math::equivalent(a,b); \
 } \
  \
 template <typename T, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 DualNumber<T,D,asd> \
 funcname (const DualNumber<T,D,asd>& a, const DualNumber<T,D,asd>& b) \
 { \
-  return std::equivalent(a,b); \
+  return math::equivalent(a,b); \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T2,D,asd>,T,true>::supertype \
 funcname (const T& a, const DualNumber<T2,D,asd>& b) \
 { \
-  return std::equivalent(a,b); \
+  return math::equivalent(a,b); \
 } \
  \
 template <typename T, typename T2, typename D, bool asd> \
-inline \
+METAPHYSICL_INLINE \
 typename CompareTypes<DualNumber<T,D,asd>,T2>::supertype \
 funcname (const DualNumber<T,D,asd>& a, const T2& b) \
 { \
-  return std::equivalent(a,b); \
+  return math::equivalent(a,b); \
 }
-
-#define DualNumber_equivfl_binary(funcname) \
-DualNumber_equiv_binary(funcname##f, funcname) \
-DualNumber_equiv_binary(funcname##l, funcname)
 
 // C++ turns 0u - 1 into max of signed int, not -1.  We do not want to
 // do that when we're evaluating pow() derivatives.  But we also don't
@@ -873,22 +841,22 @@ DualNumber_equiv_binary(funcname##l, funcname)
 // sophistication can be trusted to diagnose the problem and switch to
 // signed int.
 
-inline int dn_val_minus_one(unsigned int e) { return int(e)-1; }
-inline int dn_val_minus_one(std::size_t e) { return int(e)-1; }
+METAPHYSICL_INLINE int dn_val_minus_one(unsigned int e) { return int(e)-1; }
+METAPHYSICL_INLINE int dn_val_minus_one(std::size_t e) { return int(e)-1; }
 
 template <typename T>
-inline T dn_val_minus_one(const T & e) { return e-1; }
+METAPHYSICL_INLINE T dn_val_minus_one(const T & e) { return e-1; }
 
 // if_else is necessary here to handle cases where a is non-positive
 // but b is 0; we should have a contribution of 0 from those, not NaN.
 // That doesn't avoid FP exceptions, though, not when b is a
 // DualNumber ... not sure how to fix that.
 DualNumber_std_binary(pow,
-  std::pow(a.value(), dn_val_minus_one(b.value())) * (b.value() * a.derivatives() +
-  MetaPhysicL::if_else(b.derivatives(), b.derivatives() * std::log(a.value()) * a.value(), b.derivatives())),
-  std::pow(a, b.value()) *
-  MetaPhysicL::if_else(b.derivatives(), (b.derivatives() * std::log(TS(a))), b.derivatives()),
-  std::pow(a.value(), dn_val_minus_one(b)) * (b * a.derivatives())
+  math::pow(a.value(), dn_val_minus_one(b.value())) * (b.value() * a.derivatives() +
+  MetaPhysicL::if_else(b.derivatives(), b.derivatives() * math::log(a.value()) * a.value(), b.derivatives())),
+  math::pow(a, b.value()) *
+  MetaPhysicL::if_else(b.derivatives(), (b.derivatives() * math::log(TS(a))), b.derivatives()),
+  math::pow(a.value(), dn_val_minus_one(b)) * (b * a.derivatives())
   )
 DualNumber_std_binary(atan2,
   (b.value() * a.derivatives() - a.value() * b.derivatives()) /
@@ -908,31 +876,23 @@ DualNumber_std_binary(min,
 DualNumber_std_binary(fmod, a.derivatives(), 0, a.derivatives())
 
 #if __cplusplus >= 201103L
-DualNumber_equivfl_binary(pow)
-DualNumber_equivfl_binary(fmod)
 DualNumber_std_binary(remainder, a.derivatives(), 0, a.derivatives())
-DualNumber_equivfl_binary(remainder)
 DualNumber_equiv_binary(fmax, max)
-DualNumber_equivfl_binary(fmax)
 DualNumber_equiv_binary(fmin, min)
-DualNumber_equivfl_binary(fmin)
 DualNumber_std_binary(fdim, if_else(a.value() > b.value(),
                                     a.derivatives() - b.derivatives(), 0),
                             if_else(a.value() > b, a.derivatives(), 0),
                             if_else(a > b.value(), -b.derivatives(), 0))
-DualNumber_equivfl_binary(fdim)
 DualNumber_std_binary(hypot, (a.value()*a.derivatives() +
                               b.value()*b.derivatives()) /
-                              hypot(a.value(), b.value()),
+                              math::hypot(a.value(), b.value()),
                              (a.value()*a.derivatives()) /
-                              hypot(a.value(), b),
+                              math::hypot(a.value(), b),
                              (b.value()*b.derivatives()) /
-                              hypot(a, b.value()))
-DualNumber_equivfl_binary(hypot)
-DualNumber_equivfl_binary(atan2)
+                              math::hypot(a, b.value()))
 #endif // __cplusplus >= 201103L
 
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 
 #endif // METAPHYSICL_DUALNUMBER_H

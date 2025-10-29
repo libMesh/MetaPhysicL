@@ -29,13 +29,15 @@
 #ifndef METAPHYSICL_SPARSENUMBERSTRUCT_H
 #define METAPHYSICL_SPARSENUMBERSTRUCT_H
 
+#include "metaphysicl/metaphysicl_config.h"
+
 #include "metaphysicl/compare_types.h"
 #include "metaphysicl/ct_set.h"
+#include "metaphysicl/metaphysicl_math.h"
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/testable.h"
 
 #include <algorithm>
-#include <cmath>
 #include <functional>
 #include <ostream>
 #include <stdexcept>
@@ -1140,22 +1142,28 @@ struct ValueType<SparseNumberStruct<IndexSet> >
 };
 
 
+// For backwards compatibility we still allow violating the C++
+// standard by putting our partial template specializations into
+// namespace std.
+#ifdef METAPHYSICL_ENABLE_STD_VIOLATION
 } // namespace MetaPhysicL
-
 
 namespace std {
 
+namespace math = MetaPhysicL::math;
 using MetaPhysicL::SparseNumberStruct;
 using MetaPhysicL::BinaryFunctor;
 using MetaPhysicL::UnaryFunctor;
 using MetaPhysicL::ConstantDataSet;
 using MetaPhysicL::CompareTypes;
+#endif
+
 
 #define SparseNumberStruct_std_unary(funcname) \
 \
 struct funcname##_Subfunctor { \
   template <typename T> \
-  T operator()(T& x) const { return std::funcname(x); } \
+  T operator()(T& x) const { return math::funcname(x); } \
 }; \
 \
 template <typename IndexSet> \
@@ -1171,22 +1179,12 @@ funcname (SparseNumberStruct<IndexSet> a) \
 }
 
 
-#define SparseNumberStruct_fl_unary(funcname) \
-SparseNumberStruct_std_unary(funcname##f) \
-SparseNumberStruct_std_unary(funcname##l)
-
-
-#define SparseNumberStruct_stdfl_unary(funcname) \
-SparseNumberStruct_std_unary(funcname) \
-SparseNumberStruct_fl_unary(funcname)
-
-
 #define SparseNumberStruct_std_binary(funcname) \
 \
 struct funcname##_Subfunctor { \
   template <typename T1, typename T2> \
   typename CompareTypes<T1,T2>::supertype \
-  operator()(T1& x, T2& y) const { return std::funcname(x,y); } \
+  operator()(T1& x, T2& y) const { return math::funcname(x,y); } \
 }; \
 \
 template <typename IndexSet, typename IndexSet2> \
@@ -1237,16 +1235,6 @@ funcname (const T& a, const SparseNumberStruct<IndexSet>& b) \
 }
 
 
-#define SparseNumberStruct_fl_binary(funcname) \
-SparseNumberStruct_std_binary(funcname##f) \
-SparseNumberStruct_std_binary(funcname##l)
-
-
-#define SparseNumberStruct_stdfl_binary(funcname) \
-SparseNumberStruct_std_binary(funcname) \
-SparseNumberStruct_fl_binary(funcname)
-
-
 #define SparseNumberStruct_std_binary_union(funcname) \
 \
 struct funcname##_Subfunctor { \
@@ -1254,7 +1242,7 @@ struct funcname##_Subfunctor { \
   typename CompareTypes<T1,T2>::supertype \
   operator()(const T1& x, const T2& y) const { \
     typedef typename CompareTypes<T1,T2>::supertype TS; \
-    return std::funcname(TS(x),TS(y)); \
+    return math::funcname(TS(x),TS(y)); \
   } \
 }; \
  \
@@ -1323,17 +1311,6 @@ funcname (const T& a, const SparseNumberStruct<IndexSet>& b) \
   return returnval; \
 }
 
-
-#define SparseNumberStruct_fl_binary_union(funcname) \
-SparseNumberStruct_std_binary_union(funcname##f) \
-SparseNumberStruct_std_binary_union(funcname##l)
-
-
-#define SparseNumberStruct_stdfl_binary_union(funcname) \
-SparseNumberStruct_std_binary_union(funcname) \
-SparseNumberStruct_fl_binary_union(funcname)
-
-
 // NOTE: unary functions for which f(0) != 0 are undefined compile-time
 // errors, because there's no efficient way to have them make sense in
 // the sparse context.
@@ -1362,33 +1339,21 @@ SparseNumberStruct_std_unary(floor)
 SparseNumberStruct_std_binary(fmod) // dangerous unless y is dense
 
 
-SparseNumberStruct_std_unary(llabs)
-SparseNumberStruct_std_unary(imaxabs)
-SparseNumberStruct_fl_unary(fabs)
-SparseNumberStruct_stdfl_unary(expm1)
-SparseNumberStruct_fl_unary(sqrt)
-SparseNumberStruct_stdfl_unary(cbrt)
-SparseNumberStruct_fl_unary(sin)
-SparseNumberStruct_fl_unary(tan)
-SparseNumberStruct_fl_unary(asin)
-SparseNumberStruct_fl_unary(atan)
-SparseNumberStruct_stdfl_unary(asinh)
-SparseNumberStruct_stdfl_unary(atanh)
-SparseNumberStruct_stdfl_unary(erf)
-SparseNumberStruct_fl_unary(ceil)
-SparseNumberStruct_fl_unary(floor)
-SparseNumberStruct_stdfl_unary(trunc)
-SparseNumberStruct_stdfl_unary(round)
-SparseNumberStruct_stdfl_unary(nearbyint)
-SparseNumberStruct_stdfl_unary(rint)
+SparseNumberStruct_std_unary(expm1)
+SparseNumberStruct_std_unary(cbrt)
+SparseNumberStruct_std_unary(asinh)
+SparseNumberStruct_std_unary(atanh)
+SparseNumberStruct_std_unary(erf)
+SparseNumberStruct_std_unary(trunc)
+SparseNumberStruct_std_unary(round)
+SparseNumberStruct_std_unary(nearbyint)
+SparseNumberStruct_std_unary(rint)
 
-SparseNumberStruct_fl_binary(fmod)
-SparseNumberStruct_stdfl_binary(remainder) // dangerous unless y is dense
-SparseNumberStruct_stdfl_binary_union(fmax)
-SparseNumberStruct_stdfl_binary_union(fmin)
-SparseNumberStruct_stdfl_binary_union(fdim)
-SparseNumberStruct_stdfl_binary_union(hypot)
-SparseNumberStruct_fl_binary_union(atan2)
+SparseNumberStruct_std_binary(remainder) // dangerous unless y is dense
+SparseNumberStruct_std_binary_union(fmax)
+SparseNumberStruct_std_binary_union(fmin)
+SparseNumberStruct_std_binary_union(fdim)
+SparseNumberStruct_std_binary_union(hypot)
 
 // Defining numeric_limits for heterogenous containers is pretty much
 // impossible
@@ -1398,7 +1363,7 @@ class numeric_limits<SparseNumberStruct<IndexSet> > :
   public raw_numeric_limits<SparseNumberStruct<IndexSet>, IDunno> {};
 */
 
-} // namespace std
+} // namespace std (deprecated) or MetaPhysicL
 
 #endif // __cplusplus >= 201103L
 

@@ -29,7 +29,10 @@
 #define METAPHYSICL_DUALSHADOWDYNAMICSPARSEVECTOR_H
 
 
-// Order of declarations is important here?
+#include "metaphysicl/dualnumber_decl.h"
+#include "metaphysicl/shadownumber_decl.h"
+#include "metaphysicl/dynamicsparsenumbervector_decl.h"
+
 #include "metaphysicl/dualshadow.h"
 #include "metaphysicl/dualdynamicsparsenumbervector.h"
 

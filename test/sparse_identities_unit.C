@@ -2,7 +2,7 @@
 #include <iostream>
 #include <limits>
 
-#include "metaphysicl_config.h"
+#include "metaphysicl/metaphysicl_config.h"
 
 #include "metaphysicl/dynamicsparsenumberarray.h"
 #include "metaphysicl/dynamicsparsenumbervector.h"

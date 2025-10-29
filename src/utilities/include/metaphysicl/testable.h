@@ -30,18 +30,20 @@
 #ifndef METAPHYSICL_TESTABLE_H
 #define METAPHYSICL_TESTABLE_H
 
+#include "metaphysicl/metaphysicl_device.h"
+
 namespace MetaPhysicL {
 
 class safe_bool_base {
   public:
     typedef void (safe_bool_base::*bool_type)() const;
-    void this_type_does_not_support_comparisons() const {}
+    METAPHYSICL_INLINE void this_type_does_not_support_comparisons() const {}
   protected:
  
-    safe_bool_base() {}
-    safe_bool_base(const safe_bool_base&) {}
-    safe_bool_base& operator=(const safe_bool_base&) {return *this;}
-    ~safe_bool_base() {}
+    METAPHYSICL_INLINE safe_bool_base() {}
+    METAPHYSICL_INLINE safe_bool_base(const safe_bool_base&) {}
+    METAPHYSICL_INLINE safe_bool_base& operator=(const safe_bool_base&) {return *this;}
+    METAPHYSICL_INLINE ~safe_bool_base() {}
 };
  
 // For testability without virtual function.
@@ -51,12 +53,12 @@ class safe_bool : private safe_bool_base {
   // triggers the
   // access control violation in main.
   public:
-    operator bool_type() const {
+    METAPHYSICL_INLINE operator bool_type() const {
       return (static_cast<const T*>(this))->boolean_test()
         ? &safe_bool_base::this_type_does_not_support_comparisons : 0;
     }
   protected:
-    ~safe_bool() {}
+    METAPHYSICL_INLINE ~safe_bool() {}
 };
  
  

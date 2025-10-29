@@ -29,45 +29,48 @@
 #ifdef METAPHYSICL_HAVE_TIMPI
 
 #include "metaphysicl/semidynamicsparsenumberarray.h"
-#include "metaphysicl/parallel_dynamic_std_array_wrapper.h"
+#include "metaphysicl/parallel_dynamic_array_wrapper.h"
 
 #include "timpi/op_function.h"
 #include "timpi/standard_type.h"
 
 namespace TIMPI
 {
-template <typename T, typename I, typename N>
-class StandardType<MetaPhysicL::SemiDynamicSparseNumberArray<T, I, N>> : public DataType
+template <typename T, typename I, typename N, typename ArrayWrapper>
+class StandardType<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>> : public DataType
 {
 public:
   explicit StandardType(
-      const MetaPhysicL::SemiDynamicSparseNumberArray<T, I, N> * example = nullptr)
+      const MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> * example = nullptr)
   {
 #ifdef TIMPI_HAVE_MPI
     static data_type static_type = MPI_DATATYPE_NULL;
     if (static_type == MPI_DATATYPE_NULL)
       {
         // We need an example for MPI_Address to use
-        static const MetaPhysicL::SemiDynamicSparseNumberArray<T, I, N> p;
+        static const MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> p;
         if (!example)
           example = &p;
 
+        using DType = ArrayWrapper;
+        using IType = typename ArrayWrapper::template rebind<I>::type;
+
         // Get the sub-data-types, and make sure they live long enough
         // to construct the derived type
-        StandardType<MetaPhysicL::DynamicStdArrayWrapper<T, N>> d1(&example->nude_data());
-        StandardType<MetaPhysicL::DynamicStdArrayWrapper<I, N>> d2(&example->nude_indices());
+        StandardType<DType> d1(&example->nude_data());
+        StandardType<IType> d2(&example->nude_indices());
 
         MPI_Datatype types[] = {(data_type)d1, (data_type)d2};
         int blocklengths[] = {1, 1};
         MPI_Aint displs[2], start;
 
         timpi_call_mpi(MPI_Get_address(
-            const_cast<MetaPhysicL::SemiDynamicSparseNumberArray<T, I, N> *>(example), &start));
+            const_cast<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper> *>(example), &start));
         timpi_call_mpi(MPI_Get_address(
-            const_cast<MetaPhysicL::DynamicStdArrayWrapper<T, N> *>(&example->nude_data()),
+            const_cast<DType *>(&example->nude_data()),
             &displs[0]));
         timpi_call_mpi(MPI_Get_address(
-            const_cast<MetaPhysicL::DynamicStdArrayWrapper<I, N> *>(&example->nude_indices()),
+            const_cast<IType *>(&example->nude_indices()),
             &displs[1]));
         displs[0] -= start;
         displs[1] -= start;
@@ -79,7 +82,7 @@ public:
 
         // resize the structure type to account for padding, if any
         timpi_call_mpi(MPI_Type_create_resized(
-            tmptype, 0, sizeof(MetaPhysicL::SemiDynamicSparseNumberArray<T, I, N>), &static_type));
+            tmptype, 0, sizeof(MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T, I, N, ArrayWrapper>), &static_type));
         timpi_call_mpi(MPI_Type_free(&tmptype));
 
         SemiPermanent::add
@@ -112,10 +115,10 @@ timpi_mpi_metaphysicl_sdsna_##funcname(void * a, void * b, int * len, MPI_Dataty
 { \
   const int size = *len; \
  \
-  const MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N> * in = \
-    static_cast<MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N> *>(a); \
-  MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N> * inout = \
-    static_cast<MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N> *>(b); \
+  const MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper> * in = \
+    static_cast<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper> *>(a); \
+  MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper> * inout = \
+    static_cast<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper> *>(b); \
   for (int i=0; i != size; ++i) \
     inout[i] = std::funcname(in[i],inout[i]); \
 }
@@ -133,7 +136,7 @@ timpi_mpi_metaphysicl_sdsna_##funcname(void * a, void * b, int * len, MPI_Dataty
 { \
   const int size = *len; \
  \
-  typedef MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N> dtype; \
+  typedef MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper> dtype; \
  \
   const dtype * in = \
     static_cast<dtype *>(a); \
@@ -144,8 +147,8 @@ timpi_mpi_metaphysicl_sdsna_##funcname(void * a, void * b, int * len, MPI_Dataty
 }
 
 
-  template<typename T, typename I, typename N>
-  class OpFunction<MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N>>
+  template<typename T, typename I, typename N, typename ArrayWrapper>
+  class OpFunction<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper>>
   {
     METAPHYSICL_SDSNA_MPI_BINARY(max)
     METAPHYSICL_SDSNA_MPI_BINARY(min)
@@ -165,7 +168,7 @@ timpi_mpi_metaphysicl_sdsna_##funcname(void * a, void * b, int * len, MPI_Dataty
   };
 # else // TIMPI_HAVE_MPI
   template<typename T, typename I, typename N>
-  class OpFunction<MetaPhysicL::SemiDynamicSparseNumberArray<T,I,N>> {};
+  class OpFunction<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper>> {};
 #endif
 
 

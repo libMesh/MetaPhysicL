@@ -29,8 +29,10 @@
 #define METAPHYSICL_DUALSPARSENUMBERSTRUCT_H
 
 
-#include "metaphysicl/dualnumber.h"
+#include "metaphysicl/dualnumber_decl.h"
+
 #include "metaphysicl/sparsenumberstruct.h"
+#include "metaphysicl/dualnumber.h"
 
 
 namespace MetaPhysicL {

@@ -28,9 +28,11 @@
 #ifndef METAPHYSICL_DUALSHADOW_H
 #define METAPHYSICL_DUALSHADOW_H
 
-// Order of declarations is important here?
-#include "metaphysicl/shadownumber.h"
+#include "metaphysicl/dualnumber_decl.h"
+#include "metaphysicl/shadownumber_decl.h"
+
 #include "metaphysicl/dualnumber.h"
+#include "metaphysicl/shadownumber.h"
 
 // ShadowNumber is subordinate to DualNumber:
 

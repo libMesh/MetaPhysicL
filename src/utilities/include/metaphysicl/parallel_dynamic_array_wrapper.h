@@ -33,24 +33,24 @@
 
 namespace TIMPI
 {
-template <typename T, typename NType>
-class StandardType<MetaPhysicL::DynamicStdArrayWrapper<T, NType>> : public DataType
+template <template <typename, size_t> class Array, typename T, size_t N>
+class StandardType<MetaPhysicL::DynamicArrayWrapper<Array, T, N>> : public DataType
 {
 public:
-  explicit StandardType(const MetaPhysicL::DynamicStdArrayWrapper<T, NType> * example = nullptr)
+  explicit StandardType(const MetaPhysicL::DynamicArrayWrapper<Array, T, N> * example = nullptr)
   {
 #ifdef TIMPI_HAVE_MPI
     static data_type static_type = MPI_DATATYPE_NULL;
     if (static_type == MPI_DATATYPE_NULL)
       {
         // We need an example for MPI_Address to use
-        static const MetaPhysicL::DynamicStdArrayWrapper<T, NType> p{};
+        static const MetaPhysicL::DynamicArrayWrapper<Array, T, N> p{};
         if (!example)
           example = &p;
 
         // Get the sub-data-types, and make sure they live long enough
         // to construct the derived type
-        StandardType<std::array<T, NType::size>> d1(&example->_data);
+        StandardType<Array<T, N>> d1(&example->_data);
         StandardType<std::size_t> d2(&example->_dynamic_n);
 
         MPI_Datatype types[] = {(data_type)d1, (data_type)d2};
@@ -58,9 +58,9 @@ public:
         MPI_Aint displs[2], start;
 
         timpi_call_mpi(MPI_Get_address(
-            const_cast<MetaPhysicL::DynamicStdArrayWrapper<T, NType> *>(example), &start));
+            const_cast<MetaPhysicL::DynamicArrayWrapper<Array, T, N> *>(example), &start));
         timpi_call_mpi(
-            MPI_Get_address(const_cast<std::array<T, NType::size> *>(&example->_data), &displs[0]));
+            MPI_Get_address(const_cast<Array<T, N> *>(&example->_data), &displs[0]));
         timpi_call_mpi(MPI_Get_address(const_cast<std::size_t *>(&example->_dynamic_n), &displs[1]));
         displs[0] -= start;
         displs[1] -= start;
@@ -72,7 +72,7 @@ public:
 
         // resize the structure type to account for padding, if any
         timpi_call_mpi(MPI_Type_create_resized(
-            tmptype, 0, sizeof(MetaPhysicL::DynamicStdArrayWrapper<T, NType>), &static_type));
+            tmptype, 0, sizeof(MetaPhysicL::DynamicArrayWrapper<Array, T, N>), &static_type));
         timpi_call_mpi(MPI_Type_free(&tmptype));
 
         SemiPermanent::add

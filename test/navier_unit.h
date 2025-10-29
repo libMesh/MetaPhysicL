@@ -134,20 +134,20 @@ int main(void)
 	  pnorm = fabs(sp-s2p);	  
 	  enorm = fabs(se-s2e);
 
-	  double urnorm = fabs(su-s2u)/std::max(su,s2u);	  
-	  double vrnorm = fabs(sv-s2v)/std::max(sv,s2v);
-	  double prnorm = fabs(sp-s2p)/std::max(sp,s2p);	  
-	  double ernorm = fabs(se-s2e)/std::max(se,s2e);
+	  double urnorm = fabs(su-s2u)/max(su,s2u);	  
+	  double vrnorm = fabs(sv-s2v)/max(sv,s2v);
+	  double prnorm = fabs(sp-s2p)/max(sp,s2p);	  
+	  double ernorm = fabs(se-s2e)/max(se,s2e);
 
-          unorm_max = std::max(unorm, unorm_max);
-          vnorm_max = std::max(vnorm, vnorm_max);
-          pnorm_max = std::max(pnorm, pnorm_max);
-          enorm_max = std::max(enorm, enorm_max);
+          unorm_max = max(unorm, unorm_max);
+          vnorm_max = max(vnorm, vnorm_max);
+          pnorm_max = max(pnorm, pnorm_max);
+          enorm_max = max(enorm, enorm_max);
 
-          urnorm_max = std::max(urnorm, urnorm_max);
-          vrnorm_max = std::max(vrnorm, vrnorm_max);
-          prnorm_max = std::max(prnorm, prnorm_max);
-          ernorm_max = std::max(ernorm, ernorm_max);
+          urnorm_max = max(urnorm, urnorm_max);
+          vrnorm_max = max(vrnorm, vrnorm_max);
+          prnorm_max = max(prnorm, prnorm_max);
+          ernorm_max = max(ernorm, ernorm_max);
 #else
           // Avoid "set but not used" variable warnings;
 	  evaluate_q(xy,1);
@@ -183,6 +183,8 @@ int main(void)
 template <typename Vector>
 double evaluate_q (const Vector& xyz, const int ret)
 {
+  using namespace std;
+
   typedef typename Vector::value_type ADScalar;
 
   typedef typename RawType<ADScalar>::value_type Scalar;
@@ -191,7 +193,7 @@ double evaluate_q (const Vector& xyz, const int ret)
 
   typedef typename Vector::template rebind<ADScalar>::other FullVector;
 
-  const Scalar PI = std::acos(Scalar(-1));
+  const Scalar PI = acos(Scalar(-1));
 
   const Scalar R = masa_get_param("R");
   const Scalar u_0 = masa_get_param("u_0");
@@ -239,10 +241,10 @@ double evaluate_q (const Vector& xyz, const int ret)
   FullVector U;
 
   // Arbitrary manufactured solution
-  U.template insert<0>() = u_0 + u_x * std::sin(a_ux * PI * x / L) + u_y * std::cos(a_uy * PI * y / L);
-  U.template insert<1>() = v_0 + v_x * std::cos(a_vx * PI * x / L) + v_y * std::sin(a_vy * PI * y / L);
-  ADScalar RHO = rho_0 + rho_x * std::sin(a_rhox * PI * x / L) + rho_y * std::cos(a_rhoy * PI * y / L);
-  ADScalar P = p_0 + p_x * std::cos(a_px * PI * x / L) + p_y * std::sin(a_py * PI * y / L);
+  U.template insert<0>() = u_0 + u_x * sin(a_ux * PI * x / L) + u_y * cos(a_uy * PI * y / L);
+  U.template insert<1>() = v_0 + v_x * cos(a_vx * PI * x / L) + v_y * sin(a_vy * PI * y / L);
+  ADScalar RHO = rho_0 + rho_x * sin(a_rhox * PI * x / L) + rho_y * cos(a_rhoy * PI * y / L);
+  ADScalar P = p_0 + p_x * cos(a_px * PI * x / L) + p_y * sin(a_py * PI * y / L);
 
   // Temperature
   ADScalar T = P / RHO / R;

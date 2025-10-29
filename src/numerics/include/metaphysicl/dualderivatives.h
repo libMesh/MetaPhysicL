@@ -56,7 +56,7 @@ struct DivergenceType
 
 
 template <typename T>
-inline
+METAPHYSICL_INLINE
 typename DerivativeType<T>::type
 derivative(const T& a, unsigned int derivativeindex)
 {
@@ -64,7 +64,7 @@ derivative(const T& a, unsigned int derivativeindex)
 }
 
 template <typename T>
-inline
+METAPHYSICL_INLINE
 typename DerivativesType<T>::type
 derivatives(const T& a)
 {

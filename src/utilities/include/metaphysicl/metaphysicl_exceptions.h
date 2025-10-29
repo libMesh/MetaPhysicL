@@ -29,6 +29,8 @@
 #ifndef METAPHYSICL_EXCEPTIONS_H
 #define METAPHYSICL_EXCEPTIONS_H
 
+#include "metaphysicl/metaphysicl_device.h"
+
 // C++
 #include <stdexcept>
 #include <string>
@@ -76,6 +78,6 @@ namespace MetaPhysicL
 
 } // end namespace MetaPhysicL
 
-#define METAPHYSICL_THROW(e) do { throw e; } while (0)
+#define METAPHYSICL_THROW(e) do { METAPHYSICL_IF_ON_HOST((throw e;)); } while (0)
 
 #endif // METAPHYSICL_EXCEPTIONS_H
