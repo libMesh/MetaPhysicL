@@ -125,7 +125,7 @@ AC_ARG_ENABLE(std-violation,
 AC_SUBST(enable_std_violation)
 AS_IF([test "x$enable_std_violation" != xyes],
       [
-        AC_MSG_RESULT([>>> Configuring library without C++ std:: violations <<<])
+        AC_MSG_RESULT([<<< Configuring library without C++ std:: violations >>>])
       ],
       [
         AC_MSG_RESULT([<<< Configuring library with deprecated C++ std:: violations >>>])
