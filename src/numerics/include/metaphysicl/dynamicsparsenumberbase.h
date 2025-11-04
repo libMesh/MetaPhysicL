@@ -299,11 +299,18 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::operator- () co
   std::size_t index_size = size();
   SubType<SubTypeArgs...> returnval;
   returnval.resize(index_size);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
   for (unsigned int i=0; i != index_size; ++i)
     {
       returnval.raw_index(i) = _indices[i];
       returnval.raw_at(i) = -_data[i];
     }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   return returnval;
 }
 
