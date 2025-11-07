@@ -167,7 +167,7 @@ timpi_mpi_metaphysicl_sdsna_##funcname(void * a, void * b, int * len, MPI_Dataty
     // TIMPI_MPI_OPFUNCTION(min_location, metaphysicl_sdsna_min_location)
   };
 # else // TIMPI_HAVE_MPI
-  template<typename T, typename I, typename N>
+  template<typename T, typename I, typename N, typename ArrayWrapper>
   class OpFunction<MetaPhysicL::SemiDynamicSparseNumberArrayGeneric<T,I,N,ArrayWrapper>> {};
 #endif
 
