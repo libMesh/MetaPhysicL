@@ -12,7 +12,7 @@
     KOKKOS_IF_ON_HOST(__VA_ARGS__)                                             \
   } while (0)
 
-namespace MetaPhysicL {
+namespace MetaPhysicL::detail {
 template <typename T> METAPHYSICL_INLINE auto begin(T &t) {
   return Kokkos::begin(t);
 }
@@ -33,7 +33,7 @@ template <typename T> METAPHYSICL_INLINE auto begin(T &t) {
     METAPHYSICL_UNPAREN CODE                                                   \
   } while (0)
 
-namespace MetaPhysicL {
+namespace MetaPhysicL::detail {
 template <typename T> auto begin(T &t) { return std::begin(t); }
 } // namespace MetaPhysicL
 #endif
