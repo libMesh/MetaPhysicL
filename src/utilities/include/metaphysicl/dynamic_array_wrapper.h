@@ -102,20 +102,20 @@ public:
 
   DynamicArrayWrapper() = default;
 
-  METAPHYSICL_INLINE auto begin() { return ::MetaPhysicL::begin(_data); }
+  METAPHYSICL_INLINE auto begin() { return ::MetaPhysicL::detail::begin(_data); }
 
-  METAPHYSICL_INLINE auto begin() const { return ::MetaPhysicL::begin(_data); }
+  METAPHYSICL_INLINE auto begin() const { return ::MetaPhysicL::detail::begin(_data); }
 
   METAPHYSICL_INLINE auto end()
   {
     metaphysicl_assert(_dynamic_n <= N);
-    return ::MetaPhysicL::begin(_data) + _dynamic_n;
+    return ::MetaPhysicL::detail::begin(_data) + _dynamic_n;
   }
 
   METAPHYSICL_INLINE auto end() const
   {
     metaphysicl_assert(_dynamic_n <= N);
-    return ::MetaPhysicL::begin(_data) + _dynamic_n;
+    return ::MetaPhysicL::detail::begin(_data) + _dynamic_n;
   }
 
   METAPHYSICL_INLINE T & operator[](size_type i)
