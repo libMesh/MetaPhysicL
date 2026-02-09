@@ -419,7 +419,7 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
 #define metaphysicl_const_return_def(method_name, SpecialType)                                     \
   template <typename D>                                                                            \
   template <class... Args>                                                                         \
-  auto NDDualNumber<SpecialType, D>::method_name(Args &&... args) const->NDDualNumber<             \
+  auto NotADuckDualNumber<SpecialType, D>::method_name(Args &&... args) const->NDDualNumber<       \
       typename std::remove_const<typename std::remove_reference<decltype(                          \
           this->value().method_name(std::forward<Args>(args)...))>::type>::type,                   \
       typename D::template rebind<typename std::remove_const<typename std::remove_reference<       \
@@ -448,7 +448,7 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
 #define metaphysicl_nonconst_return_def(method_name, SpecialType)                                  \
   template <typename D>                                                                            \
   template <class... Args>                                                                         \
-  auto NDDualNumber<SpecialType, D>::method_name(Args &&... args)                                  \
+  auto NotADuckDualNumber<SpecialType, D>::method_name(Args &&... args)                            \
       ->DualNumberSurrogate<                                                                       \
           typename std::remove_reference<decltype(                                                 \
               this->value().method_name(std::forward<Args>(args)...))>::type,                      \
@@ -463,7 +463,7 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
 #define metaphysicl_const_void_def(method_name, SpecialType)                                       \
   template <typename D>                                                                            \
   template <class... Args>                                                                         \
-  void NDDualNumber<SpecialType, D>::method_name(Args &&... args) const                            \
+  void NotADuckDualNumber<SpecialType, D>::method_name(Args &&... args) const                      \
   {                                                                                                \
     const_void_helper(&SpecialType::method_name, *this, std::forward<Args>(args)...);              \
   }
@@ -471,7 +471,7 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
 #define metaphysicl_nonconst_void_def(method_name, SpecialType)                                    \
   template <typename D>                                                                            \
   template <class... Args>                                                                         \
-  void NDDualNumber<SpecialType, D>::method_name(Args &&... args)                                  \
+  void NotADuckDualNumber<SpecialType, D>::method_name(Args &&... args)                            \
                                                                                                    \
   {                                                                                                \
     void_helper(&SpecialType::method_name, *this, std::forward<Args>(args)...);                    \
@@ -480,8 +480,9 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
 #define metaphysicl_try_emplace_def(SpecialType)                                                   \
   template <typename D>                                                                            \
   template <class... ConstructionArgs>                                                             \
-  inline void NDDualNumber<SpecialType, D>::dns_try_emplace(typename SpecialType::index_type key,  \
-                                                            ConstructionArgs &&... args)           \
+  inline void NotADuckDualNumber<SpecialType, D>::dns_try_emplace                                  \
+    (typename SpecialType::index_type key,                                                         \
+     ConstructionArgs &&... args)                                                                  \
   {                                                                                                \
     typedef DualNumberSurrogate<                                                                   \
         typename SpecialType::value_type,                                                          \
@@ -502,7 +503,7 @@ void_helper(void (TBase::*fn)(PtrArgs...), NDDualNumber<T, D> & calling_dn, Para
   inline DualNumberSurrogate<                                                                      \
       typename SpecialType::value_type,                                                            \
       typename D::template rebind<typename SpecialType::value_type *>::other> &                    \
-  NDDualNumber<SpecialType, D>::dns_at(typename SpecialType::index_type key)                       \
+  NotADuckDualNumber<SpecialType, D>::dns_at(typename SpecialType::index_type key)                 \
   {                                                                                                \
     return *_dual_number_surrogates.at(key);                                                       \
   }
