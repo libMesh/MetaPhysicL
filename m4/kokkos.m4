@@ -31,6 +31,21 @@ AC_DEFUN([CONFIGURE_KOKKOS],
       [have_kokkos_openmp=yes],
       [have_kokkos_openmp=no])
 
+    AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX26' \
+          "$KOKKOS_CFG"],
+      [kokkos_cxx_standard=26],
+      [AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX23' \
+            "$KOKKOS_CFG"],
+         [kokkos_cxx_standard=23],
+         [AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX20' \
+               "$KOKKOS_CFG"],
+            [kokkos_cxx_standard=20],
+            [kokkos_cxx_standard=])])])
+
+    AS_IF([test "x$kokkos_cxx_standard" != "x"], [
+      KOKKOS_CXXFLAGS="-std=c++$kokkos_cxx_standard $KOKKOS_CXXFLAGS"
+    ])
+
     if test "x$have_kokkos_openmp" = "xyes"; then
       KOKKOS_CXXFLAGS="-fopenmp $KOKKOS_CXXFLAGS"
       KOKKOS_LDFLAGS="-fopenmp $KOKKOS_LDFLAGS"
