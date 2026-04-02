@@ -143,42 +143,15 @@ Indices&
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::nude_indices()
 { return _indices; }
 
-template <typename C, typename Val>
-METAPHYSICL_INLINE auto lower_bound_pointer(C & container, const Val & value)
-{
-  // Adapting https://en.cppreference.com/w/cpp/algorithm/lower_bound.html implementation to use
-  // pointers for portability
-  typedef decltype(container.data()) Ptr;
-  Ptr lower_bound_ptr = container.data(), work_ptr;
-  std::ptrdiff_t num_remaining_elements = container.size(), step;
-  while (num_remaining_elements > 0)
-  {
-    work_ptr = lower_bound_ptr;
-    step = num_remaining_elements / 2;
-    work_ptr += step;
-    if (*work_ptr < value)
-    {
-      lower_bound_ptr = ++work_ptr;
-      // We can discard both the current element and the other half of the range
-      num_remaining_elements -= step + 1;
-    }
-    else
-      // Discard the other half of the range
-      num_remaining_elements = step;
-  }
-
-  return lower_bound_ptr;
-}
-
 template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
 METAPHYSICL_INLINE
 std::size_t
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::runtime_index_query(index_value_type i) const
 {
-  auto ptr = MetaPhysicL::lower_bound_pointer(_indices, i);
-  if (ptr == (_indices.data() + _indices.size()) || *ptr != i)
+  auto it = detail::lower_bound(_indices.begin(), _indices.end(), i);
+  if (it == _indices.end() || *it != i)
     return MetaPhysicL::numeric_limits<std::size_t>::max();
-  std::size_t offset = ptr - _indices.data();
+  std::size_t offset = it - _indices.begin();
   metaphysicl_assert_equal_to(_indices[offset], i);
   return offset;
 }
