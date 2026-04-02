@@ -16,8 +16,7 @@ AC_DEFUN([CONFIGURE_KOKKOS],
 
   AS_IF([test "x$KOKKOS_PREFIX" != "x"], [
     KOKKOS_CPPFLAGS="-DMETAPHYSICL_KOKKOS_COMPILATION -I$KOKKOS_PREFIX/include"
-    KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler $KOKKOS_CXXFLAGS"
-    KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler -L$KOKKOS_PREFIX/lib -Wl,-rpath,$KOKKOS_PREFIX/lib"
+    KOKKOS_LDFLAGS="-L$KOKKOS_PREFIX/lib -Wl,-rpath,$KOKKOS_PREFIX/lib"
     KOKKOS_LIBS="-lkokkoscore"
 
     KOKKOS_CFG="$KOKKOS_PREFIX/include/KokkosCore_config.h"
@@ -43,7 +42,8 @@ AC_DEFUN([CONFIGURE_KOKKOS],
         AS_IF([test "x$NVCC" = "xno"],
           [AC_MSG_ERROR([nvcc not found. Install CUDA.])])
         KOKKOS_CXX="$NVCC"
-        KOKKOS_CXXFLAGS="-x cu $KOKKOS_CXXFLAGS"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -x cu $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
 
         dnl
         dnl credit to ChatGPT for the ensuing parsing of arch's from kokkos config
@@ -99,13 +99,16 @@ AC_DEFUN([CONFIGURE_KOKKOS],
         AS_IF([test "x$HIPCC" = "xno"],
           [AC_MSG_ERROR([hipcc not found; install ROCm HIP.])])
         KOKKOS_CXX="$HIPCC"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
         ;;
       sycl)
         AC_PATH_PROG([ICPX],[icpx],[no],[$PATH])
         AS_IF([test "x$ICPX" = "xno"],
           [AC_MSG_ERROR([icpx (oneAPI) not found for SYCL backend.])])
         KOKKOS_CXX="$ICPX"
-        KOKKOS_CXXFLAGS="-fsycl $KOKKOS_CXXFLAGS"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -fsycl $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
         ;;
       openmp)
         KOKKOS_CXX="$CXX"
