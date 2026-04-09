@@ -16,8 +16,7 @@ AC_DEFUN([CONFIGURE_KOKKOS],
 
   AS_IF([test "x$KOKKOS_PREFIX" != "x"], [
     KOKKOS_CPPFLAGS="-DMETAPHYSICL_KOKKOS_COMPILATION -I$KOKKOS_PREFIX/include"
-    KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler $KOKKOS_CXXFLAGS"
-    KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler -L$KOKKOS_PREFIX/lib -Wl,-rpath,$KOKKOS_PREFIX/lib"
+    KOKKOS_LDFLAGS="-L$KOKKOS_PREFIX/lib -Wl,-rpath,$KOKKOS_PREFIX/lib"
     KOKKOS_LIBS="-lkokkoscore"
 
     KOKKOS_CFG="$KOKKOS_PREFIX/include/KokkosCore_config.h"
@@ -32,6 +31,21 @@ AC_DEFUN([CONFIGURE_KOKKOS],
       [have_kokkos_openmp=yes],
       [have_kokkos_openmp=no])
 
+    AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX26' \
+          "$KOKKOS_CFG"],
+      [kokkos_cxx_standard=26],
+      [AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX23' \
+            "$KOKKOS_CFG"],
+         [kokkos_cxx_standard=23],
+         [AS_IF(["$GREP" -F -q '#define KOKKOS_ENABLE_CXX20' \
+               "$KOKKOS_CFG"],
+            [kokkos_cxx_standard=20],
+            [kokkos_cxx_standard=])])])
+
+    AS_IF([test "x$kokkos_cxx_standard" != "x"], [
+      KOKKOS_CXXFLAGS="-std=c++$kokkos_cxx_standard $KOKKOS_CXXFLAGS"
+    ])
+
     if test "x$have_kokkos_openmp" = "xyes"; then
       KOKKOS_CXXFLAGS="-fopenmp $KOKKOS_CXXFLAGS"
       KOKKOS_LDFLAGS="-fopenmp $KOKKOS_LDFLAGS"
@@ -43,7 +57,8 @@ AC_DEFUN([CONFIGURE_KOKKOS],
         AS_IF([test "x$NVCC" = "xno"],
           [AC_MSG_ERROR([nvcc not found. Install CUDA.])])
         KOKKOS_CXX="$NVCC"
-        KOKKOS_CXXFLAGS="-x cu $KOKKOS_CXXFLAGS"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -x cu $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
 
         dnl
         dnl credit to ChatGPT for the ensuing parsing of arch's from kokkos config
@@ -99,13 +114,16 @@ AC_DEFUN([CONFIGURE_KOKKOS],
         AS_IF([test "x$HIPCC" = "xno"],
           [AC_MSG_ERROR([hipcc not found; install ROCm HIP.])])
         KOKKOS_CXX="$HIPCC"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
         ;;
       sycl)
         AC_PATH_PROG([ICPX],[icpx],[no],[$PATH])
         AS_IF([test "x$ICPX" = "xno"],
           [AC_MSG_ERROR([icpx (oneAPI) not found for SYCL backend.])])
         KOKKOS_CXX="$ICPX"
-        KOKKOS_CXXFLAGS="-fsycl $KOKKOS_CXXFLAGS"
+        KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -fsycl $KOKKOS_CXXFLAGS"
+        KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
         ;;
       openmp)
         KOKKOS_CXX="$CXX"
