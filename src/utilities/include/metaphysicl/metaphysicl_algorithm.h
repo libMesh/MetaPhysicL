@@ -3,9 +3,12 @@
 
 #include "metaphysicl/metaphysicl_device.h"
 
+#include <algorithm>
 #include <type_traits>
 
 namespace MetaPhysicL::detail {
+
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
 
 template <typename T, typename U>
 METAPHYSICL_INLINE constexpr bool less(const T & lhs, const U & rhs)
@@ -95,6 +98,36 @@ METAPHYSICL_INLINE bool is_sorted(ForwardIt first, ForwardIt last)
 
   return true;
 }
+
+#else
+
+template <typename ForwardIt, typename T>
+METAPHYSICL_INLINE ForwardIt lower_bound(ForwardIt first, ForwardIt last, const T & value)
+{
+  return std::lower_bound(first, last, value);
+}
+
+template <typename BidirectionalIt1, typename BidirectionalIt2>
+METAPHYSICL_INLINE BidirectionalIt2 copy_backward(BidirectionalIt1 first,
+                                                  BidirectionalIt1 last,
+                                                  BidirectionalIt2 result)
+{
+  return std::copy_backward(first, last, result);
+}
+
+template <typename ForwardIt>
+METAPHYSICL_INLINE ForwardIt adjacent_find(ForwardIt first, ForwardIt last)
+{
+  return std::adjacent_find(first, last);
+}
+
+template <typename ForwardIt>
+METAPHYSICL_INLINE bool is_sorted(ForwardIt first, ForwardIt last)
+{
+  return std::is_sorted(first, last);
+}
+
+#endif
 
 } // namespace MetaPhysicL::detail
 
