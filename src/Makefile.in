@@ -579,6 +579,7 @@ include_HEADERS = core/include/metaphysicl/compare_types.h \
 	numerics/include/metaphysicl/parallel_dynamicsparsenumberarray.h \
 	numerics/include/metaphysicl/parallel_numberarray.h \
 	numerics/include/metaphysicl/parallel_semidynamicsparsenumberarray.h \
+	utilities/include/metaphysicl/metaphysicl_algorithm.h \
 	utilities/include/metaphysicl/metaphysicl_asserts.h \
 	utilities/include/metaphysicl/metaphysicl_cast.h \
 	utilities/include/metaphysicl/metaphysicl_exceptions.h \

@@ -1792,9 +1792,10 @@ uninstall-am:
 
 
 .K.o:
-	$(LIBTOOL) --tag=CXX --mode=compile $(KOKKOS_CXX) \
+	$(KOKKOS_CXX) \
 	  $(kokkos_sparse_derivs_unit_CPPFLAGS) \
 	  $(kokkos_sparse_derivs_unit_CXXFLAGS) \
+	  -x c++ \
 	  -c $< -o $@
 
 @METAPHYSICL_LICENSESTAMPEXISTS_TRUE@.license.stamp: $(top_srcdir)/LICENSE
