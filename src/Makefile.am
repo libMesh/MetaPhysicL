@@ -84,6 +84,7 @@ include_HEADERS += numerics/include/metaphysicl/parallel_numberarray.h
 include_HEADERS += numerics/include/metaphysicl/parallel_semidynamicsparsenumberarray.h
 
 # utilities
+include_HEADERS += utilities/include/metaphysicl/metaphysicl_algorithm.h
 include_HEADERS += utilities/include/metaphysicl/metaphysicl_asserts.h
 include_HEADERS += utilities/include/metaphysicl/metaphysicl_cast.h
 include_HEADERS += utilities/include/metaphysicl/metaphysicl_exceptions.h
