@@ -127,10 +127,11 @@ AC_DEFUN([CONFIGURE_KOKKOS],
         ;;
       openmp)
         KOKKOS_CXX="$CXX"
-        KOKKOS_CXXFLAGS="-fopenmp $KOKKOS_CXXFLAGS"
+        KOKKOS_CXXFLAGS="-fopenmp -x c++ $KOKKOS_CXXFLAGS"
         ;;
       serial|*)
         KOKKOS_CXX="$CXX"
+        KOKKOS_CXXFLAGS="-x c++ $KOKKOS_CXXFLAGS"
         ;;
     esac
 
