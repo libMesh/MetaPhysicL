@@ -169,16 +169,17 @@ kokkos_sparse_derivs_unit_LDFLAGS  = $(AM_LDFLAGS)  $(KOKKOS_LDFLAGS)
 kokkos_sparse_derivs_unit_LDADD    = $(KOKKOS_LIBS) $(LIBS)
 
 .K.o:
-	$(KOKKOS_CXX) \
-	  $(kokkos_sparse_derivs_unit_CPPFLAGS) \
-	  $(kokkos_sparse_derivs_unit_CXXFLAGS) \
-	  -x c++ \
+	$(KOKKOS_CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(CPPFLAGS) $(KOKKOS_CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) $(KOKKOS_CXXFLAGS) \
 	  -c $< -o $@
 
-# Force this target’s link step to use the Kokkos compiler/wrapper
+# Force this target’s link step to use the Kokkos compiler/wrapper.
+# $(LDFLAGS) must be explicit here because this overrides the default
+# CXXLINK (which includes it); libtool --mode=link handles .la archives.
 kokkos_sparse_derivs_unit_LINK = \
   $(LIBTOOL) --tag=CXX --mode=link $(KOKKOS_CXX) \
-  $(kokkos_sparse_derivs_unit_LDFLAGS) -o $@
+  $(LDFLAGS) $(kokkos_sparse_derivs_unit_LDFLAGS) -o $@
 
 CLEANFILES =
 
