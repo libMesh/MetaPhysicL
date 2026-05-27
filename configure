@@ -52829,7 +52829,7 @@ printf "%s\n" "#define HAVE_TIMPI 1" >>confdefs.h
 
 printf "%s\n" "#define HAVE_TIMPI_LIB 1" >>confdefs.h
 
-        TIMPI_CPPFLAGS=""
+                        TIMPI_CPPFLAGS="-I$TIMPI_PREFIX/src/algorithms/include -I$TIMPI_PREFIX/src/parallel/include -I$TIMPI_PREFIX/src/utilities/include $TIMPI_CPPFLAGS"
 
         TIMPI_LIBS="-ltimpi_$timpi_method"
 
