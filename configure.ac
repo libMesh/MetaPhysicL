@@ -178,7 +178,9 @@ AS_IF([test "$enable_installed_timpi" = yes],
         HAVE_TIMPI_LIB=1
         AC_DEFINE(HAVE_TIMPI,1,[Define if TIMPI headers are available])
         AC_DEFINE(HAVE_TIMPI_LIB,1,[Define if a TIMPI library is available])
-        TIMPI_CPPFLAGS=""
+        dnl Future TIMPI has not been installed yet; use the source-tree headers
+        dnl that will be available when MetaPhysicL tests build alongside TIMPI.
+        TIMPI_CPPFLAGS="-I$TIMPI_PREFIX/src/algorithms/include -I$TIMPI_PREFIX/src/parallel/include -I$TIMPI_PREFIX/src/utilities/include $TIMPI_CPPFLAGS"
 
         TIMPI_LIBS="-ltimpi_$timpi_method"
       ],
