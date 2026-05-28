@@ -4,7 +4,9 @@
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
 
 #include "metaphysicl/metaphysicl_device.h"
+#include "metaphysicl/ignore_warnings.h"
 #include <Kokkos_NumericTraits.hpp>
+#include "metaphysicl/restore_warnings.h"
 
 namespace MetaPhysicL {
 template <typename T> class numeric_limits {

@@ -7,8 +7,10 @@
 
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
 
+#include "metaphysicl/ignore_warnings.h"
 #include <Kokkos_Array.hpp>
 #include <Kokkos_Macros.hpp>
+#include "metaphysicl/restore_warnings.h"
 
 #define METAPHYSICL_INLINE KOKKOS_INLINE_FUNCTION
 #define METAPHYSICL_IF_ON_HOST(...)                                            \
