@@ -84,6 +84,9 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if Kokkos support is enabled in libMesh */
+#undef HAVE_KOKKOS
+
 /* Define if MASA is available */
 #undef HAVE_MASA
 
