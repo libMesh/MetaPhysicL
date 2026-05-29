@@ -10,10 +10,12 @@
 
 #include "metaphysicl/metaphysicl_device.h"
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
+#include "metaphysicl/ignore_warnings.h"
 #include <Kokkos_Core.hpp>
-#else
-#include <cmath>
+#include "metaphysicl/restore_warnings.h"
 #endif
+
+#include <cmath>
 #include <type_traits>
 
 namespace MetaPhysicL {

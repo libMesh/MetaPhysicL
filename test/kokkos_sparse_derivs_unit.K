@@ -10,8 +10,10 @@
 #include "metaphysicl/metaphysicl_exceptions.h"
 #include "metaphysicl/metaphysicl_math.h"
 
+#include "metaphysicl/ignore_warnings.h"
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Random.hpp>
+#include "metaphysicl/restore_warnings.h"
 
 using namespace MetaPhysicL;
 

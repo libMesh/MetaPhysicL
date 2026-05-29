@@ -154,7 +154,7 @@ if (test x$HAVE_VEXCL = x1); then
 fi
 
 dnl Optional check for Kokkos
-CONFIGURE_KOKKOS
+ACSM_CONFIGURE_KOKKOS
 
 dnl build dependencies from right to left, so mpi before timpi
 AS_IF([test "x$enablempi" = xyes],
