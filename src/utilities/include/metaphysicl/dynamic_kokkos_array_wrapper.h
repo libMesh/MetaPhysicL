@@ -29,7 +29,9 @@
 #include "metaphysicl/metaphysicl_config.h"
 
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
+#include "metaphysicl/ignore_warnings.h"
 #include <Kokkos_Array.hpp>
+#include "metaphysicl/restore_warnings.h"
 
 namespace MetaPhysicL {
 template <typename T, size_t N>

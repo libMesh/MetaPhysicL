@@ -36,7 +36,7 @@ check_PROGRAMS += ct_types_unit
 
 AM_TESTS_ENVIRONMENT =
 if CXX17_ENABLED
-if KOKKOS_ENABLED
+if ACSM_ENABLE_KOKKOS
   check_PROGRAMS += kokkos_sparse_derivs_unit
   AM_TESTS_ENVIRONMENT += TEST_KOKKOS=yes; export TEST_KOKKOS;
 endif
