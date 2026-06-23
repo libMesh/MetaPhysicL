@@ -288,8 +288,20 @@ derivative_multiply_helper(DualNumber<T, D, asd> & out, const DualNumber<T2, D2,
   if (asd && !(out.take_derivatives() || in.take_derivatives()))
     return;
 
-  out.derivatives() *= in.value();
-  out.derivatives() += out.value() * in.derivatives();
+  // Fused multiply-add: out.deriv = in.value * out.deriv + out.value * in.deriv
+  //
+  // Replaces:
+  //   out.derivatives() *= in.value();
+  //   out.derivatives() += out.value() * in.derivatives();
+  //
+  // The naive version above costs:
+  //   1) scalar *=: cheap, no sparsity_union, no alloc
+  //   2) out.value() * in.derivatives(): allocates a temporary sparse number (no sparsity_union)
+  //   3) operator+=: sparsity_union(temp.indices()) + merge loop + temp dealloc
+  //
+  // The fused version below calls sparsity_union once and eliminates the temporary entirely,
+  // reducing the cost from 1 alloc + 1 dealloc + 1 sparsity_union to 0 allocs + 1 sparsity_union.
+  out.derivatives().multiply_union_add(in.value(), out.value(), in.derivatives());
 }
 
 template <typename T,
