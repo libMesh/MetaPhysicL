@@ -4,3 +4,8 @@ build
 installed
 .clang-format
 TAGS
+src/.libs/*
+src/apps/.deps/*
+src/utilities/src/.libs/*
+src/utilities/src/.deps/*
+test/.deps/*
