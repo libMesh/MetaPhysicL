@@ -490,7 +490,7 @@ DynamicSparseNumberBase_decl_std_binary_union(fdim)
 DynamicSparseNumberBase_decl_std_binary_union(hypot)
 #endif // __cplusplus >= 201103L
 
-#define DynamicSparseNumberBase_decl_std_unary_complex(funcname) \
+#define DynamicSparseNumberBase_decl_std_unary_rebind(funcname) \
 template <template <class...> class SubType, \
           typename Data, \
           typename Indices, \
@@ -501,9 +501,18 @@ METAPHYSICL_INLINE auto funcname( \
                                                             typename Data::value_type())), \
                                                         typename Indices::value_type>::other
 
-DynamicSparseNumberBase_decl_std_unary_complex(real);
-DynamicSparseNumberBase_decl_std_unary_complex(imag);
-DynamicSparseNumberBase_decl_std_unary_complex(norm);
+DynamicSparseNumberBase_decl_std_unary_rebind(real);
+DynamicSparseNumberBase_decl_std_unary_rebind(imag);
+DynamicSparseNumberBase_decl_std_unary_rebind(norm);
+
+#if __cplusplus >= 201103L
+DynamicSparseNumberBase_decl_std_unary_rebind(isfinite);
+DynamicSparseNumberBase_decl_std_unary_rebind(isinf);
+DynamicSparseNumberBase_decl_std_unary_rebind(isnan);
+DynamicSparseNumberBase_decl_std_unary_rebind(isnormal);
+DynamicSparseNumberBase_decl_std_unary_rebind(signbit);
+#endif // __cplusplus >= 201103L
+       //
 } // namespace std (deprecated) or MetaPhysicL
 
 

@@ -267,6 +267,19 @@ funcname (ShadowNumber<T, S> a) \
 }
 
 
+#define ShadowNumber_std_unary_to_bool(funcname) \
+template <typename T, typename S> \
+METAPHYSICL_INLINE \
+ShadowNumber<bool, bool> \
+funcname (ShadowNumber<T, S> a) \
+{ \
+  ShadowNumber<bool, bool> returnval; \
+  returnval.value() = math::funcname(a.value()); \
+  returnval.shadow() = math::funcname(a.shadow()); \
+  return a; \
+}
+
+
 #define ShadowNumber_std_binary(funcname) \
 template <typename T, typename S, typename T2, typename S2> \
 METAPHYSICL_INLINE \
@@ -333,6 +346,12 @@ ShadowNumber_std_unary(floor)
 ShadowNumber_std_binary(fmod)
 
 #if __cplusplus >= 201103L
+ShadowNumber_std_unary_to_bool(isfinite)
+ShadowNumber_std_unary_to_bool(isinf)
+ShadowNumber_std_unary_to_bool(isnan)
+ShadowNumber_std_unary_to_bool(isnormal)
+ShadowNumber_std_unary_to_bool(signbit)
+
 ShadowNumber_std_unary(exp2)
 ShadowNumber_std_unary(expm1)
 ShadowNumber_std_unary(log2)

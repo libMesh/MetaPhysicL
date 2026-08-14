@@ -1455,7 +1455,7 @@ DynamicSparseNumberBase_std_binary_union(fdim)
 DynamicSparseNumberBase_std_binary_union(hypot)
 #endif // __cplusplus >= 201103L
 
-#define DynamicSparseNumberBase_std_unary_complex(funcname) \
+#define DynamicSparseNumberBase_std_unary_rebind(funcname) \
 template <template <class...> class SubType, \
           typename Data, \
           typename Indices, \
@@ -1478,9 +1478,17 @@ METAPHYSICL_INLINE auto funcname(const DynamicSparseNumberBase<Data, Indices, Su
   return returnval; \
 }
 
-DynamicSparseNumberBase_std_unary_complex(real)
-DynamicSparseNumberBase_std_unary_complex(imag)
-DynamicSparseNumberBase_std_unary_complex(norm)
+DynamicSparseNumberBase_std_unary_rebind(real)
+DynamicSparseNumberBase_std_unary_rebind(imag)
+DynamicSparseNumberBase_std_unary_rebind(norm)
+
+#if __cplusplus >= 201103L
+DynamicSparseNumberBase_std_unary_rebind(isfinite)
+DynamicSparseNumberBase_std_unary_rebind(isinf)
+DynamicSparseNumberBase_std_unary_rebind(isnan)
+DynamicSparseNumberBase_std_unary_rebind(isnormal)
+DynamicSparseNumberBase_std_unary_rebind(signbit)
+#endif // __cplusplus >= 201103L
 
 } // namespace std (deprecated) or MetaPhysicL
 
