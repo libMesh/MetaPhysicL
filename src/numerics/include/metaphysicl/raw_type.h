@@ -130,16 +130,16 @@ class raw_numeric_limits
 {
 public:
   static const bool is_specialized = true;
-  static NewType min() throw() { return NewType(numeric_limits<OldType>::min()); }
-  static NewType max() throw() { return NewType(numeric_limits<OldType>::max()); }
+  static NewType min() noexcept { return NewType(numeric_limits<OldType>::min()); }
+  static NewType max() noexcept { return NewType(numeric_limits<OldType>::max()); }
   static const int  digits = numeric_limits<OldType>::digits;
   static const int  digits10 = numeric_limits<OldType>::digits10;
   static const bool is_signed = numeric_limits<OldType>::is_signed;
   static const bool is_integer = numeric_limits<OldType>::is_integer;
   static const bool is_exact = numeric_limits<OldType>::is_exact;
   static const int radix = numeric_limits<OldType>::radix;
-  static NewType epsilon() throw() {return NewType(numeric_limits<OldType>::epsilon()); }
-  static NewType round_error() throw() {return NewType(numeric_limits<OldType>::round_error()); }
+  static NewType epsilon() noexcept {return NewType(numeric_limits<OldType>::epsilon()); }
+  static NewType round_error() noexcept {return NewType(numeric_limits<OldType>::round_error()); }
 
   static const int  min_exponent = numeric_limits<OldType>::min_exponent;
   static const int  min_exponent10 = numeric_limits<OldType>::min_exponent10;
@@ -151,10 +151,10 @@ public:
   static const bool has_signaling_NaN = numeric_limits<OldType>::has_signaling_NaN;
   static const std::float_denorm_style has_denorm = numeric_limits<OldType>::has_denorm;
   static const bool has_denorm_loss = numeric_limits<OldType>::has_denorm_loss;
-  static NewType infinity() throw() {return NewType(numeric_limits<OldType>::infinity()); }
-  static NewType quiet_NaN() throw() {return NewType(numeric_limits<OldType>::quiet_NaN()); }
-  static NewType signaling_NaN() throw() {return NewType(numeric_limits<OldType>::signaling_NaN()); }
-  static NewType denorm_min() throw() {return NewType(numeric_limits<OldType>::denorm_min()); }
+  static NewType infinity() noexcept {return NewType(numeric_limits<OldType>::infinity()); }
+  static NewType quiet_NaN() noexcept {return NewType(numeric_limits<OldType>::quiet_NaN()); }
+  static NewType signaling_NaN() noexcept {return NewType(numeric_limits<OldType>::signaling_NaN()); }
+  static NewType denorm_min() noexcept {return NewType(numeric_limits<OldType>::denorm_min()); }
 
   static const bool is_iec559 = numeric_limits<OldType>::is_iec559;
   static const bool is_bounded = numeric_limits<OldType>::is_bounded;
