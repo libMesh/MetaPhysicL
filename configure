@@ -730,10 +730,12 @@ MPI_LIBS
 MPI_IMPL
 ACSM_ENABLE_KOKKOS_FALSE
 ACSM_ENABLE_KOKKOS_TRUE
+KOKKOS_MPI_LDFLAGS
 KOKKOS_MPI_CPPFLAGS
 KOKKOS_LIBS
 KOKKOS_LDFLAGS
 KOKKOS_CPPFLAGS
+KOKKOS_INCLUDES
 KOKKOS_CXX
 KOKKOS_BACKEND
 ICPX
@@ -28314,6 +28316,26 @@ then :
                     ACSM_GXX_VERSION_STRING=`($CXX -v 2>&1) | grep "gcc version"`
 
           case "$ACSM_GXX_VERSION_STRING" in #(
+  *gcc\ version\ 16.*) :
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-16.x >>>" >&5
+printf "%s\n" "<<< C++ compiler is gcc-16.x >>>" >&6; }
+                                         ACSM_GXX_VERSION=gcc16 ;; #(
+  *gcc\ version\ 15.*) :
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-15.x >>>" >&5
+printf "%s\n" "<<< C++ compiler is gcc-15.x >>>" >&6; }
+                                         ACSM_GXX_VERSION=gcc15 ;; #(
+  *gcc\ version\ 14.*) :
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-14.x >>>" >&5
+printf "%s\n" "<<< C++ compiler is gcc-14.x >>>" >&6; }
+                                         ACSM_GXX_VERSION=gcc14 ;; #(
+  *gcc\ version\ 13.*) :
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-13.x >>>" >&5
+printf "%s\n" "<<< C++ compiler is gcc-13.x >>>" >&6; }
+                                         ACSM_GXX_VERSION=gcc13 ;; #(
+  *gcc\ version\ 12.*) :
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-12.x >>>" >&5
+printf "%s\n" "<<< C++ compiler is gcc-12.x >>>" >&6; }
+                                         ACSM_GXX_VERSION=gcc12 ;; #(
   *gcc\ version\ 11.*) :
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: <<< C++ compiler is gcc-11.x >>>" >&5
 printf "%s\n" "<<< C++ compiler is gcc-11.x >>>" >&6; }
@@ -28835,6 +28857,29 @@ then :
                     ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL -O2 -felide-constructors -g -pedantic -W -Wall -Wextra -Wno-long-long -Wunused"
           ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL -Wpointer-arith -Wformat -Wparentheses -Wuninitialized -fstrict-aliasing -Woverloaded-virtual -Wdisabled-optimization"
           ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -O0 -felide-constructors -g -pedantic -W -Wall -Wextra -Wno-long-long -Wunused -Wpointer-arith -Wformat -Wparentheses -Woverloaded-virtual"
+
+          # The former is the default but the latter can be necessary
+          ACSM_IEEE754_FLAGS="-fno-unsafe-math-optimizations -ffp-contract=off"
+
+          # Older gcc only supported disabling x87 rounding in C, not C++
+          if test "x$ACSM_GXX_VERSION" != "xgcc12" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc11" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc10" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc9" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc8" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc7" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc5" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc5" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc4.9" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc4.8" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc4.7" &&
+                 test "x$ACSM_GXX_VERSION" != "xgcc4.6"
+then :
+
+                  ACSM_IEEE754_FLAGS="$ACSM_IEEE754_FLAGS -fexcess-precision=standard"
+
+fi
+
           ACSM_NODEPRECATEDFLAG="-Wno-deprecated"
 
                     ACSM_FPE_SAFETY_FLAGS="-ftrapping-math"
@@ -28897,12 +28942,15 @@ else case e in #(
                           ACSM_CXXFLAGS_OPT="-O3 -qmaxmem=-1 -w -qansialias -Q=10 -qrtti=all -qstaticinline"
                           ACSM_CXXFLAGS_DBG="-qmaxmem=-1 -qansialias -qrtti=all -g -qstaticinline"
                           ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DBG"
+                          ACSM_IEEE754_FLAGS="" # FIXME - not sure here
                           ACSM_NODEPRECATEDFLAG=""
                           ACSM_CFLAGS_OPT="-O3 -qmaxmem=-1 -w -qansialias -Q=10"
                           ACSM_CFLAGS_DBG="-qansialias -g"
                           ACSM_CFLAGS_DEVEL="$ACSM_CFLAGS_DBG"
                          ;; #(
               intel_*) :
+
+                          ACSM_IEEE754_FLAGS="" # FIXME - not sure here
 
                                                     ACSM_NODEPRECATEDFLAG="-Wno-deprecated"
 
@@ -28930,6 +28978,7 @@ else case e in #(
                                     ACSM_CFLAGS_DBG="$ACSM_CFLAGS_DBG -w1 -g -wd266 -wd1572 -wd488 -wd161"
                                     ACSM_CFLAGS_OPT="$ACSM_CFLAGS_OPT -O3 -unroll -w0 -ftz"
                                     ACSM_CFLAGS_DEVEL="$ACSM_CFLAGS_DBG"
+                                    ACSM_IEEE754_FLAGS="-fp-model precise -no-fma"
                                    ;; #(
   intel_icx_*) :
 
@@ -28940,6 +28989,7 @@ else case e in #(
                                     ACSM_CFLAGS_DBG="$ACSM_CFLAGS_DBG -O0 -g"
                                     ACSM_CFLAGS_OPT="$ACSM_CFLAGS_OPT -O3"
                                     ACSM_CFLAGS_DEVEL="$ACSM_CFLAGS_DEVEL -O2 -g"
+                                    ACSM_IEEE754_FLAGS="-fp-model=precise -ffp-contract=off"
                                    ;; #(
   *) :
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Unknown Intel compiler \"$ACSM_GXX_VERSION\"" >&5
@@ -28961,6 +29011,8 @@ esac
                                                                                     ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -O0 --display_error_number -g -pedantic -Wno-long-long -Wunused -Wuninitialized --diag_suppress=11,111,177,445,1676"
                                 ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL -O2 --display_error_number -g -pedantic -Wno-long-long -Wunused -Wuninitialized --diag_suppress=11,111,177,445,1676"
                                 ACSM_CXXFLAGS_OPT="$ACSM_CXXFLAGS_OPT -O2 --display_error_number --diag_suppress=11,111,177,445,1676"
+
+                                ACSM_IEEE754_FLAGS="-Mnofma -Kieee"
 
                                 ACSM_NODEPRECATEDFLAG="-Wno-deprecated-declarations"
 
@@ -28984,6 +29036,8 @@ fi
                                 ACSM_CXXFLAGS_OPT="$ACSM_CXXFLAGS_OPT -O2 --no_using_std -fast -Minform=severe"
                                 ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DBG"
 
+                                ACSM_IEEE754_FLAGS="" # FIXME - maybe "-Mnofpapprox -Mnofma -Kieee"?
+
                                                                 ACSM_NODEPRECATEDFLAG=""
 
                                 ACSM_CFLAGS_DBG="$ACSM_CFLAGS_DBG -g"
@@ -29003,6 +29057,7 @@ fi
                          ACSM_CXXFLAGS_DBG="-h conform,one_instantiation_per_object,instantiate=used,noimplicitinclude -G n"
                          ACSM_CXXFLAGS_OPT="-h conform,one_instantiation_per_object,instantiate=used,noimplicitinclude -G n"
                          ACSM_CXXFLAGS_DEVEL="-h conform,one_instantiation_per_object,instantiate=used,noimplicitinclude -G n"
+                         ACSM_IEEE754_FLAGS="" # FIXME - not sure here
                          ACSM_NODEPRECATEDFLAG=""
                          ACSM_CFLAGS_DBG="-G n"
                          ACSM_CFLAGS_OPT="-G n"
@@ -29015,6 +29070,9 @@ fi
                        ACSM_CXXFLAGS_DEVEL="$ACSM_CXXFLAGS_DEVEL -Wunused-parameter -Wunused -Wpointer-arith -Wformat -Wparentheses -Wuninitialized -Qunused-arguments -Woverloaded-virtual -fno-limit-debug-info"
                                               ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -O0 -felide-constructors -g -pedantic -W -Wall -Wextra -Wno-long-long"
                        ACSM_CXXFLAGS_DBG="$ACSM_CXXFLAGS_DBG -Wunused-parameter -Wunused -Wpointer-arith -Wformat -Wparentheses -Qunused-arguments -Woverloaded-virtual -fno-limit-debug-info"
+
+                       ACSM_IEEE754_FLAGS="-fno-unsafe-math-optimizations -fexcess-precision=standard -ffp-contract=off"
+
                        ACSM_NODEPRECATEDFLAG="-Wno-deprecated"
 
                                                                                                                                                                  if test "x$ACSM_CLANG_VERSION" = "xother" || test $ACSM_CLANG_VERSION -ge 10
@@ -29118,6 +29176,7 @@ printf "%s\n" "No specific options for this C++ compiler known" >&6; }
               ACSM_CXXFLAGS_DBG="$CXXFLAGS"
               ACSM_CXXFLAGS_OPT="$CXXFLAGS"
               ACSM_CXXFLAGS_DEVEL="$CXXFLAGS"
+              ACSM_IEEE754_FLAGS=""
               ACSM_NODEPRECATEDFLAG=""
 
               ACSM_CFLAGS_DBG="$CFLAGS"
@@ -51558,7 +51617,8 @@ fi
   if test "x$KOKKOS_INCLUDE_DIR" != "xno/include" -a "x$KOKKOS_LIB_DIR" != "xno/lib"
 then :
 
-            KOKKOS_CPPFLAGS="${KOKKOS_CPPFLAGS:--DACSM_KOKKOS_COMPILATION -I$KOKKOS_INCLUDE_DIR}"
+            KOKKOS_INCLUDES="-I$KOKKOS_INCLUDE_DIR"
+      KOKKOS_CPPFLAGS="${KOKKOS_CPPFLAGS:--DACSM_KOKKOS_COMPILATION}"
       KOKKOS_LDFLAGS="${KOKKOS_LDFLAGS:--L$KOKKOS_LIB_DIR ${ACSM_RPATHFLAG}${KOKKOS_LIB_DIR}}"
       KOKKOS_LIBS="${KOKKOS_LIBS:--lkokkoscore}"
 
@@ -51585,8 +51645,6 @@ if eval test \"x\$"$as_ac_File"\" = x"yes"
 then :
 
           enablekokkos=yes
-          libmesh_optional_INCLUDES="$libmesh_optional_INCLUDES -I$KOKKOS_INCLUDE_DIR"
-          libmesh_optional_LIBS="$libmesh_optional_LIBS -L$KOKKOS_LIB_DIR -lkokkoscore"
 
                     if test "x$KOKKOS_CXX" = "x"
 then :
@@ -51850,8 +51908,7 @@ then :
   as_fn_error $? "nvcc not found but Kokkos CUDA backend requested" "$LINENO" 5
 fi
                   KOKKOS_CXX="$NVCC"
-                  KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -x cu $KOKKOS_CXXFLAGS"
-                  KOKKOS_LDFLAGS="--forward-unknown-to-host-compiler $KOKKOS_LDFLAGS"
+                  KOKKOS_CXXFLAGS="--forward-unknown-to-host-compiler -x cu --extended-lambda --expt-relaxed-constexpr -ccbin $CXX $KOKKOS_CXXFLAGS"
 
 
                                     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Parsing Kokkos defined architectures" >&5
@@ -52162,7 +52219,7 @@ printf %s "checking whether the Kokkos compiler configuration works... " >&6; }
           acsm_save_LIBS="$LIBS"
 
           CXX="$KOKKOS_CXX"
-          CPPFLAGS="$CPPFLAGS $KOKKOS_CPPFLAGS $KOKKOS_MPI_CPPFLAGS"
+          CPPFLAGS="$CPPFLAGS $KOKKOS_CPPFLAGS $KOKKOS_MPI_CPPFLAGS $KOKKOS_INCLUDES"
           CXXFLAGS="$CXXFLAGS $KOKKOS_CXXFLAGS"
           LDFLAGS="$LDFLAGS $KOKKOS_LDFLAGS $KOKKOS_MPI_LDFLAGS"
           LIBS="$LIBS $KOKKOS_LIBS"
@@ -52280,6 +52337,8 @@ fi
 then :
                   as_fn_error 4 "*** Kokkos was not found, but --enable-kokkos-required was specified." "$LINENO" 5
 fi
+
+
 
 
 
