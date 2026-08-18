@@ -492,6 +492,20 @@ using MetaPhysicL::CompareTypes;
 #endif
 
 
+#define NumberArray_std_unary_to_bool(funcname) \
+template <std::size_t N, typename T> \
+inline \
+auto \
+funcname (NumberArray<N, T> a) \
+{ \
+  NumberArray<N, decltype(math::funcname(a[0]))> returnval; \
+  for (std::size_t i=0; i != N; ++i) \
+    returnval[i] = math::funcname(a[i]); \
+ \
+  return returnval; \
+}
+
+
 #define NumberArray_std_unary(funcname) \
 template <std::size_t N, typename T> \
 inline \
@@ -569,6 +583,12 @@ NumberArray_std_unary(floor)
 NumberArray_std_binary(fmod)
 
 #if __cplusplus >= 201103L
+NumberArray_std_unary_to_bool(isfinite)
+NumberArray_std_unary_to_bool(isinf)
+NumberArray_std_unary_to_bool(isnan)
+NumberArray_std_unary_to_bool(isnormal)
+NumberArray_std_unary_to_bool(signbit)
+
 NumberArray_std_unary(exp2)
 NumberArray_std_unary(expm1)
 NumberArray_std_unary(log2)

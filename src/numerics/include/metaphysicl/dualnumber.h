@@ -555,19 +555,6 @@ namespace math = MetaPhysicL::math;
 #endif
 
 
-template <typename T, typename D, bool asd>
-METAPHYSICL_INLINE bool isnan (const DualNumber<T,D,asd> & a)
-{
-  return math::isnan(a.value());
-}
-
-template <typename T, typename D, bool asd>
-METAPHYSICL_INLINE bool isinf (const DualNumber<T,D,asd> & a)
-{
-  return math::isinf(a.value());
-}
-
-
 #if METAPHYSICL_USE_STD_MOVE
 #define DualNumber_std_unary(funcname, derivative, precalc) \
 template <typename T, typename D, bool asd> \
@@ -678,6 +665,25 @@ DualNumber_std_unary(round, 0,)
 DualNumber_std_unary(nearbyint, 0,)
 DualNumber_std_unary(rint, 0,)
 #endif // __cplusplus >= 201103L
+
+
+#define DualNumber_std_unary_bool(funcname) \
+template <typename T, typename D> \
+METAPHYSICL_INLINE \
+auto funcname (const DualNumber<T,D> & in) \
+-> decltype(math::funcname(in.value())) \
+{ \
+  return math::funcname(in.value()); \
+}
+
+#if __cplusplus >= 201103L
+DualNumber_std_unary_bool(isfinite)
+DualNumber_std_unary_bool(isinf)
+DualNumber_std_unary_bool(isnan)
+DualNumber_std_unary_bool(isnormal)
+DualNumber_std_unary_bool(signbit)
+#endif // __cplusplus >= 201103L
+
 
 #define DualNumber_complex_std_unary_real(funcname) \
 template <typename T, typename D, bool asd> \

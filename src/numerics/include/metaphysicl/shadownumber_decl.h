@@ -229,6 +229,13 @@ ShadowNumber<T, S> \
 funcname (ShadowNumber<T, S> a);
 
 
+#define ShadowNumber_decl_std_unary_to_bool(funcname) \
+template <typename T, typename S> \
+inline \
+ShadowNumber<bool, bool> \
+funcname (ShadowNumber<T, S> a);
+
+
 #define ShadowNumber_decl_std_binary(funcname) \
 template <typename T, typename S, typename T2, typename S2> \
 inline \
@@ -278,6 +285,12 @@ ShadowNumber_decl_std_unary(floor)
 ShadowNumber_decl_std_binary(fmod)
 
 #if __cplusplus >= 201103L
+ShadowNumber_decl_std_unary_to_bool(isfinite)
+ShadowNumber_decl_std_unary_to_bool(isinf)
+ShadowNumber_decl_std_unary_to_bool(isnan)
+ShadowNumber_decl_std_unary_to_bool(isnormal)
+ShadowNumber_decl_std_unary_to_bool(signbit)
+
 ShadowNumber_decl_std_unary(exp2)
 ShadowNumber_decl_std_unary(expm1)
 ShadowNumber_decl_std_unary(log2)

@@ -836,6 +836,21 @@ funcname (SparseNumberArray<T, IndexSet> a) \
 }
 
 
+#define SparseNumberArray_std_unary_rebind(funcname) \
+template <typename T, typename IndexSet> \
+inline \
+auto \
+funcname (SparseNumberArray<T, IndexSet> a) \
+    -> SparseNumberArray<decltype(math::funcname(a.raw_at(0))), IndexSet> \
+{ \
+  SparseNumberArray<decltype(math::funcname(a.raw_at(0))), IndexSet> returnval; \
+  for (unsigned int i=0; i != IndexSet::size; ++i) \
+    returnval.raw_at(i) = math::funcname(a.raw_at(i)); \
+ \
+  return returnval; \
+}
+
+
 #define SparseNumberArray_std_binary(funcname) \
 template <typename T, typename T2, typename IndexSet, typename IndexSet2> \
 inline \
@@ -1049,6 +1064,14 @@ SparseNumberArray_std_binary_union(fmax)
 SparseNumberArray_std_binary_union(fmin)
 SparseNumberArray_std_binary_union(fdim)
 SparseNumberArray_std_binary_union(hypot)
+
+#if __cplusplus >= 201103L
+// SparseNumberArray_std_unary_rebind(isfinite)
+SparseNumberArray_std_unary_rebind(isinf)
+SparseNumberArray_std_unary_rebind(isnan)
+// SparseNumberArray_std_unary_rebind(isnormal)
+SparseNumberArray_std_unary_rebind(signbit)
+#endif // __cplusplus >= 201103L
 
 template <typename T, typename IndexSet>
 class numeric_limits<SparseNumberArray<T, IndexSet> > : 

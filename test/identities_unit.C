@@ -104,6 +104,9 @@ int vectester (void)
   one_test(ceil(random_vec / 2 - 1));
   one_test(fabs(random_vec-.75) - abs(random_vec-.75));
 
+  one_test(isinf(random_vec) && isfinite(random_vec));
+  one_test(isnan(random_vec));
+
   return returnval;
 }
 
