@@ -559,11 +559,6 @@ using MetaPhysicL::CompareTypes;
 template <typename T, typename D, bool asd>
 METAPHYSICL_INLINE D gradient(const DualNumber<T, D, asd>& a);
 
-template <typename T, typename D, bool asd>
-METAPHYSICL_INLINE bool isnan (const DualNumber<T,D,asd> & a);
-template <typename T, typename D, bool asd>
-METAPHYSICL_INLINE bool isinf (const DualNumber<T,D,asd> & a);
-
 // Some forward declarations necessary for recursive DualNumbers
 
 #if METAPHYSICL_USE_STD_MOVE
@@ -590,7 +585,6 @@ METAPHYSICL_INLINE DualNumber<T,D,asd> cosh (DualNumber<T,D,asd> a);
 
 #endif
 
-// Now just combined declaration/definitions
 
 #if METAPHYSICL_USE_STD_MOVE
 #define DualNumber_decl_std_unary(funcname) \
@@ -647,6 +641,21 @@ DualNumber_decl_std_unary(round)
 DualNumber_decl_std_unary(nearbyint)
 DualNumber_decl_std_unary(rint)
 #endif // __cplusplus >= 201103L
+
+
+#define DualNumber_decl_std_unary_to_bool(funcname) \
+template <typename T, typename D, bool asd> \
+METAPHYSICL_INLINE auto funcname (const DualNumber<T,D,asd> & in) \
+-> decltype(funcname(in.value()));
+
+#if __cplusplus >= 201103L
+DualNumber_decl_std_unary_to_bool(isfinite)
+DualNumber_decl_std_unary_to_bool(isinf)
+DualNumber_decl_std_unary_to_bool(isnan)
+DualNumber_decl_std_unary_to_bool(isnormal)
+DualNumber_decl_std_unary_to_bool(signbit)
+#endif // __cplusplus >= 201103L
+
 
 #define DualNumber_decl_complex_std_unary_real(funcname) \
 template <typename T, typename D, bool asd> \

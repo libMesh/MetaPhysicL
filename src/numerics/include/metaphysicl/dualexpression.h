@@ -623,22 +623,6 @@ using MetaPhysicL::CompareTypes;
 using MetaPhysicL::enable_if_c;
 using MetaPhysicL::DefinesSupertype;
 
-template <typename T, typename D>
-inline
-auto isnan (const DualExpression<T,D> & a)
--> decltype(isnan(a.value()))
-{
-  return isnan(a.value());
-}
-
-template <typename T, typename D>
-inline
-auto isinf (const DualExpression<T,D> & a)
--> decltype(isinf(a.value()))
-{
-  return isinf(a.value());
-}
-
 // Some forward declarations necessary for recursive DualExpressions
 
 template <typename T, typename D>
@@ -743,6 +727,25 @@ DualExpression_equivfl_unary(nearbyint)
 DualExpression_std_unary(rint, 0)
 DualExpression_equivfl_unary(rint)
 #endif
+
+
+#define DualExpression_std_unary_bool(funcname) \
+template <typename T, typename D> \
+inline \
+auto funcname (const DualExpression<T,D> & in) \
+-> decltype(funcname(in.value())) \
+{ \
+  return funcname(in.value()); \
+}
+
+#if __cplusplus >= 201103L
+DualExpression_std_unary_bool(isfinite)
+DualExpression_std_unary_bool(isinf)
+DualExpression_std_unary_bool(isnan)
+DualExpression_std_unary_bool(isnormal)
+DualExpression_std_unary_bool(signbit)
+#endif // __cplusplus >= 201103L
+
 
 #define DualExpression_std_binary(funcname, derivative, rightderiv, leftderiv) \
 template <typename T, typename D, typename T2, typename D2> \
