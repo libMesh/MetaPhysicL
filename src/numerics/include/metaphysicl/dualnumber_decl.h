@@ -41,6 +41,7 @@
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/testable.h"
 
+#include <cmath> // isinf, etc
 #include <limits>
 #include <ostream>
 
