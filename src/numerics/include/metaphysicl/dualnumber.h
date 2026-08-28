@@ -33,7 +33,6 @@
 
 #include "metaphysicl/dualnumber_surrogate.h"
 #include "metaphysicl/metaphysicl_common.h"
-#include "metaphysicl/metaphysicl_math.h"
 
 namespace MetaPhysicL {
 
