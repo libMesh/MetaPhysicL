@@ -40,7 +40,9 @@
 #include "metaphysicl/metaphysicl_common.h"
 #include "metaphysicl/raw_type.h"
 #include "metaphysicl/testable.h"
+#include "metaphysicl/metaphysicl_math.h"
 
+#include <cmath> // isinf, etc
 #include <limits>
 #include <ostream>
 
@@ -646,7 +648,7 @@ DualNumber_decl_std_unary(rint)
 #define DualNumber_decl_std_unary_to_bool(funcname) \
 template <typename T, typename D, bool asd> \
 METAPHYSICL_INLINE auto funcname (const DualNumber<T,D,asd> & in) \
--> decltype(funcname(in.value()));
+-> decltype(math::funcname(in.value()));
 
 #if __cplusplus >= 201103L
 DualNumber_decl_std_unary_to_bool(isfinite)

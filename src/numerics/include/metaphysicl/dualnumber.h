@@ -33,7 +33,6 @@
 
 #include "metaphysicl/dualnumber_surrogate.h"
 #include "metaphysicl/metaphysicl_common.h"
-#include "metaphysicl/metaphysicl_math.h"
 
 namespace MetaPhysicL {
 
@@ -668,9 +667,9 @@ DualNumber_std_unary(rint, 0,)
 
 
 #define DualNumber_std_unary_bool(funcname) \
-template <typename T, typename D> \
+template <typename T, typename D, bool asd> \
 METAPHYSICL_INLINE \
-auto funcname (const DualNumber<T,D> & in) \
+auto funcname (const DualNumber<T,D,asd> & in) \
 -> decltype(math::funcname(in.value())) \
 { \
   return math::funcname(in.value()); \
