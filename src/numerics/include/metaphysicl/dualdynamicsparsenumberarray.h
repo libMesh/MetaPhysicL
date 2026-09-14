@@ -131,4 +131,11 @@ gradient(const DynamicSparseNumberArray<T, I>& a)
 
 } // namespace MetaPhysicL
 
+// Enable the shared-sparsity-pattern fused multiply for NumberArray/NumberVector
+// tensors whose components are DualNumbers over a DynamicSparseNumberArray. This is
+// included last (after the types above are fully defined) so that tensor *= tensor
+// automatically uses the one-union batched path when components share a pattern,
+// with a safe per-component fallback otherwise.
+#include "metaphysicl/shared_sparsity_tensor_multiply.h"
+
 #endif // METAPHYSICL_DUALDYNAMICSPARSENUMBERARRAY_H

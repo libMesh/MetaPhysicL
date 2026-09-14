@@ -178,7 +178,7 @@ public:
 
   template <typename T2>
   NumberArray<N,T>& operator*= (const NumberArray<N,T2>& a)
-    { for (std::size_t i=0; i != N; ++i) _data[i] *= a[i]; return *this; }
+    { component_multiply_assign(*this, a); return *this; }
 
   template <typename T2>
   NumberArray<N,T>& operator*= (const T2& a)
@@ -223,6 +223,19 @@ public:
 private:
   T _data[N];
 };
+
+
+// Customization point for NumberArray::operator*= (component-wise multiply).
+// Default: plain per-component loop. A more specialized overload in
+// shared_sparsity_tensor_multiply.h handles AD components that share one sparse
+// derivative pattern, computing the sparsity union once for the whole tensor.
+template <std::size_t N, typename T, typename T2>
+inline void
+component_multiply_assign(NumberArray<N,T> & out, const NumberArray<N,T2> & in)
+{
+  for (std::size_t i = 0; i != N; ++i)
+    out[i] *= in[i];
+}
 
 
 
