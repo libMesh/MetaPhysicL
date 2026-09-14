@@ -740,4 +740,20 @@ class numeric_limits<DualNumber<T, D, asd> > :
 } // namespace std (deprecated) or MetaPhysicL
 
 
+#ifndef METAPHYSICL_ENABLE_STD_VIOLATION
+// Specializing std::numeric_limits for a program-defined type is
+// explicitly permitted by the C++ standard (unlike the other std::
+// specializations we only add under METAPHYSICL_ENABLE_STD_VIOLATION).
+// Provide it unconditionally so that std::numeric_limits<DualNumber>
+// (e.g. std::numeric_limits<ADReal>::epsilon()) resolves to a real
+// specialization instead of falling back to the primary template, whose
+// epsilon() would value-initialize to a zero DualNumber.
+namespace std {
+template <typename T, typename D, bool asd>
+class numeric_limits<MetaPhysicL::DualNumber<T, D, asd> > :
+  public MetaPhysicL::raw_numeric_limits<MetaPhysicL::DualNumber<T, D, asd>, T> {};
+} // namespace std
+#endif // METAPHYSICL_ENABLE_STD_VIOLATION
+
+
 #endif // METAPHYSICL_DUALNUMBER_DECL_H
