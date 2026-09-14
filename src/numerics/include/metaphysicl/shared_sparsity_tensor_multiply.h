@@ -30,28 +30,13 @@
 #include "metaphysicl/semidynamicsparsenumberarray.h"
 #include "metaphysicl/numberarray.h"
 #include "metaphysicl/numbervector.h"
+#include "metaphysicl/sparse_pattern_compare.h" // same_index_pattern
 
 #include <cstddef>
 #include <vector>
 
 namespace MetaPhysicL
 {
-
-// Element-wise index-pattern equality. Works for any index storage exposing
-// size() and operator[] (std::vector for DynamicSparseNumberArray, the array
-// wrapper for SemiDynamicSparseNumberArray), which std::vector's operator!= etc.
-// do not cover uniformly.
-template <typename IdxA, typename IdxB>
-inline bool
-same_index_pattern(const IdxA & a, const IdxB & b)
-{
-  if (a.size() != b.size())
-    return false;
-  for (std::size_t k = 0; k < a.size(); ++k)
-    if (a[k] != b[k])
-      return false;
-  return true;
-}
 
 // Generic batched multiply: out[c] *= in[c] for every component, computing the
 // derivative sparsity union once for the whole tensor. `Tensor` must provide
