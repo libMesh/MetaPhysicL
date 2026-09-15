@@ -1,15 +1,21 @@
 #ifndef METAPHYSICL_NUMERIC_LIMITS
 #define METAPHYSICL_NUMERIC_LIMITS
 
-#ifdef METAPHYSICL_KOKKOS_COMPILATION
-
+// metaphysicl_device.h maps the build system's ACSM_KOKKOS_COMPILATION onto
+// METAPHYSICL_KOKKOS_COMPILATION.  Including it here, before the branch below
+// is selected, keeps the branch a translation unit gets independent of the
+// order in which it includes MetaPhysicL headers; otherwise two translation
+// units in one program can define MetaPhysicL::numeric_limits differently.
 #include "metaphysicl/metaphysicl_device.h"
-#include "metaphysicl/ignore_warnings.h"
-#include <Kokkos_NumericTraits.hpp>
-#include "metaphysicl/restore_warnings.h"
 
 #include <limits>
 #include <type_traits>
+
+#ifdef METAPHYSICL_KOKKOS_COMPILATION
+
+#include "metaphysicl/ignore_warnings.h"
+#include <Kokkos_NumericTraits.hpp>
+#include "metaphysicl/restore_warnings.h"
 
 namespace MetaPhysicL {
 
@@ -112,8 +118,6 @@ public:
 } // namespace MetaPhysicL
 
 #else
-
-#include <limits>
 
 namespace MetaPhysicL {
 template <typename T> class numeric_limits {
