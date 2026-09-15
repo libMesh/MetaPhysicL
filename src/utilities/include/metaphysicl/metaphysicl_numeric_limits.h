@@ -8,17 +8,107 @@
 #include <Kokkos_NumericTraits.hpp>
 #include "metaphysicl/restore_warnings.h"
 
+#include <limits>
+#include <type_traits>
+
 namespace MetaPhysicL {
-template <typename T> class numeric_limits {
-public:
-  METAPHYSICL_INLINE static constexpr auto max() {
-    return Kokkos::Experimental::finite_max_v<T>;
+
+// Kokkos::Experimental defines its numeric traits only for arithmetic types,
+// and several of them only for floating point types.  Where a trait is outside
+// those constraints, and for the traits Kokkos has no equivalent of at all
+// (the boolean properties, rounding and denormal styles), fall back on
+// std::numeric_limits: those members are compile-time constants, so they stay
+// usable from device code.
+#define METAPHYSICL_KOKKOS_FP_VALUE(NAME)                                      \
+  METAPHYSICL_INLINE static constexpr T NAME() {                               \
+    if constexpr (std::is_floating_point_v<T>)                                 \
+      return Kokkos::Experimental::NAME##_v<T>;                                \
+    else                                                                       \
+      return std::numeric_limits<T>::NAME();                                   \
   }
 
-  METAPHYSICL_INLINE static constexpr auto epsilon() {
-    return Kokkos::Experimental::epsilon_v<T>;
+#define METAPHYSICL_KOKKOS_ARITHMETIC_TRAIT(NAME, TYPE)                        \
+  METAPHYSICL_INLINE static constexpr TYPE NAME() {                            \
+    if constexpr (std::is_arithmetic_v<T>)                                     \
+      return Kokkos::Experimental::NAME##_v<T>;                                \
+    else                                                                       \
+      return std::numeric_limits<T>::NAME;                                     \
   }
+
+#define METAPHYSICL_KOKKOS_FP_TRAIT(NAME, TYPE)                                \
+  METAPHYSICL_INLINE static constexpr TYPE NAME() {                            \
+    if constexpr (std::is_floating_point_v<T>)                                 \
+      return Kokkos::Experimental::NAME##_v<T>;                                \
+    else                                                                       \
+      return std::numeric_limits<T>::NAME;                                     \
+  }
+
+#define METAPHYSICL_STD_TRAIT(NAME, TYPE)                                      \
+  METAPHYSICL_INLINE static constexpr TYPE NAME() {                            \
+    return std::numeric_limits<T>::NAME;                                       \
+  }
+
+template <typename T> class numeric_limits {
+public:
+  // std::numeric_limits<T>::min() is the smallest normalized value for a
+  // floating point type and the lowest representable value for an integral
+  // one; Kokkos splits those into two traits.
+  METAPHYSICL_INLINE static constexpr T min() {
+    if constexpr (std::is_floating_point_v<T>)
+      return Kokkos::Experimental::norm_min_v<T>;
+    else if constexpr (std::is_arithmetic_v<T>)
+      return Kokkos::Experimental::finite_min_v<T>;
+    else
+      return std::numeric_limits<T>::min();
+  }
+
+  METAPHYSICL_INLINE static constexpr T max() {
+    if constexpr (std::is_arithmetic_v<T>)
+      return Kokkos::Experimental::finite_max_v<T>;
+    else
+      return std::numeric_limits<T>::max();
+  }
+
+  METAPHYSICL_KOKKOS_ARITHMETIC_TRAIT(digits, int)
+  METAPHYSICL_KOKKOS_ARITHMETIC_TRAIT(digits10, int)
+  METAPHYSICL_KOKKOS_ARITHMETIC_TRAIT(radix, int)
+  METAPHYSICL_STD_TRAIT(is_signed, bool)
+  METAPHYSICL_STD_TRAIT(is_integer, bool)
+  METAPHYSICL_STD_TRAIT(is_exact, bool)
+
+  METAPHYSICL_KOKKOS_FP_VALUE(epsilon)
+  METAPHYSICL_KOKKOS_FP_VALUE(round_error)
+
+  METAPHYSICL_KOKKOS_FP_TRAIT(min_exponent, int)
+  METAPHYSICL_KOKKOS_FP_TRAIT(min_exponent10, int)
+  METAPHYSICL_KOKKOS_FP_TRAIT(max_exponent, int)
+  METAPHYSICL_KOKKOS_FP_TRAIT(max_exponent10, int)
+
+  METAPHYSICL_STD_TRAIT(has_infinity, bool)
+  METAPHYSICL_STD_TRAIT(has_quiet_NaN, bool)
+  METAPHYSICL_STD_TRAIT(has_signaling_NaN, bool)
+  METAPHYSICL_STD_TRAIT(has_denorm, std::float_denorm_style)
+  METAPHYSICL_STD_TRAIT(has_denorm_loss, bool)
+
+  METAPHYSICL_KOKKOS_FP_VALUE(infinity)
+  METAPHYSICL_KOKKOS_FP_VALUE(quiet_NaN)
+  METAPHYSICL_KOKKOS_FP_VALUE(signaling_NaN)
+  METAPHYSICL_KOKKOS_FP_VALUE(denorm_min)
+
+  METAPHYSICL_STD_TRAIT(is_iec559, bool)
+  METAPHYSICL_STD_TRAIT(is_bounded, bool)
+  METAPHYSICL_STD_TRAIT(is_modulo, bool)
+
+  METAPHYSICL_STD_TRAIT(traps, bool)
+  METAPHYSICL_STD_TRAIT(tinyness_before, bool)
+  METAPHYSICL_STD_TRAIT(round_style, std::float_round_style)
 };
+
+#undef METAPHYSICL_KOKKOS_FP_VALUE
+#undef METAPHYSICL_KOKKOS_ARITHMETIC_TRAIT
+#undef METAPHYSICL_KOKKOS_FP_TRAIT
+#undef METAPHYSICL_STD_TRAIT
+
 } // namespace MetaPhysicL
 
 #else
