@@ -30,29 +30,29 @@ template <typename T> class numeric_limits {
 public:
   static T min() { return std::numeric_limits<T>::min(); }
   static T max() { return std::numeric_limits<T>::max(); }
-  static int digits() { return std::numeric_limits<T>::digits; }
-  static int digits10() { return std::numeric_limits<T>::digits10; }
-  static bool is_signed() { return std::numeric_limits<T>::is_signed; }
-  static bool is_integer() { return std::numeric_limits<T>::is_integer; }
-  static bool is_exact() { return std::numeric_limits<T>::is_exact; }
-  static int radix() { return std::numeric_limits<T>::radix; }
+  static constexpr int digits() { return std::numeric_limits<T>::digits; }
+  static constexpr int digits10() { return std::numeric_limits<T>::digits10; }
+  static constexpr bool is_signed() { return std::numeric_limits<T>::is_signed; }
+  static constexpr bool is_integer() { return std::numeric_limits<T>::is_integer; }
+  static constexpr bool is_exact() { return std::numeric_limits<T>::is_exact; }
+  static constexpr int radix() { return std::numeric_limits<T>::radix; }
   static T epsilon() { return std::numeric_limits<T>::epsilon(); }
   static T round_error() { return std::numeric_limits<T>::round_error(); }
 
-  static int min_exponent() { return std::numeric_limits<T>::min_exponent; }
-  static int min_exponent10() { return std::numeric_limits<T>::min_exponent10; }
-  static int max_exponent() { return std::numeric_limits<T>::max_exponent; }
-  static int max_exponent10() { return std::numeric_limits<T>::max_exponent10; }
+  static constexpr int min_exponent() { return std::numeric_limits<T>::min_exponent; }
+  static constexpr int min_exponent10() { return std::numeric_limits<T>::min_exponent10; }
+  static constexpr int max_exponent() { return std::numeric_limits<T>::max_exponent; }
+  static constexpr int max_exponent10() { return std::numeric_limits<T>::max_exponent10; }
 
-  static bool has_infinity() { return std::numeric_limits<T>::has_infinity; }
-  static bool has_quiet_NaN() { return std::numeric_limits<T>::has_quiet_NaN; }
-  static bool has_signaling_NaN() {
+  static constexpr bool has_infinity() { return std::numeric_limits<T>::has_infinity; }
+  static constexpr bool has_quiet_NaN() { return std::numeric_limits<T>::has_quiet_NaN; }
+  static constexpr bool has_signaling_NaN() {
     return std::numeric_limits<T>::has_signaling_NaN;
   }
-  static std::float_denorm_style has_denorm() {
+  static constexpr std::float_denorm_style has_denorm() {
     return std::numeric_limits<T>::has_denorm;
   }
-  static bool has_denorm_loss() {
+  static constexpr bool has_denorm_loss() {
     return std::numeric_limits<T>::has_denorm_loss;
   }
   static T infinity() { return std::numeric_limits<T>::infinity(); }
@@ -60,15 +60,15 @@ public:
   static T signaling_NaN() { return std::numeric_limits<T>::signaling_NaN(); }
   static T denorm_min() { return std::numeric_limits<T>::denorm_min(); }
 
-  static bool is_iec559() { return std::numeric_limits<T>::is_iec559; }
-  static bool is_bounded() { return std::numeric_limits<T>::is_bounded; }
-  static bool is_modulo() { return std::numeric_limits<T>::is_modulo; }
+  static constexpr bool is_iec559() { return std::numeric_limits<T>::is_iec559; }
+  static constexpr bool is_bounded() { return std::numeric_limits<T>::is_bounded; }
+  static constexpr bool is_modulo() { return std::numeric_limits<T>::is_modulo; }
 
-  static bool traps() { return std::numeric_limits<T>::traps; }
-  static bool tinyness_before() {
+  static constexpr bool traps() { return std::numeric_limits<T>::traps; }
+  static constexpr bool tinyness_before() {
     return std::numeric_limits<T>::tinyness_before;
   }
-  static std::float_round_style round_style() {
+  static constexpr std::float_round_style round_style() {
     return std::numeric_limits<T>::round_style;
   }
 };
