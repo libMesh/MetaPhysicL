@@ -130,16 +130,16 @@ class raw_numeric_limits
 {
 public:
   static constexpr bool is_specialized = numeric_limits<OldType>::is_specialized();
-  static NewType min() noexcept { return NewType(numeric_limits<OldType>::min()); }
-  static NewType max() noexcept { return NewType(numeric_limits<OldType>::max()); }
+  METAPHYSICL_INLINE static NewType min() noexcept { return NewType(numeric_limits<OldType>::min()); }
+  METAPHYSICL_INLINE static NewType max() noexcept { return NewType(numeric_limits<OldType>::max()); }
   static constexpr int  digits = numeric_limits<OldType>::digits();
   static constexpr int  digits10 = numeric_limits<OldType>::digits10();
   static constexpr bool is_signed = numeric_limits<OldType>::is_signed();
   static constexpr bool is_integer = numeric_limits<OldType>::is_integer();
   static constexpr bool is_exact = numeric_limits<OldType>::is_exact();
   static constexpr int radix = numeric_limits<OldType>::radix();
-  static NewType epsilon() noexcept {return NewType(numeric_limits<OldType>::epsilon()); }
-  static NewType round_error() noexcept {return NewType(numeric_limits<OldType>::round_error()); }
+  METAPHYSICL_INLINE static NewType epsilon() noexcept {return NewType(numeric_limits<OldType>::epsilon()); }
+  METAPHYSICL_INLINE static NewType round_error() noexcept {return NewType(numeric_limits<OldType>::round_error()); }
 
   static constexpr int  min_exponent = numeric_limits<OldType>::min_exponent();
   static constexpr int  min_exponent10 = numeric_limits<OldType>::min_exponent10();
@@ -151,10 +151,10 @@ public:
   static constexpr bool has_signaling_NaN = numeric_limits<OldType>::has_signaling_NaN();
   static constexpr std::float_denorm_style has_denorm = numeric_limits<OldType>::has_denorm();
   static constexpr bool has_denorm_loss = numeric_limits<OldType>::has_denorm_loss();
-  static NewType infinity() noexcept {return NewType(numeric_limits<OldType>::infinity()); }
-  static NewType quiet_NaN() noexcept {return NewType(numeric_limits<OldType>::quiet_NaN()); }
-  static NewType signaling_NaN() noexcept {return NewType(numeric_limits<OldType>::signaling_NaN()); }
-  static NewType denorm_min() noexcept {return NewType(numeric_limits<OldType>::denorm_min()); }
+  METAPHYSICL_INLINE static NewType infinity() noexcept {return NewType(numeric_limits<OldType>::infinity()); }
+  METAPHYSICL_INLINE static NewType quiet_NaN() noexcept {return NewType(numeric_limits<OldType>::quiet_NaN()); }
+  METAPHYSICL_INLINE static NewType signaling_NaN() noexcept {return NewType(numeric_limits<OldType>::signaling_NaN()); }
+  METAPHYSICL_INLINE static NewType denorm_min() noexcept {return NewType(numeric_limits<OldType>::denorm_min()); }
 
   static constexpr bool is_iec559 = numeric_limits<OldType>::is_iec559();
   static constexpr bool is_bounded = numeric_limits<OldType>::is_bounded();
