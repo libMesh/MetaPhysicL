@@ -129,7 +129,7 @@ template <typename NewType, typename OldType>
 class raw_numeric_limits
 {
 public:
-  static constexpr bool is_specialized = true;
+  static constexpr bool is_specialized = numeric_limits<OldType>::is_specialized();
   static NewType min() noexcept { return NewType(numeric_limits<OldType>::min()); }
   static NewType max() noexcept { return NewType(numeric_limits<OldType>::max()); }
   static constexpr int  digits = numeric_limits<OldType>::digits();

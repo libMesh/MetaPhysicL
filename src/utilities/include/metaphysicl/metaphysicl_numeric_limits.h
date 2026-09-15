@@ -56,6 +56,8 @@ namespace MetaPhysicL {
 
 template <typename T> class numeric_limits {
 public:
+  METAPHYSICL_STD_TRAIT(is_specialized, bool)
+
   // std::numeric_limits<T>::min() is the smallest normalized value for a
   // floating point type and the lowest representable value for an integral
   // one; Kokkos splits those into two traits.
@@ -122,6 +124,9 @@ public:
 namespace MetaPhysicL {
 template <typename T> class numeric_limits {
 public:
+  static constexpr bool is_specialized() {
+    return std::numeric_limits<T>::is_specialized;
+  }
   static T min() { return std::numeric_limits<T>::min(); }
   static T max() { return std::numeric_limits<T>::max(); }
   static constexpr int digits() { return std::numeric_limits<T>::digits; }
