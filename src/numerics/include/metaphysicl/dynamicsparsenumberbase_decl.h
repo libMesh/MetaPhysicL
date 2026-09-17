@@ -162,6 +162,14 @@ public:
   template <class... SubTypeArgs2>
   METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator+=(const SubType<SubTypeArgs2...> & a);
 
+  // Fused multiply-add: (*this) = scalar_a * (*this) + scalar_b * other, computed
+  // with a single sparsity_union and no temporary. See derivative_multiply_helper.
+  template <class... SubTypeArgs2>
+  METAPHYSICL_INLINE SubType<SubTypeArgs...> &
+  multiply_union_add(const typename Data::value_type scalar_a,
+                     const typename Data::value_type scalar_b,
+                     const SubType<SubTypeArgs2...> & other);
+
   template <class... SubTypeArgs2>
   METAPHYSICL_INLINE SubType<SubTypeArgs...> & operator-=(const SubType<SubTypeArgs2...> & a);
 

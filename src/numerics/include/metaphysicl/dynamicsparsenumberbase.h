@@ -61,7 +61,7 @@ template <typename Data2, typename Indices2, class... SubTypeArgs2>
 METAPHYSICL_INLINE
 DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::
 DynamicSparseNumberBase(const DynamicSparseNumberBase<Data2, Indices2, SubType, SubTypeArgs2...> & src)
-{ 
+{
   this->resize(src.size());
   const auto & src_indices = src.nude_indices();
   const auto & src_data = src.nude_data();
@@ -606,6 +606,46 @@ DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::operator+= (con
       metaphysicl_assert_equal_to(idx1, idx2);
 
       *data_it += *data2_it;
+    }
+
+  return static_cast<SubType<SubTypeArgs...>&>(*this);
+}
+
+
+template <typename Data, typename Indices, template <class...> class SubType, class... SubTypeArgs>
+template <class... SubTypeArgs2>
+METAPHYSICL_INLINE
+SubType<SubTypeArgs...>&
+DynamicSparseNumberBase<Data, Indices, SubType, SubTypeArgs...>::multiply_union_add(
+    const typename Data::value_type scalar_a,
+    const typename Data::value_type scalar_b,
+    const SubType<SubTypeArgs2...>& other)
+{
+  // Single sparsity union — may resize _data and _indices
+  this->sparsity_union(other.nude_indices());
+
+  // Scale all existing entries by scalar_a (indices unchanged by scalar multiply)
+  for (auto & d : _data)
+    d *= scalar_a;
+
+  // Walk the sorted index lists and add scalar_b * other[i] into matching entries.
+  // After sparsity_union above, every index in other is guaranteed to be in _indices,
+  // so the inner while loop will always find a match.
+  auto data_it   = _data.begin();
+  auto index_it  = _indices.begin();
+  auto data2_it  = other.nude_data().begin();
+  auto index2_it = other.nude_indices().begin();
+
+  for (; data2_it != other.nude_data().end(); ++data2_it, ++index2_it)
+    {
+      while (*index_it < *index2_it) {
+        ++index_it;
+        ++data_it;
+        metaphysicl_assert(index_it != _indices.end());
+      }
+      metaphysicl_assert_equal_to(*index_it, *index2_it);
+
+      *data_it += scalar_b * (*data2_it);
     }
 
   return static_cast<SubType<SubTypeArgs...>&>(*this);
