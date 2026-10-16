@@ -117,7 +117,8 @@ check_PROGRAMS = avoid_spurious_fpe_unit$(EXEEXT) \
 	pde_unit$(EXEEXT) dynamic_sparse_number_base_unit$(EXEEXT) \
 	ct_types_unit$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2) \
 	$(am__EXEEXT_3)
-@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_1 = kokkos_sparse_derivs_unit
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_1 = kokkos_sparse_derivs_unit \
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@	kokkos_dense_derivs_unit
 @ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_2 = TEST_KOKKOS=yes; export TEST_KOKKOS;
 @CXX17_ENABLED_TRUE@am__append_3 = TEST_CXX17=yes; export TEST_CXX17;
 @CXX14_ENABLED_TRUE@am__append_4 = dualnamedarray_unit \
@@ -182,7 +183,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/utilities/include/metaphysicl/metaphysicl_config.h.tmp
 CONFIG_CLEAN_FILES = run_unit_tests.sh
 CONFIG_CLEAN_VPATH_FILES =
-@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__EXEEXT_1 = kokkos_sparse_derivs_unit$(EXEEXT)
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__EXEEXT_1 = kokkos_sparse_derivs_unit$(EXEEXT) \
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@	kokkos_dense_derivs_unit$(EXEEXT)
 @CXX14_ENABLED_TRUE@am__EXEEXT_2 = dualnamedarray_unit$(EXEEXT) \
 @CXX14_ENABLED_TRUE@	namedindexarray_unit$(EXEEXT)
 @CXX11_ENABLED_TRUE@am__EXEEXT_3 = physics_unit$(EXEEXT)
@@ -239,16 +241,21 @@ identities_unit_LDADD = $(LDADD)
 am_instantiations_unit_OBJECTS = instantiations_unit.$(OBJEXT)
 instantiations_unit_OBJECTS = $(am_instantiations_unit_OBJECTS)
 instantiations_unit_LDADD = $(LDADD)
-am_kokkos_sparse_derivs_unit_OBJECTS =  \
-	kokkos_sparse_derivs_unit.$(OBJEXT)
-kokkos_sparse_derivs_unit_OBJECTS =  \
-	$(am_kokkos_sparse_derivs_unit_OBJECTS)
+am_kokkos_dense_derivs_unit_OBJECTS =  \
+	kokkos_dense_derivs_unit.$(OBJEXT)
+kokkos_dense_derivs_unit_OBJECTS =  \
+	$(am_kokkos_dense_derivs_unit_OBJECTS)
 am__DEPENDENCIES_1 =
 @VEXCL_ENABLED_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 @TIMPI_ENABLED_TRUE@@TIMPI_LIB_ENABLED_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
 am__DEPENDENCIES_4 = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3)
-kokkos_sparse_derivs_unit_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_4)
+am__DEPENDENCIES_5 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4)
+kokkos_dense_derivs_unit_DEPENDENCIES = $(am__DEPENDENCIES_5)
+am_kokkos_sparse_derivs_unit_OBJECTS =  \
+	kokkos_sparse_derivs_unit.$(OBJEXT)
+kokkos_sparse_derivs_unit_OBJECTS =  \
+	$(am_kokkos_sparse_derivs_unit_OBJECTS)
+kokkos_sparse_derivs_unit_DEPENDENCIES = $(am__DEPENDENCIES_5)
 am_main_unit_OBJECTS = main_unit.$(OBJEXT)
 main_unit_OBJECTS = $(am_main_unit_OBJECTS)
 main_unit_LDADD = $(LDADD)
@@ -431,6 +438,7 @@ SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
 	$(dynamic_sparse_vector_pde_unit_SOURCES) \
 	$(dynamic_std_array_wrapper_unit_SOURCES) \
 	$(identities_unit_SOURCES) $(instantiations_unit_SOURCES) \
+	$(kokkos_dense_derivs_unit_SOURCES) \
 	$(kokkos_sparse_derivs_unit_SOURCES) $(main_unit_SOURCES) \
 	$(namedindexarray_unit_SOURCES) $(nd_derivs_unit_SOURCES) \
 	$(parallel_unit_SOURCES) $(pde_unit_SOURCES) \
@@ -460,6 +468,7 @@ DIST_SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
 	$(dynamic_sparse_vector_pde_unit_SOURCES) \
 	$(dynamic_std_array_wrapper_unit_SOURCES) \
 	$(identities_unit_SOURCES) $(instantiations_unit_SOURCES) \
+	$(kokkos_dense_derivs_unit_SOURCES) \
 	$(kokkos_sparse_derivs_unit_SOURCES) $(main_unit_SOURCES) \
 	$(namedindexarray_unit_SOURCES) $(nd_derivs_unit_SOURCES) \
 	$(parallel_unit_SOURCES) $(pde_unit_SOURCES) \
@@ -1029,22 +1038,38 @@ vector_pde_unit_SOURCES = vector_pde_unit.C pde_unit.h testing.h
 parallel_unit_SOURCES = parallel_unit.C
 pde_unit_SOURCES = pde_unit.C testing.h
 ct_types_unit_SOURCES = ct_types_unit.C
-kokkos_sparse_derivs_unit_SOURCES = kokkos_sparse_derivs_unit.K
+kokkos_sparse_derivs_unit_SOURCES = kokkos_sparse_derivs_unit.K \
+	kokkos_derivs_unit.h
+kokkos_dense_derivs_unit_SOURCES = kokkos_dense_derivs_unit.K \
+	kokkos_derivs_unit.h
 
 #Define tests to actually be run. TESTS is a special automake variable
 TESTS = run_unit_tests.sh
-kokkos_sparse_derivs_unit_CPPFLAGS = $(AM_CPPFLAGS) $(KOKKOS_CPPFLAGS)
-kokkos_sparse_derivs_unit_CXXFLAGS = $(AM_CXXFLAGS) $(KOKKOS_CXXFLAGS)
-kokkos_sparse_derivs_unit_LDFLAGS = $(AM_LDFLAGS)  $(KOKKOS_LDFLAGS)
-kokkos_sparse_derivs_unit_LDADD = $(KOKKOS_LIBS) $(LIBS)
 
-# Force this target’s link step to use the Kokkos compiler/wrapper.
+# Flags shared by every Kokkos unit test. Automake requires per-target
+# variables to be named per target, so each target points at these.
+KOKKOS_TEST_CPPFLAGS = $(AM_CPPFLAGS) $(KOKKOS_CPPFLAGS)
+KOKKOS_TEST_CXXFLAGS = $(AM_CXXFLAGS) $(KOKKOS_CXXFLAGS)
+KOKKOS_TEST_LDFLAGS = $(AM_LDFLAGS)  $(KOKKOS_LDFLAGS)
+KOKKOS_TEST_LDADD = $(KOKKOS_LIBS) $(LIBS)
+kokkos_sparse_derivs_unit_CPPFLAGS = $(KOKKOS_TEST_CPPFLAGS)
+kokkos_sparse_derivs_unit_CXXFLAGS = $(KOKKOS_TEST_CXXFLAGS)
+kokkos_sparse_derivs_unit_LDFLAGS = $(KOKKOS_TEST_LDFLAGS)
+kokkos_sparse_derivs_unit_LDADD = $(KOKKOS_TEST_LDADD)
+kokkos_dense_derivs_unit_CPPFLAGS = $(KOKKOS_TEST_CPPFLAGS)
+kokkos_dense_derivs_unit_CXXFLAGS = $(KOKKOS_TEST_CXXFLAGS)
+kokkos_dense_derivs_unit_LDFLAGS = $(KOKKOS_TEST_LDFLAGS)
+kokkos_dense_derivs_unit_LDADD = $(KOKKOS_TEST_LDADD)
+
+# Force the Kokkos test link steps to use the Kokkos compiler/wrapper.
 # $(LDFLAGS) must be explicit here because this overrides the default
 # CXXLINK (which includes it); libtool --mode=link handles .la archives.
-kokkos_sparse_derivs_unit_LINK = \
+KOKKOS_TEST_LINK = \
   $(LIBTOOL) --tag=CXX --mode=link $(KOKKOS_CXX) \
-  $(LDFLAGS) $(kokkos_sparse_derivs_unit_LDFLAGS) -o $@
+  $(LDFLAGS) $(KOKKOS_TEST_LDFLAGS) -o $@
 
+kokkos_sparse_derivs_unit_LINK = $(KOKKOS_TEST_LINK)
+kokkos_dense_derivs_unit_LINK = $(KOKKOS_TEST_LINK)
 CLEANFILES = $(am__append_15) $(am__append_16)
 @METAPHYSICL_LICENSESTAMPEXISTS_TRUE@BUILT_SOURCES = .license.stamp
 all: $(BUILT_SOURCES)
@@ -1139,6 +1164,10 @@ identities_unit$(EXEEXT): $(identities_unit_OBJECTS) $(identities_unit_DEPENDENC
 instantiations_unit$(EXEEXT): $(instantiations_unit_OBJECTS) $(instantiations_unit_DEPENDENCIES) $(EXTRA_instantiations_unit_DEPENDENCIES) 
 	@rm -f instantiations_unit$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(instantiations_unit_OBJECTS) $(instantiations_unit_LDADD) $(LIBS)
+
+kokkos_dense_derivs_unit$(EXEEXT): $(kokkos_dense_derivs_unit_OBJECTS) $(kokkos_dense_derivs_unit_DEPENDENCIES) $(EXTRA_kokkos_dense_derivs_unit_DEPENDENCIES) 
+	@rm -f kokkos_dense_derivs_unit$(EXEEXT)
+	$(AM_V_GEN)$(kokkos_dense_derivs_unit_LINK) $(kokkos_dense_derivs_unit_OBJECTS) $(kokkos_dense_derivs_unit_LDADD) $(LIBS)
 
 kokkos_sparse_derivs_unit$(EXEEXT): $(kokkos_sparse_derivs_unit_OBJECTS) $(kokkos_sparse_derivs_unit_DEPENDENCIES) $(EXTRA_kokkos_sparse_derivs_unit_DEPENDENCIES) 
 	@rm -f kokkos_sparse_derivs_unit$(EXEEXT)
