@@ -1,6 +1,7 @@
 #ifndef METAPHYSICL_ALGORITHM_H
 #define METAPHYSICL_ALGORITHM_H
 
+#include "metaphysicl/metaphysicl_config.h"
 #include "metaphysicl/metaphysicl_device.h"
 
 #include <algorithm>
@@ -11,9 +12,10 @@
 #include <version>
 #endif
 
-#if defined(__cpp_lib_execution) && __cpp_lib_execution >= 201603L
+// METAPHYSICL_HAVE_CXX_EXECUTION_POLICIES is set by configure when a
+// program using std::execution::seq compiles (ACSM_CXX_EXECUTION_POLICIES).
+#ifdef METAPHYSICL_HAVE_CXX_EXECUTION_POLICIES
 #include <execution>
-#define METAPHYSICL_HAVE_EXECUTION_POLICIES
 #endif
 
 // Shims for <algorithm> functions that are callable from both host and
@@ -154,7 +156,7 @@ METAPHYSICL_INLINE OutputIt copy(InputIt first, InputIt last, OutputIt d_first)
   return d_first;
 }
 
-#ifdef METAPHYSICL_HAVE_EXECUTION_POLICIES
+#ifdef METAPHYSICL_HAVE_CXX_EXECUTION_POLICIES
 
 // Overloads taking a std:: execution policy. The policy is passed
 // along to std:: on the host and ignored in device code, where the
@@ -185,7 +187,7 @@ METAPHYSICL_INLINE ForwardIt2 copy(ExecutionPolicy && policy,
   return d_first;
 }
 
-#endif // METAPHYSICL_HAVE_EXECUTION_POLICIES
+#endif // METAPHYSICL_HAVE_CXX_EXECUTION_POLICIES
 
 } // namespace MetaPhysicL::algorithm
 
