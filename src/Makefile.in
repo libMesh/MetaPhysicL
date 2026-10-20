@@ -111,6 +111,7 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_compiler_control_args.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_compiler_flags.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_cxx_compiler_standard.m4 \
+	$(top_srcdir)/m4/autoconf-submodule/acsm_cxx_execution_policies.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_enable_paranoid.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_enable_werror.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_kokkos.m4 \

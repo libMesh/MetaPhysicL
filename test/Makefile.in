@@ -116,29 +116,30 @@ check_PROGRAMS = avoid_spurious_fpe_unit$(EXEEXT) \
 	vector_pde_unit$(EXEEXT) parallel_unit$(EXEEXT) \
 	pde_unit$(EXEEXT) dynamic_sparse_number_base_unit$(EXEEXT) \
 	ct_types_unit$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2) \
-	$(am__EXEEXT_3)
-@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_1 = kokkos_sparse_derivs_unit \
+	$(am__EXEEXT_3) $(am__EXEEXT_4)
+@CXX17_ENABLED_TRUE@am__append_1 = algorithm_unit
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_2 = kokkos_sparse_derivs_unit \
 @ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@	kokkos_dense_derivs_unit
-@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_2 = TEST_KOKKOS=yes; export TEST_KOKKOS;
-@CXX17_ENABLED_TRUE@am__append_3 = TEST_CXX17=yes; export TEST_CXX17;
-@CXX14_ENABLED_TRUE@am__append_4 = dualnamedarray_unit \
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__append_3 = TEST_KOKKOS=yes; export TEST_KOKKOS;
+@CXX17_ENABLED_TRUE@am__append_4 = TEST_CXX17=yes; export TEST_CXX17;
+@CXX14_ENABLED_TRUE@am__append_5 = dualnamedarray_unit \
 @CXX14_ENABLED_TRUE@	namedindexarray_unit
-@CXX14_ENABLED_TRUE@am__append_5 = TEST_CXX14=yes; export TEST_CXX14;
-@CXX11_ENABLED_TRUE@am__append_6 = physics_unit
-@CXX11_ENABLED_TRUE@am__append_7 = TEST_CXX11=yes; export TEST_CXX11;
+@CXX14_ENABLED_TRUE@am__append_6 = TEST_CXX14=yes; export TEST_CXX14;
+@CXX11_ENABLED_TRUE@am__append_7 = physics_unit
+@CXX11_ENABLED_TRUE@am__append_8 = TEST_CXX11=yes; export TEST_CXX11;
 
 #-------------
 # MASA support
 #-------------
-@MASA_ENABLED_TRUE@am__append_8 = $(MASA_CXXFLAGS)
-@MASA_ENABLED_TRUE@am__append_9 = $(MASA_LIBS)
-@VEXCL_ENABLED_TRUE@am__append_10 = $(VEXCL_CPPFLAGS)
-@VEXCL_ENABLED_TRUE@am__append_11 = $(VEXCL_LDFLAGS)
-@VEXCL_ENABLED_TRUE@am__append_12 = $(VEXCL_LIBS)
-@TIMPI_ENABLED_TRUE@am__append_13 = $(TIMPI_CPPFLAGS)
-@TIMPI_ENABLED_TRUE@@TIMPI_LIB_ENABLED_TRUE@am__append_14 = $(TIMPI_LIBS)
-@CODE_COVERAGE_ENABLED_TRUE@am__append_15 = *.gcda *.gcno
-@METAPHYSICL_LICENSESTAMPEXISTS_TRUE@am__append_16 = .license.stamp
+@MASA_ENABLED_TRUE@am__append_9 = $(MASA_CXXFLAGS)
+@MASA_ENABLED_TRUE@am__append_10 = $(MASA_LIBS)
+@VEXCL_ENABLED_TRUE@am__append_11 = $(VEXCL_CPPFLAGS)
+@VEXCL_ENABLED_TRUE@am__append_12 = $(VEXCL_LDFLAGS)
+@VEXCL_ENABLED_TRUE@am__append_13 = $(VEXCL_LIBS)
+@TIMPI_ENABLED_TRUE@am__append_14 = $(TIMPI_CPPFLAGS)
+@TIMPI_ENABLED_TRUE@@TIMPI_LIB_ENABLED_TRUE@am__append_15 = $(TIMPI_LIBS)
+@CODE_COVERAGE_ENABLED_TRUE@am__append_16 = *.gcda *.gcno
+@METAPHYSICL_LICENSESTAMPEXISTS_TRUE@am__append_17 = .license.stamp
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps =  \
@@ -146,6 +147,7 @@ am__aclocal_m4_deps =  \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_compiler_control_args.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_compiler_flags.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_cxx_compiler_standard.m4 \
+	$(top_srcdir)/m4/autoconf-submodule/acsm_cxx_execution_policies.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_enable_paranoid.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_enable_werror.m4 \
 	$(top_srcdir)/m4/autoconf-submodule/acsm_kokkos.m4 \
@@ -183,20 +185,24 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/utilities/include/metaphysicl/metaphysicl_config.h.tmp
 CONFIG_CLEAN_FILES = run_unit_tests.sh
 CONFIG_CLEAN_VPATH_FILES =
-@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__EXEEXT_1 = kokkos_sparse_derivs_unit$(EXEEXT) \
+@CXX17_ENABLED_TRUE@am__EXEEXT_1 = algorithm_unit$(EXEEXT)
+@ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@am__EXEEXT_2 = kokkos_sparse_derivs_unit$(EXEEXT) \
 @ACSM_ENABLE_KOKKOS_TRUE@@CXX17_ENABLED_TRUE@	kokkos_dense_derivs_unit$(EXEEXT)
-@CXX14_ENABLED_TRUE@am__EXEEXT_2 = dualnamedarray_unit$(EXEEXT) \
+@CXX14_ENABLED_TRUE@am__EXEEXT_3 = dualnamedarray_unit$(EXEEXT) \
 @CXX14_ENABLED_TRUE@	namedindexarray_unit$(EXEEXT)
-@CXX11_ENABLED_TRUE@am__EXEEXT_3 = physics_unit$(EXEEXT)
+@CXX11_ENABLED_TRUE@am__EXEEXT_4 = physics_unit$(EXEEXT)
+am_algorithm_unit_OBJECTS = algorithm_unit.$(OBJEXT)
+algorithm_unit_OBJECTS = $(am_algorithm_unit_OBJECTS)
+algorithm_unit_LDADD = $(LDADD)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 am_avoid_spurious_fpe_unit_OBJECTS =  \
 	avoid_spurious_fpe_unit.$(OBJEXT)
 avoid_spurious_fpe_unit_OBJECTS =  \
 	$(am_avoid_spurious_fpe_unit_OBJECTS)
 avoid_spurious_fpe_unit_LDADD = $(LDADD)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
 am_compare_types_unit_OBJECTS = compare_types_unit.$(OBJEXT)
 compare_types_unit_OBJECTS = $(am_compare_types_unit_OBJECTS)
 compare_types_unit_LDADD = $(LDADD)
@@ -361,7 +367,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/utilities/include/metaphysicl
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/avoid_spurious_fpe_unit.Po \
+am__depfiles_remade = ./$(DEPDIR)/algorithm_unit.Po \
+	./$(DEPDIR)/avoid_spurious_fpe_unit.Po \
 	./$(DEPDIR)/compare_types_unit.Po \
 	./$(DEPDIR)/complex_derivs_unit.Po \
 	./$(DEPDIR)/ct_types_unit.Po ./$(DEPDIR)/derivs_unit.Po \
@@ -429,7 +436,7 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
+SOURCES = $(algorithm_unit_SOURCES) $(avoid_spurious_fpe_unit_SOURCES) \
 	$(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
 	$(ct_types_unit_SOURCES) $(derivs_unit_SOURCES) \
 	$(divgrad_unit_SOURCES) $(dualnamedarray_unit_SOURCES) \
@@ -459,7 +466,8 @@ SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
 	$(sparse_vector_pde_unit_SOURCES) $(testheaders_unit_SOURCES) \
 	$(testopt_unit_SOURCES) $(vector_navier_unit_SOURCES) \
 	$(vector_pde_unit_SOURCES)
-DIST_SOURCES = $(avoid_spurious_fpe_unit_SOURCES) \
+DIST_SOURCES = $(algorithm_unit_SOURCES) \
+	$(avoid_spurious_fpe_unit_SOURCES) \
 	$(compare_types_unit_SOURCES) $(complex_derivs_unit_SOURCES) \
 	$(ct_types_unit_SOURCES) $(derivs_unit_SOURCES) \
 	$(divgrad_unit_SOURCES) $(dualnamedarray_unit_SOURCES) \
@@ -850,7 +858,7 @@ KOKKOS_MPI_LDFLAGS = @KOKKOS_MPI_LDFLAGS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@ $(am__append_12) $(am__append_14)
+LIBS = @LIBS@ $(am__append_13) $(am__append_15)
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -972,20 +980,21 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_TESTS_ENVIRONMENT = $(am__append_2) $(am__append_3) $(am__append_5) \
-	$(am__append_7)
+AM_TESTS_ENVIRONMENT = $(am__append_3) $(am__append_4) $(am__append_6) \
+	$(am__append_8)
 AM_CPPFLAGS = -I$(top_srcdir)/src/core/include \
 	-I$(top_srcdir)/src/graphs/include \
 	-I$(top_srcdir)/src/numerics/include \
 	-I$(top_srcdir)/src/utilities/include \
-	-I$(top_builddir)/src/utilities/include $(am__append_8) \
-	$(am__append_10) $(am__append_13)
+	-I$(top_builddir)/src/utilities/include $(am__append_9) \
+	$(am__append_11) $(am__append_14)
 AM_CXXFLAGS = $(ACSM_CXXFLAGS_OPT) $(ACSM_ANY_WERROR_FLAG) $(ACSM_ANY_PARANOID_FLAGS)
-AM_LDFLAGS = $(top_builddir)/src/libmetaphysicl.la $(am__append_9) \
-	$(am__append_11)
+AM_LDFLAGS = $(top_builddir)/src/libmetaphysicl.la $(am__append_10) \
+	$(am__append_12)
 
 # Sources for these tests
 avoid_spurious_fpe_unit_SOURCES = avoid_spurious_fpe_unit.C
+algorithm_unit_SOURCES = algorithm_unit.C
 compare_types_unit_SOURCES = compare_types_unit.C
 derivs_unit_SOURCES = derivs_unit.C
 nd_derivs_unit_SOURCES = nd_derivs_unit.C math_structs.h
@@ -1070,7 +1079,7 @@ KOKKOS_TEST_LINK = \
 
 kokkos_sparse_derivs_unit_LINK = $(KOKKOS_TEST_LINK)
 kokkos_dense_derivs_unit_LINK = $(KOKKOS_TEST_LINK)
-CLEANFILES = $(am__append_15) $(am__append_16)
+CLEANFILES = $(am__append_16) $(am__append_17)
 @METAPHYSICL_LICENSESTAMPEXISTS_TRUE@BUILT_SOURCES = .license.stamp
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -1112,6 +1121,10 @@ run_unit_tests.sh: $(top_builddir)/config.status $(srcdir)/run_unit_tests.sh.in
 clean-checkPROGRAMS:
 	$(am__rm_f) $(check_PROGRAMS)
 	test -z "$(EXEEXT)" || $(am__rm_f) $(check_PROGRAMS:$(EXEEXT)=)
+
+algorithm_unit$(EXEEXT): $(algorithm_unit_OBJECTS) $(algorithm_unit_DEPENDENCIES) $(EXTRA_algorithm_unit_DEPENDENCIES) 
+	@rm -f algorithm_unit$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(algorithm_unit_OBJECTS) $(algorithm_unit_LDADD) $(LIBS)
 
 avoid_spurious_fpe_unit$(EXEEXT): $(avoid_spurious_fpe_unit_OBJECTS) $(avoid_spurious_fpe_unit_DEPENDENCIES) $(EXTRA_avoid_spurious_fpe_unit_DEPENDENCIES) 
 	@rm -f avoid_spurious_fpe_unit$(EXEEXT)
@@ -1275,6 +1288,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/algorithm_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avoid_spurious_fpe_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compare_types_unit.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/complex_derivs_unit.Po@am__quote@ # am--include-marker
@@ -1672,6 +1686,7 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
+	-rm -f ./$(DEPDIR)/algorithm_unit.Po
 	-rm -f ./$(DEPDIR)/avoid_spurious_fpe_unit.Po
 	-rm -f ./$(DEPDIR)/compare_types_unit.Po
 	-rm -f ./$(DEPDIR)/complex_derivs_unit.Po
@@ -1754,6 +1769,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
+	-rm -f ./$(DEPDIR)/algorithm_unit.Po
 	-rm -f ./$(DEPDIR)/avoid_spurious_fpe_unit.Po
 	-rm -f ./$(DEPDIR)/compare_types_unit.Po
 	-rm -f ./$(DEPDIR)/complex_derivs_unit.Po
