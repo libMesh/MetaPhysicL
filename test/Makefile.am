@@ -169,6 +169,8 @@ if TIMPI_LIB_ENABLED
 endif
 endif
 
+LIBS += $(EXECUTION_LIBS)
+
 # Flags shared by every Kokkos unit test. Automake requires per-target
 # variables to be named per target, so each target points at these.
 KOKKOS_TEST_CPPFLAGS = $(AM_CPPFLAGS) $(KOKKOS_CPPFLAGS)
