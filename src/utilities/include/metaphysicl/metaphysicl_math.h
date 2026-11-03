@@ -33,6 +33,18 @@ namespace math {
   }                                                                            \
   }
 
+#define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_STD_ALIAS(ALIAS, NAME)       \
+  namespace detail {                                                           \
+  template <class X> METAPHYSICL_INLINE auto unqualified_##ALIAS(const X &x) { \
+    if constexpr (std::is_arithmetic_v<X>)                                     \
+      return std::NAME(x);                                                     \
+    else {                                                                     \
+      using std::NAME;                                                         \
+      return NAME(x);                                                          \
+    }                                                                          \
+  }                                                                            \
+  }
+
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
 #define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY(NAME)                        \
   namespace detail {                                                           \
@@ -45,9 +57,22 @@ namespace math {
     }                                                                          \
   }                                                                            \
   }
+#define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_ALIAS(ALIAS, NAME)           \
+  namespace detail {                                                           \
+  template <class X> METAPHYSICL_INLINE auto unqualified_##ALIAS(const X &x) { \
+    if constexpr (std::is_arithmetic_v<X>)                                     \
+      return Kokkos::NAME(x);                                                  \
+    else {                                                                     \
+      using Kokkos::NAME;                                                      \
+      return NAME(x);                                                          \
+    }                                                                          \
+  }                                                                            \
+  }
 #else
 #define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY(NAME)                        \
   METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_STD(NAME)
+#define METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_ALIAS(ALIAS, NAME)           \
+  METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_STD_ALIAS(ALIAS, NAME)
 #endif
 
 #ifdef METAPHYSICL_KOKKOS_COMPILATION
@@ -88,6 +113,12 @@ namespace math {
   METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_STD(NAME)                          \
   template <class X> METAPHYSICL_INLINE auto NAME(const X &x) {                \
     return detail::unqualified_##NAME(x);                                      \
+  }
+
+#define METAPHYSICL_MATH_UNARY_ALIAS(ALIAS, NAME)                              \
+  METAPHYSICL_MATH_DETAIL_UNQUALIFIED_UNARY_ALIAS(ALIAS, NAME)                 \
+  template <class X> METAPHYSICL_INLINE auto ALIAS(const X &x) {               \
+    return detail::unqualified_##ALIAS(x);                                     \
   }
 
 // Macro to call when there is a backing math function in c
@@ -132,7 +163,11 @@ METAPHYSICL_MATH_UNARY(erf)
 METAPHYSICL_MATH_UNARY(erfc)
 METAPHYSICL_MATH_UNARY(trunc)
 METAPHYSICL_MATH_UNARY(round)
+#if defined(METAPHYSICL_KOKKOS_COMPILATION) && defined(KOKKOS_ENABLE_SYCL)
+METAPHYSICL_MATH_UNARY_ALIAS(nearbyint, rint)
+#else
 METAPHYSICL_MATH_UNARY(nearbyint)
+#endif
 METAPHYSICL_MATH_UNARY_STD(rint)
 METAPHYSICL_MATH_UNARY(real)
 METAPHYSICL_MATH_UNARY(imag)
